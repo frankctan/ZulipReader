@@ -7,12 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C2C5BF5ACF8CDAF8E4E96AE /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB93339AFD280F7DC56DBE /* Pods.framework */; };
+		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
+		673251771C0A7154009A546C /* StreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251761C0A7154009A546C /* StreamController.swift */; };
+		676C98451BFD69360042CB26 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676C98441BFD69360042CB26 /* LoginController.swift */; };
+		67A1A8AF1C03AC2F00CCA40D /* StreamTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */; };
+		67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
-		67D1F1BA1BFA6AEA006F9468 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* ViewController.swift */; };
+		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
 		67D1F1BD1BFA6AEA006F9468 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */; };
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
 		67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */; };
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
+		773A18EB6096D2487AD86E19 /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,9 +33,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
+		676C98441BFD69360042CB26 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
+		67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewCell.swift; sourceTree = "<group>"; };
+		67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewController.swift; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		67D1F1B91BFA6AEA006F9468 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		67D1F1BC1BFA6AEA006F9468 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		67D1F1C11BFA6AEA006F9468 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -36,6 +48,10 @@
 		67D1F1C81BFA6AEA006F9468 /* ZulipReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZulipReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZulipReaderTests.swift; sourceTree = "<group>"; };
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.release.xcconfig"; sourceTree = "<group>"; };
+		C6AB93339AFD280F7DC56DBE /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEA9AAA36DBF7B557DF32C4D /* Pods-ZulipReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				773A18EB6096D2487AD86E19 /* Pods_ZulipReader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,18 +67,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C2C5BF5ACF8CDAF8E4E96AE /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C8E98633BCDDCEFAEEC1B78 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C6AB93339AFD280F7DC56DBE /* Pods.framework */,
+				DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		67D1F1AB1BFA6AEA006F9468 = {
 			isa = PBXGroup;
 			children = (
 				67D1F1B61BFA6AEA006F9468 /* ZulipReader */,
 				67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */,
 				67D1F1B51BFA6AEA006F9468 /* Products */,
+				5C8E98633BCDDCEFAEEC1B78 /* Frameworks */,
+				C6E19BCE13932922DB6B3D87 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,8 +107,13 @@
 			isa = PBXGroup;
 			children = (
 				67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */,
-				67D1F1B91BFA6AEA006F9468 /* ViewController.swift */,
+				673251741C0A5D85009A546C /* DataController.swift */,
+				676C98441BFD69360042CB26 /* LoginController.swift */,
+				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
+				673251761C0A7154009A546C /* StreamController.swift */,
+				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
+				67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */,
 				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
 				67D1F1C31BFA6AEA006F9468 /* Info.plist */,
@@ -96,6 +130,15 @@
 			path = ZulipReaderTests;
 			sourceTree = "<group>";
 		};
+		C6E19BCE13932922DB6B3D87 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DEA9AAA36DBF7B557DF32C4D /* Pods-ZulipReader.debug.xcconfig */,
+				8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -103,9 +146,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 67D1F1D11BFA6AEA006F9468 /* Build configuration list for PBXNativeTarget "ZulipReader" */;
 			buildPhases = (
+				6DE9F83F465E70A5066116D7 /* Check Pods Manifest.lock */,
 				67D1F1B01BFA6AEA006F9468 /* Sources */,
 				67D1F1B11BFA6AEA006F9468 /* Frameworks */,
 				67D1F1B21BFA6AEA006F9468 /* Resources */,
+				6D8F6152833B0D03A8E68D49 /* Embed Pods Frameworks */,
+				071112DF3BDDF78FA1D2D89E /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -194,13 +240,66 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		071112DF3BDDF78FA1D2D89E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6D8F6152833B0D03A8E68D49 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6DE9F83F465E70A5066116D7 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		67D1F1B01BFA6AEA006F9468 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67D1F1BA1BFA6AEA006F9468 /* ViewController.swift in Sources */,
+				67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */,
+				673251751C0A5D85009A546C /* DataController.swift in Sources */,
+				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
+				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
+				673251771C0A7154009A546C /* StreamController.swift in Sources */,
+				67A1A8AF1C03AC2F00CCA40D /* StreamTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +426,7 @@
 		};
 		67D1F1D21BFA6AEA006F9468 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DEA9AAA36DBF7B557DF32C4D /* Pods-ZulipReader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ZulipReader/Info.plist;
@@ -338,6 +438,7 @@
 		};
 		67D1F1D31BFA6AEA006F9468 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ZulipReader/Info.plist;
@@ -390,6 +491,7 @@
 				67D1F1D31BFA6AEA006F9468 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		67D1F1D41BFA6AEA006F9468 /* Build configuration list for PBXNativeTarget "ZulipReaderTests" */ = {
 			isa = XCConfigurationList;
@@ -398,6 +500,7 @@
 				67D1F1D61BFA6AEA006F9468 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
