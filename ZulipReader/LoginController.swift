@@ -46,7 +46,6 @@ class LoginController : DataController {
             controller.userData.queueID = response.data["queue_id"].stringValue
             controller.userData.pointer = response.data["pointer"].stringValue
             controller.delegate?.loginController(response.data["msg"].stringValue)
-            print("self.queueID assigned: \(controller.userData.queueID)")
         }
     }
     

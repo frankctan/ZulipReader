@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Kingfisher.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-ZulipReader.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -27,7 +32,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>06993E09FCB5981219FA117FABE6F566</key>
+		<key>42D3706289962D648CF34D528ED6EA8E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -37,12 +42,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A56EB85916A8D118A665C22EF26FFA3C</key>
+		<key>6E154C221300EB7B62D7654768CE79F5</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>F03BF54B5051372A916FF60360318C63</key>
+		<key>B720834C0D3FCD3AF5F13CB2CA6C98AA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F91226101ECE8FCFD221A3EC54481F82</key>
 		<dict>
 			<key>primary</key>
 			<true/>

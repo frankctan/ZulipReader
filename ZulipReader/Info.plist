@@ -43,5 +43,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SourceSansPro-Black-webfont.ttf</string>
+		<string>SourceSansPro-Regular-webfont.ttf</string>
+		<string>SourceSansPro-Light-webfont.ttf</string>
+		<string>SourceSansPro-ExtraLight-webfont.ttf</string>
+		<string>SourceSansPro-Semibold-webfont.ttf</string>
+	</array>
 </dict>
 </plist>

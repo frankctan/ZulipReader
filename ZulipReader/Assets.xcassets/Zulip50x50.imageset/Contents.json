@@ -1,6 +1,17 @@
 {
   "images" : [
     {
+      "resizing" : {
+        "mode" : "3-part-horizontal",
+        "center" : {
+          "mode" : "tile",
+          "width" : 14
+        },
+        "cap-insets" : {
+          "right" : 15,
+          "left" : 0
+        }
+      },
       "idiom" : "universal",
       "filename" : "Zulip50x50.png",
       "scale" : "1x"

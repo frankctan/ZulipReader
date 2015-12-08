@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
+
 public typealias Header = [String:String]
 
 public struct UserData {
