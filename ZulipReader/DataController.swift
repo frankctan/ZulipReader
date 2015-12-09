@@ -31,6 +31,7 @@ class DataController {
         case Login(username: String, password: String)
         case Register
         case GetMessages(anchor: String, before: Int, after: Int)
+        case GetSubscriptions
         
         var url: String {
             switch self {
@@ -40,6 +41,8 @@ class DataController {
                 return "/register?event_types=[\"message\",\"pointer\",\"realm_user\"]"
             case .GetMessages(let anchor, let before, let after):
                 return "/messages?anchor=\(anchor)&num_before=\(before)&num_after=\(after)"
+            case .GetSubscriptions:
+                return "/users/me/subscriptions"
             }
         }
     }

@@ -9,40 +9,24 @@
 import Foundation
 
 class Cell {
-}
-
-class StreamHeaderCell: Cell {
     var stream = String()
+    var streamColor = String()
     var subject = String()
-    
-    init(msgStream: String, msgSubject: String) {
-        stream = msgStream
-        subject = msgSubject
-    }
-}
 
-class UserHeaderCell: Cell {
-    var name = String()
-    var avatarURL = String()
-    
-    init(msgName: String, msgAvatarURL: String) {
-        name = msgName
-        avatarURL = msgAvatarURL
-    }
-}
-
-class MessageCell: Cell {
     var content = String()
     var timestamp = String()
     var name = String()
     var avatarURL = String()
-
     
-    init(msgContent: String, msgTimestamp: String, msgName: String, msgAvatarURL: String) {
+    
+    init(msgStream: String, msgStreamColor: String, msgSubject: String, msgContent: String, msgTimestamp: String, msgName: String, msgAvatarURL: String) {
+        stream = msgStream
+        streamColor = msgStreamColor
+        subject = msgSubject
+        
         content = msgContent
         timestamp = msgTimestamp
         name = msgName
         avatarURL = msgAvatarURL
-
     }
 }

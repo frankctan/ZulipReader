@@ -12,7 +12,7 @@ import SwiftyJSON
 import Spring
 
 protocol StreamControllerDelegate: class {
-    func streamController(cellMessages: [Cell])
+    func streamController(messagesForTable: [[Cell]])
 }
 
 
@@ -26,80 +26,102 @@ class StreamController : DataController {
             let responseJSON = JSON(data: res.data!)
             guard responseJSON["result"].stringValue == "success" else {return}
             let response = responseJSON["messages"].arrayValue
+            print("self: \(self)")
             guard let controller = self else {return}
-            let cellMessages = controller.parseMessages(response)
-            controller.delegate?.streamController(cellMessages)
+            print("controller: \(controller)")
+            var colorDict = [String:String]()
+            controller.getSubscriptions(){
+                colorDict = $0
+                let messagesForTable = controller.parseMessages(response, colorLookupTable: colorDict)
+                controller.delegate?.streamController(messagesForTable)
+            }
         }
     }
     
-    func parseMessages(allMessages: [JSON]) -> [Cell] {
+    func getSubscriptions(completionHandler:[String:String]->Void) {
+        let subscriptionURL = getURL(.GetSubscriptions)
+        print(subscriptionURL)
+        Alamofire.request(.GET, subscriptionURL, headers: userData.header).responseJSON {[weak self] res in
+            var colorDict = [String:String]()
+            let responseJSON = JSON(data: res.data!)
+//            print("responseJSON: \(responseJSON)")
+            guard responseJSON["result"].stringValue == "success" else {return}
+            let response = responseJSON["subscriptions"].arrayValue
+//            print("response: \(response)")
+            guard let controller = self else {return}
+            colorDict = controller.parseColors(response)
+            completionHandler(colorDict)
+        }
+    }
+    
+    func parseColors(allSubs: [JSON]) -> [String:String] {
+        var colorDict = [String:String]()
+        for subs in allSubs {
+            colorDict[subs["name"].stringValue] = subs["color"].stringValue
+        }
+        return colorDict
+    }
+    
+    func parseMessages(allMessages: [JSON], colorLookupTable: [String:String]) -> [[Cell]] {
         
-        var messagesWithHeaders = [Cell]()
-        
+        var messagesForTable = [[Cell]]()
         struct Previous {
             var stream = ""
             var subject = ""
-            var name = ""
         }
         
         var stored = Previous()
+        var sectionCounter = 0
+        var firstTime = true
         
         for message in allMessages {
             let name = message["sender_full_name"].stringValue
             var content = message["content"].stringValue
             let avatarURL = message["avatar_url"].stringValue
             let stream = message["display_recipient"].stringValue
+            let streamColor = colorLookupTable[stream]!
             let subject = message["subject"].stringValue
             
+            if firstTime {
+                stored.stream = stream
+                stored.subject = subject
+                messagesForTable.append([Cell]())
+                firstTime = false
+            }
+            
+            //Swift adds an extra "\n" to paragraph tags so we replace with span.
             content = content.stringByReplacingOccurrencesOfString("<p>", withString: "<span>")
             content = content.stringByReplacingOccurrencesOfString("</p>", withString: "</span>")
             
             let timestamp = NSDate(timeIntervalSince1970: (message["timestamp"].doubleValue))
             let formattedTimestamp = timeAgoSinceDate(timestamp, numericDates: true)
             
-            
             if stored.stream == stream && stored.subject == subject {
-                if stored.name != name {
-                    messagesWithHeaders.append(UserHeaderCell(msgName: name, msgAvatarURL: avatarURL))
-                }
-                messagesWithHeaders.append(MessageCell(msgContent: content, msgTimestamp: formattedTimestamp))
+                messagesForTable[sectionCounter].append(Cell(
+                    msgStream: stream,
+                    msgStreamColor: streamColor,
+                    msgSubject: subject,
+                    msgContent: content,
+                    msgTimestamp: formattedTimestamp,
+                    msgName: name,
+                    msgAvatarURL: avatarURL))
             } else {
-                messagesWithHeaders.append(StreamHeaderCell(msgStream: stream, msgSubject: subject))
-                messagesWithHeaders.append(UserHeaderCell(msgName: name, msgAvatarURL: avatarURL))
-                messagesWithHeaders.append(MessageCell(msgContent: content, msgTimestamp: formattedTimestamp))
+                sectionCounter += 1
+                messagesForTable.append([Cell]())
+                messagesForTable[sectionCounter].append(Cell(
+                    msgStream: stream,
+                    msgStreamColor: streamColor,
+                    msgSubject: subject,
+                    msgContent: content,
+                    msgTimestamp: formattedTimestamp,
+                    msgName: name,
+                    msgAvatarURL: avatarURL))
             }
             
             stored.stream = stream
             stored.subject = subject
-            stored.name = name
         }
         
-        return messagesWithHeaders
+        return messagesForTable
     }
 }
-
-//{
-//    "msg": "",
-//    "messages": [
-//    {
-//    "recipient_id": 20330,
-//    "sender_email": "bac1087@gmail.com",
-//    "timestamp": 1448931264,
-//    "display_recipient": "455 Broadway",
-//    "sender_id": 8854,
-//    "sender_full_name": "Benjamin Adam Cohen (W1'15)",
-//    "sender_domain": "students.hackerschool.com",
-//    "content": "<p>Whatever is decided about 'making presentations better', it would be useful if it could be boiled down to a kind of 5 point list for easy reference. Kind of like the social rules, it will help if its concise</p>",
-//    "gravatar_hash": "c44cfbb3d7938bd98a97ab3119bfe35b",
-//    "avatar_url": "https://secure.gravatar.com/avatar/c44cfbb3d7938bd98a97ab3119bfe35b?d=identicon",
-//    "flags": [
-//    "read"
-//    ],
-//    "client": "desktop app Mac 0.5.1",
-//    "content_type": "text/html",
-//    "subject_links": [],
-//    "sender_short_name": "bac1087",
-//    "type": "stream",
-//    "id": 50285316,
-//    "subject": "making presentations better"
-//    },

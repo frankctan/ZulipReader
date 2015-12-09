@@ -17,8 +17,10 @@
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
+            <string>SourceSansPro-Regular</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Semibold-webfont.ttf">
+            <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
         </mutableArray>
     </customFonts>
@@ -164,28 +166,86 @@
         <scene sceneID="TT7-cM-hZd">
             <objects>
                 <tableViewController id="YVC-VZ-7XT" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="91" sectionHeaderHeight="28" sectionFooterHeight="28" id="zfM-OV-shD">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="91" sectionHeaderHeight="28" sectionFooterHeight="28" id="zfM-OV-shD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="StreamTableViewCell" rowHeight="71" id="ca6-sx-bGl" customClass="StreamTableViewCell" customModule="ZulipReader" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="92" width="320" height="71"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamTableViewHeaderNavCell" rowHeight="24" id="6J7-HK-Qwk" customClass="StreamTableViewHeaderNavCell" customModule="ZulipReader" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="92" width="320" height="24"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="ca6-sx-bGl" id="usF-ak-ppv">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="70.5"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="6J7-HK-Qwk" id="SrK-ii-L2m">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100w" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h86-Nx-EWr">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3RJ-JY-MtV" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
+                                            <rect key="frame" x="45" y="-0.5" width="275" height="25"/>
+                                            <animations/>
+                                            <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="25" id="CLd-lt-ZzR"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
+                                            <inset key="contentEdgeInsets" minX="20" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                            <state key="normal" title="Button">
+                                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                    <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                    <real key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GsZ-9M-lQM" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
+                                            <rect key="frame" x="0.0" y="-2" width="58" height="27"/>
+                                            <animations/>
+                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
+                                            <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="9" maxY="0.0"/>
+                                            <state key="normal" title="Button" backgroundImage="Path 3">
+                                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                    </subviews>
+                                    <animations/>
+                                    <constraints>
+                                        <constraint firstItem="GsZ-9M-lQM" firstAttribute="leading" secondItem="SrK-ii-L2m" secondAttribute="leading" id="3i8-Jo-q1L"/>
+                                        <constraint firstAttribute="trailing" secondItem="3RJ-JY-MtV" secondAttribute="trailing" id="K43-Ad-Nl3"/>
+                                        <constraint firstItem="GsZ-9M-lQM" firstAttribute="centerY" secondItem="SrK-ii-L2m" secondAttribute="centerY" id="PuK-3B-JX6"/>
+                                        <constraint firstItem="3RJ-JY-MtV" firstAttribute="centerY" secondItem="GsZ-9M-lQM" secondAttribute="centerY" id="whR-7f-Wde"/>
+                                        <constraint firstItem="3RJ-JY-MtV" firstAttribute="leading" secondItem="GsZ-9M-lQM" secondAttribute="trailing" constant="-13" id="y8F-C2-8CP"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <animations/>
+                                <connections>
+                                    <outlet property="streamLabel" destination="GsZ-9M-lQM" id="6F8-Ii-zTm"/>
+                                    <outlet property="subjectLabel" destination="3RJ-JY-MtV" id="b15-EJ-csN"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="StreamTableViewCell" rowHeight="60" id="ca6-sx-bGl" customClass="StreamTableViewCell" customModule="ZulipReader" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="116" width="320" height="60"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="ca6-sx-bGl" id="usF-ak-ppv">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="752" text="100w" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h86-Nx-EWr">
                                             <rect key="frame" x="278" y="4" width="33.5" height="19.5"/>
                                             <animations/>
                                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pgX-OD-SpK">
-                                            <rect key="frame" x="8" y="4" width="40" height="40"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pgX-OD-SpK" customClass="DesignableImageView" customModule="Spring">
+                                            <rect key="frame" x="5" y="4" width="40" height="40"/>
                                             <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="pgX-OD-SpK" secondAttribute="height" multiplier="1:1" id="1LM-l6-BEr"/>
@@ -194,6 +254,14 @@
                                                 <constraint firstAttribute="width" constant="40" id="nR0-B1-506"/>
                                                 <constraint firstAttribute="height" constant="50" id="s9f-hS-Xzi"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                    <real key="value" value="5"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
                                             <variation key="default">
                                                 <mask key="constraints">
                                                     <exclude reference="TBC-Xf-04r"/>
@@ -202,13 +270,13 @@
                                                 </mask>
                                             </variation>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Frank Tan (Fall 2015)" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AZJ-T0-jB6">
-                                            <rect key="frame" x="53" y="4" width="221" height="19.5"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Frank Tan (Fall 2015)" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AZJ-T0-jB6">
+                                            <rect key="frame" x="50" y="4" width="224" height="20.5"/>
                                             <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="ByR-Uo-FfF"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
+                                            <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="15"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                             <variation key="default">
@@ -217,16 +285,15 @@
                                                 </mask>
                                             </variation>
                                         </label>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Text" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5CQ-NB-g0N" customClass="AutoTextView" customModule="Spring">
-                                            <rect key="frame" x="53" y="27.5" width="258.5" height="35.5"/>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" scrollEnabled="NO" editable="NO" text="Text" translatesAutoresizingMaskIntoConstraints="NO" id="5CQ-NB-g0N" customClass="AutoTextView" customModule="Spring">
+                                            <rect key="frame" x="50" y="28" width="261.5" height="22"/>
                                             <animations/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <accessibility key="accessibilityConfiguration">
-                                                <accessibilityTraits key="traits" staticText="YES" notEnabled="YES"/>
+                                                <accessibilityTraits key="traits" notEnabled="YES"/>
                                             </accessibility>
                                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                            <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES"/>
+                                            <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES"/>
                                         </textView>
                                     </subviews>
                                     <animations/>
@@ -235,10 +302,12 @@
                                         <constraint firstItem="5CQ-NB-g0N" firstAttribute="top" secondItem="AZJ-T0-jB6" secondAttribute="bottom" constant="0.5" id="Aaa-WP-eYf"/>
                                         <constraint firstItem="5CQ-NB-g0N" firstAttribute="top" secondItem="AZJ-T0-jB6" secondAttribute="bottom" constant="4" id="IGF-2x-B8z"/>
                                         <constraint firstItem="h86-Nx-EWr" firstAttribute="leading" secondItem="AZJ-T0-jB6" secondAttribute="trailing" constant="4" id="K7g-f7-p3x"/>
+                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="leading" secondItem="AZJ-T0-jB6" secondAttribute="leading" id="KbS-tr-3co"/>
                                         <constraint firstItem="5CQ-NB-g0N" firstAttribute="leading" secondItem="usF-ak-ppv" secondAttribute="leading" constant="8" id="KoN-az-UeV"/>
                                         <constraint firstItem="5CQ-NB-g0N" firstAttribute="trailing" secondItem="h86-Nx-EWr" secondAttribute="trailing" id="S5p-s6-Bjm"/>
-                                        <constraint firstItem="pgX-OD-SpK" firstAttribute="leading" secondItem="usF-ak-ppv" secondAttribute="leadingMargin" id="U7X-WR-zAc"/>
+                                        <constraint firstItem="pgX-OD-SpK" firstAttribute="leading" secondItem="usF-ak-ppv" secondAttribute="leading" constant="5" id="U7X-WR-zAc"/>
                                         <constraint firstAttribute="bottom" secondItem="h86-Nx-EWr" secondAttribute="bottom" constant="8" id="W6a-T2-7Ck"/>
+                                        <constraint firstAttribute="bottom" secondItem="5CQ-NB-g0N" secondAttribute="bottom" priority="900" constant="10" id="XNU-P1-nBK"/>
                                         <constraint firstItem="AZJ-T0-jB6" firstAttribute="top" secondItem="pgX-OD-SpK" secondAttribute="top" id="bj3-Bg-4fq"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="h86-Nx-EWr" secondAttribute="trailing" id="eg6-qk-iTu"/>
                                         <constraint firstItem="h86-Nx-EWr" firstAttribute="top" secondItem="pgX-OD-SpK" secondAttribute="top" id="iUg-0c-qcB"/>
@@ -252,6 +321,7 @@
                                             <exclude reference="Aaa-WP-eYf"/>
                                             <exclude reference="KoN-az-UeV"/>
                                             <exclude reference="rMr-Yc-wG1"/>
+                                            <exclude reference="vrg-4j-bVF"/>
                                             <exclude reference="z7o-Fa-d9r"/>
                                             <exclude reference="W6a-T2-7Ck"/>
                                         </mask>
@@ -264,30 +334,6 @@
                                     <outlet property="nameLabel" destination="AZJ-T0-jB6" id="UgI-I6-EVy"/>
                                     <outlet property="timeLabel" destination="h86-Nx-EWr" id="6FS-On-pUk"/>
                                 </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamTableViewHeaderNavCell" rowHeight="27" id="6J7-HK-Qwk" customClass="StreamTableViewHeaderNavCell" customModule="ZulipReader" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="163" width="320" height="27"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="6J7-HK-Qwk" id="SrK-ii-L2m">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="26.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3RJ-JY-MtV" userLabel="Subject Button">
-                                            <rect key="frame" x="58" y="2" width="262" height="23"/>
-                                            <animations/>
-                                            <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
-                                            <state key="normal" title="Button"/>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GsZ-9M-lQM" userLabel="Stream Button">
-                                            <rect key="frame" x="0.0" y="0.0" width="72" height="25"/>
-                                            <animations/>
-                                            <inset key="contentEdgeInsets" minX="-3" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                            <state key="normal" title="Button" backgroundImage="Path 3"/>
-                                        </button>
-                                    </subviews>
-                                    <animations/>
-                                </tableViewCellContentView>
-                                <animations/>
                             </tableViewCell>
                         </prototypes>
                         <connections>

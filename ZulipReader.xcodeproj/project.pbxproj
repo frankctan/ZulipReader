@@ -11,7 +11,6 @@
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
 		673251771C0A7154009A546C /* StreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251761C0A7154009A546C /* StreamController.swift */; };
 		676C98451BFD69360042CB26 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676C98441BFD69360042CB26 /* LoginController.swift */; };
-		678A6BB31C0F949D00AE091B /* StreamTableViewHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB21C0F949D00AE091B /* StreamTableViewHeaderCell.swift */; };
 		678A6BB51C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB41C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift */; };
 		678A6BB71C10EBA200AE091B /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB61C10EBA200AE091B /* Cell.swift */; };
 		678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */; };
@@ -34,7 +33,6 @@
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
 		67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */; };
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
-		67FD2E6C1C0EB200007D3634 /* DecodeHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FD2E6B1C0EB200007D3634 /* DecodeHTML.swift */; };
 		773A18EB6096D2487AD86E19 /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */; };
 /* End PBXBuildFile section */
 
@@ -52,7 +50,6 @@
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
 		676C98441BFD69360042CB26 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
-		678A6BB21C0F949D00AE091B /* StreamTableViewHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewHeaderCell.swift; sourceTree = "<group>"; };
 		678A6BB41C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewHeaderNavCell.swift; sourceTree = "<group>"; };
 		678A6BB61C10EBA200AE091B /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Black-webfont.ttf"; sourceTree = "<group>"; };
@@ -80,7 +77,6 @@
 		67D1F1C81BFA6AEA006F9468 /* ZulipReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZulipReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZulipReaderTests.swift; sourceTree = "<group>"; };
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		67FD2E6B1C0EB200007D3634 /* DecodeHTML.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecodeHTML.swift; sourceTree = "<group>"; };
 		8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.release.xcconfig"; sourceTree = "<group>"; };
 		C6AB93339AFD280F7DC56DBE /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,11 +160,9 @@
 				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
 				673251761C0A7154009A546C /* StreamController.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
-				67FD2E6B1C0EB200007D3634 /* DecodeHTML.swift */,
 				678A6BB61C10EBA200AE091B /* Cell.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */,
-				678A6BB21C0F949D00AE091B /* StreamTableViewHeaderCell.swift */,
 				678A6BB41C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift */,
 				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
@@ -366,10 +360,8 @@
 				67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */,
 				673251751C0A5D85009A546C /* DataController.swift in Sources */,
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
-				678A6BB31C0F949D00AE091B /* StreamTableViewHeaderCell.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
-				67FD2E6C1C0EB200007D3634 /* DecodeHTML.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
 				678A6BB71C10EBA200AE091B /* Cell.swift in Sources */,
 				673251771C0A7154009A546C /* StreamController.swift in Sources */,

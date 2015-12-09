@@ -12,13 +12,15 @@ import Kingfisher
 
 class StreamTableViewHeaderNavCell: UITableViewCell {
 
-    @IBOutlet weak var streamLabel: UILabel!
-    @IBOutlet weak var subjectLabel: UILabel!
+    @IBOutlet weak var streamLabel: UIButton!
+    @IBOutlet weak var subjectLabel: UIButton!
     
-    func configureWithStream(message: StreamHeaderCell) {
+    func configureWithStream(message: Cell) {
+        streamLabel.setTitle(message.stream, forState: UIControlState.Normal)
+        subjectLabel.setTitle(message.subject, forState: UIControlState.Normal)
         
-        streamLabel.text = message.stream
-        subjectLabel.text = message.subject
+        let image = streamLabel.currentBackgroundImage?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        streamLabel.setBackgroundImage(image, forState: UIControlState.Normal)
+        streamLabel.tintColor = UIColor(hex: message.streamColor)
     }
-
 }

@@ -16,22 +16,18 @@ class StreamTableViewCell: UITableViewCell {
     @IBOutlet weak var badgeImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
-    @IBInspectable
-    @IBOutlet weak var contentTextView: UITextView!
+    @IBOutlet weak var contentTextView: AutoTextView!
     
-    func configureWithStream(message:MessageCell) {
+    func configureWithStream(message: Cell) {
         nameLabel.text = message.name
         badgeImageView.kf_setImageWithURL(NSURL(string: message.avatarURL)!, placeholderImage: nil)
         contentTextView.textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
-        let attributedContent = htmlToAttributedString(message.content + "<style>body{font-family:\"SourceSansPro-Regular\";font-size:15px;line-height:15px;}</style>")
+        layoutIfNeeded()
+        let attributedContent = htmlToAttributedString(message.content + "<style>span{font-family:\"SourceSansPro-Regular\";font-size:15px;line-height:15px;}</style>")
         timeLabel.text = message.timestamp
         contentTextView.attributedText = attributedContent
     }
 }
-
-//        attributedContent.removeAttribute(NSParagraphStyleAttributeName, range: NSMakeRange(0, attributedContent.length))
-//        attributedContent.removeAttribute(String, range: NSRange)
-
 
 /*We want:
 timestamp
