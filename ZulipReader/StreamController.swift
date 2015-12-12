@@ -20,15 +20,20 @@ class StreamController : DataController {
     
     weak var delegate: StreamControllerDelegate?
     
-    func getMessages() {
-        let messagesURL = getURL(.GetMessages(anchor: userData.pointer, before: 12, after: 0))
+    func getStreamMessages(narrowParams:[[String]]?) {
+        var messagesURL = NSURL()
+        
+        if narrowParams == nil {
+            messagesURL = getURL(.GetStreamMessages(anchor: userData.pointer, before: 12, after: 0))
+        } else {
+            messagesURL = getURL(.GetNarrowMessages(anchor: userData.pointer, before: 12, after: 0, narrowParams: narrowParams!))
+        }
+        print(messagesURL)
         Alamofire.request(.GET, messagesURL, headers: userData.header).responseJSON {[weak self] res in
             let responseJSON = JSON(data: res.data!)
             guard responseJSON["result"].stringValue == "success" else {return}
             let response = responseJSON["messages"].arrayValue
-            print("self: \(self)")
             guard let controller = self else {return}
-            print("controller: \(controller)")
             var colorDict = [String:String]()
             controller.getSubscriptions(){
                 colorDict = $0
@@ -40,14 +45,11 @@ class StreamController : DataController {
     
     func getSubscriptions(completionHandler:[String:String]->Void) {
         let subscriptionURL = getURL(.GetSubscriptions)
-        print(subscriptionURL)
         Alamofire.request(.GET, subscriptionURL, headers: userData.header).responseJSON {[weak self] res in
             var colorDict = [String:String]()
             let responseJSON = JSON(data: res.data!)
-//            print("responseJSON: \(responseJSON)")
             guard responseJSON["result"].stringValue == "success" else {return}
             let response = responseJSON["subscriptions"].arrayValue
-//            print("response: \(response)")
             guard let controller = self else {return}
             colorDict = controller.parseColors(response)
             completionHandler(colorDict)
@@ -81,6 +83,7 @@ class StreamController : DataController {
             let stream = message["display_recipient"].stringValue
             let streamColor = colorLookupTable[stream]!
             let subject = message["subject"].stringValue
+            let messageID = message["id"].stringValue
             
             if firstTime {
                 stored.stream = stream
@@ -96,27 +99,20 @@ class StreamController : DataController {
             let timestamp = NSDate(timeIntervalSince1970: (message["timestamp"].doubleValue))
             let formattedTimestamp = timeAgoSinceDate(timestamp, numericDates: true)
             
-            if stored.stream == stream && stored.subject == subject {
-                messagesForTable[sectionCounter].append(Cell(
-                    msgStream: stream,
-                    msgStreamColor: streamColor,
-                    msgSubject: subject,
-                    msgContent: content,
-                    msgTimestamp: formattedTimestamp,
-                    msgName: name,
-                    msgAvatarURL: avatarURL))
-            } else {
-                sectionCounter += 1
+            if stored.stream != stream || stored.subject != subject {
                 messagesForTable.append([Cell]())
-                messagesForTable[sectionCounter].append(Cell(
-                    msgStream: stream,
-                    msgStreamColor: streamColor,
-                    msgSubject: subject,
-                    msgContent: content,
-                    msgTimestamp: formattedTimestamp,
-                    msgName: name,
-                    msgAvatarURL: avatarURL))
+                sectionCounter += 1
             }
+            
+            messagesForTable[sectionCounter].append(Cell(
+                msgStream: stream,
+                msgStreamColor: streamColor,
+                msgSubject: subject,
+                msgContent: content,
+                msgTimestamp: formattedTimestamp,
+                msgName: name,
+                msgAvatarURL: avatarURL,
+                msgID: messageID))
             
             stored.stream = stream
             stored.subject = subject

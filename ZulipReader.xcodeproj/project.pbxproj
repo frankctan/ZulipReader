@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2C2C5BF5ACF8CDAF8E4E96AE /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB93339AFD280F7DC56DBE /* Pods.framework */; };
+		670295021C1B65E500314A04 /* StreamTableViewExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamTableViewExtendedCell.swift */; };
+		670295051C1C94B900314A04 /* StreamNarrowTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295041C1C94B900314A04 /* StreamNarrowTableViewController.swift */; };
+		670295071C1CAA3900314A04 /* BaseStreamTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295061C1CAA3900314A04 /* BaseStreamTableViewController.swift */; };
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
 		673251771C0A7154009A546C /* StreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251761C0A7154009A546C /* StreamController.swift */; };
 		676C98451BFD69360042CB26 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676C98441BFD69360042CB26 /* LoginController.swift */; };
@@ -47,6 +50,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		670295011C1B65E500314A04 /* StreamTableViewExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewExtendedCell.swift; sourceTree = "<group>"; };
+		670295041C1C94B900314A04 /* StreamNarrowTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamNarrowTableViewController.swift; sourceTree = "<group>"; };
+		670295061C1CAA3900314A04 /* BaseStreamTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseStreamTableViewController.swift; sourceTree = "<group>"; };
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
 		676C98441BFD69360042CB26 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -159,11 +165,14 @@
 				676C98441BFD69360042CB26 /* LoginController.swift */,
 				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
 				673251761C0A7154009A546C /* StreamController.swift */,
-				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
-				678A6BB61C10EBA200AE091B /* Cell.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
+				670295041C1C94B900314A04 /* StreamNarrowTableViewController.swift */,
+				670295061C1CAA3900314A04 /* BaseStreamTableViewController.swift */,
 				67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */,
 				678A6BB41C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift */,
+				670295011C1B65E500314A04 /* StreamTableViewExtendedCell.swift */,
+				678A6BB61C10EBA200AE091B /* Cell.swift */,
+				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
 				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
 				67D1F1C31BFA6AEA006F9468 /* Info.plist */,
@@ -359,10 +368,13 @@
 			files = (
 				67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */,
 				673251751C0A5D85009A546C /* DataController.swift in Sources */,
+				670295021C1B65E500314A04 /* StreamTableViewExtendedCell.swift in Sources */,
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
+				670295051C1C94B900314A04 /* StreamNarrowTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
+				670295071C1CAA3900314A04 /* BaseStreamTableViewController.swift in Sources */,
 				678A6BB71C10EBA200AE091B /* Cell.swift in Sources */,
 				673251771C0A7154009A546C /* StreamController.swift in Sources */,
 				67A1A8AF1C03AC2F00CCA40D /* StreamTableViewCell.swift in Sources */,

@@ -17,7 +17,6 @@ public struct UserData {
     var header = Header()
     var queueID = String()
     var pointer = String()
-    var messages = [JSON]()
 }
 
 class DataController {
@@ -30,8 +29,9 @@ class DataController {
     enum ResourcePath {
         case Login(username: String, password: String)
         case Register
-        case GetMessages(anchor: String, before: Int, after: Int)
+        case GetStreamMessages(anchor: String, before: Int, after: Int)
         case GetSubscriptions
+        case GetNarrowMessages(anchor: String, before: Int, after: Int, narrowParams: [[String]])
         
         var url: String {
             switch self {
@@ -39,10 +39,12 @@ class DataController {
                 return "/fetch_api_key?username=\(username)&password=\(password)"
             case .Register:
                 return "/register?event_types=[\"message\",\"pointer\",\"realm_user\"]"
-            case .GetMessages(let anchor, let before, let after):
+            case .GetStreamMessages(let anchor, let before, let after):
                 return "/messages?anchor=\(anchor)&num_before=\(before)&num_after=\(after)"
             case .GetSubscriptions:
                 return "/users/me/subscriptions"
+            case .GetNarrowMessages(let anchor, let before, let after, let narrowParams):
+                return "/messages?anchor=\(anchor)&num_before=\(before)&num_after=\(after)&narrow=\(narrowParams)"
             }
         }
     }
@@ -57,8 +59,4 @@ class DataController {
         let url = baseURL + method.url
         return encodeURL(url)
     }
-    
-
-    
-    
 }

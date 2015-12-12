@@ -36,7 +36,6 @@ class LoginViewController: UIViewController, LoginControllerDelegate {
         if data.isLoggedIn() {
             performSegueWithIdentifier("loginSegue", sender: self)
         } else {
-            print(msg)
             dialogView.animation = "shake"
             dialogView.animate()
 

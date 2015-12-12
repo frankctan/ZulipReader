@@ -10,10 +10,25 @@ import UIKit
 import Spring
 import Kingfisher
 
+protocol StreamTableViewHeaderNavCellDelegate: class {
+    func narrowStream(stream: String)
+    func narrowSubject(stream: String, subject: String)
+}
+
 class StreamTableViewHeaderNavCell: UITableViewCell {
 
+    
+    weak var delegate: StreamTableViewHeaderNavCellDelegate?
     @IBOutlet weak var streamLabel: UIButton!
     @IBOutlet weak var subjectLabel: UIButton!
+    
+    @IBAction func streamButtonDidTouch(sender: AnyObject) {
+        delegate?.narrowStream(streamLabel.titleForState(UIControlState.Normal)!)
+    }
+    
+    @IBAction func subjectButtonDidTouch(sender: AnyObject) {
+        delegate?.narrowSubject(streamLabel.titleForState(UIControlState.Normal)!, subject: subjectLabel.titleForState(UIControlState.Normal)!)
+    }
     
     func configureWithStream(message: Cell) {
         streamLabel.setTitle(message.stream, forState: UIControlState.Normal)

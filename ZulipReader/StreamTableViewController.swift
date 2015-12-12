@@ -7,51 +7,57 @@
 //
 
 import UIKit
+import AMScrollingNavbar
 
-class StreamTableViewController: UITableViewController, StreamControllerDelegate {
-
-    let data = StreamController()
-    var messages = [[Cell]]()
-    
+class StreamTableViewController: BaseStreamTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.estimatedRowHeight = 60
-        tableView.rowHeight = UITableViewAutomaticDimension
-        
         data.delegate = self
-        data.getMessages()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-    }
-
-    func streamController(messagesForTable: [[Cell]]) {
-        messages = messagesForTable
-        self.tableView.reloadData()
-        self.refreshControl?.endRefreshing()
-    }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return messages.count
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages[section].count
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let message = messages[indexPath.section][indexPath.row]
-            let cell = tableView.dequeueReusableCellWithIdentifier("StreamTableViewCell") as! StreamTableViewCell
-            cell.configureWithStream(message)
-            return cell
-    }
-
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = tableView.dequeueReusableCellWithIdentifier("StreamTableViewHeaderNavCell") as! StreamTableViewHeaderNavCell
         cell.configureWithStream(messages[section][0])
+        cell.delegate = self
         return cell
+    }
+}
+
+//MARK: StreamControllerDelegate
+extension StreamTableViewController: StreamControllerDelegate {
+    func streamController(messagesForTable: [[Cell]]) {
+        messages = messagesForTable
+        self.title = narrowTitle
+        self.tableView.reloadData()
+        self.refreshControl?.endRefreshing()
+        self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.last!.count-1, inSection: messages.count-1), atScrollPosition: .Bottom, animated: true)
+    }
+}
+
+//MARK: StreamTableViewHeaderNavCellDelegate
+extension StreamTableViewController: StreamTableViewHeaderNavCellDelegate {
+    func narrowStream(stream: String) {
+        narrowParams = [["stream","\(stream)"]]
+        narrowTitle = stream
+        performSegueWithIdentifier("narrowStreamSegue", sender: self)
+    }
+    
+    func narrowSubject(stream: String, subject: String) {
+        narrowParams = [["stream","\(stream)"],["topic","\(subject)"]]
+        narrowTitle = "\(stream) > \(subject)"
+        performSegueWithIdentifier("narrowSubjectSegue", sender: self)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var toView = BaseStreamTableViewController()
+        if segue.identifier == "narrowStreamSegue" {
+            toView = segue.destinationViewController as! StreamTableViewController
+        } else {
+            toView = segue.destinationViewController as! StreamNarrowTableViewController
+
+        }
+        toView.narrowParams = narrowParams
+        toView.narrowTitle = narrowTitle
+        toView.data.userData = data.userData
     }
 }
