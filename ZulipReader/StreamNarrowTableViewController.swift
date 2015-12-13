@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AMScrollingNavbar
 
 class StreamNarrowTableViewController: BaseStreamTableViewController {
     
@@ -15,8 +14,16 @@ class StreamNarrowTableViewController: BaseStreamTableViewController {
         super.viewDidLoad()
         data.delegate = self
     }
+    
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let cell = tableView.dequeueReusableCellWithIdentifier("StreamTableViewHeaderNavCell") as! StreamTableViewHeaderNavCell
+        cell.configureWithStream(messages[section][0])
+        return cell
+    }
+
 }
 
+//MARK: StreamControllerDelegate
 extension StreamNarrowTableViewController: StreamControllerDelegate {
     func streamController(messagesForTable: [[Cell]]) {
         messages = messagesForTable

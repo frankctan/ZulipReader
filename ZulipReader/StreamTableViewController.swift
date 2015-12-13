@@ -10,6 +10,7 @@ import UIKit
 import AMScrollingNavbar
 
 class StreamTableViewController: BaseStreamTableViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         data.delegate = self
@@ -49,15 +50,18 @@ extension StreamTableViewController: StreamTableViewHeaderNavCellDelegate {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        var toView = BaseStreamTableViewController()
+        
         if segue.identifier == "narrowStreamSegue" {
-            toView = segue.destinationViewController as! StreamTableViewController
+            let toView = segue.destinationViewController as! StreamTableViewController
+            toView.narrowParams = narrowParams
+            toView.narrowTitle = narrowTitle
+            toView.data.userData = data.userData
         } else {
-            toView = segue.destinationViewController as! StreamNarrowTableViewController
-
+            let toView = segue.destinationViewController as! StreamNarrowTableViewController
+            toView.narrowParams = narrowParams
+            toView.narrowTitle = narrowTitle
+            toView.data.userData = data.userData
         }
-        toView.narrowParams = narrowParams
-        toView.narrowTitle = narrowTitle
-        toView.data.userData = data.userData
+        
     }
 }

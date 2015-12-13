@@ -24,6 +24,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SlackTextViewController.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Spring.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -37,12 +42,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>03B609E9052AF442D9A4218706624A6C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>30BFDF812D962C27E583513E3D6CF92D</key>
+		<key>296E154D4F3723EF3F909ADAB59972EC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -57,7 +57,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D12D3958C1B940D373572DDD0E4D8075</key>
+		<key>7D2A2C70C559FA99F69F94D9F3DD7D65</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C751744DD44CE86FB28E0D8FBFD19847</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CF65A8EAB1A408529732FBCB036FD2FC</key>
 		<dict>
 			<key>primary</key>
 			<true/>

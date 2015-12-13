@@ -195,7 +195,7 @@
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3RJ-JY-MtV" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
                                             <rect key="frame" x="45" y="-0.5" width="275" height="25"/>
                                             <animations/>
-                                            <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                            <color key="backgroundColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="CLd-lt-ZzR"/>
                                             </constraints>
@@ -434,7 +434,7 @@
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a4t-Ib-1r6" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
                                             <rect key="frame" x="45" y="-0.5" width="275" height="25"/>
                                             <animations/>
-                                            <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                            <color key="backgroundColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="AIq-0s-PGv"/>
                                             </constraints>
@@ -624,8 +624,8 @@
                                     <variation key="default">
                                         <mask key="constraints">
                                             <exclude reference="NPy-ru-2cs"/>
-                                            <exclude reference="bLW-do-TiV"/>
                                             <exclude reference="XEp-Nn-FnZ"/>
+                                            <exclude reference="bLW-do-TiV"/>
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
@@ -659,19 +659,19 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamTableViewHeaderNavCell" rowHeight="24" id="W6S-tO-r6j" customClass="StreamTableViewHeaderNavCell" customModule="ZulipReader" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamTableViewHeaderNavCell" rowHeight="24" id="xvZ-dW-qi9" customClass="StreamTableViewHeaderNavCell" customModule="ZulipReader" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="320" height="24"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="center" tableViewCell="W6S-tO-r6j" id="g3b-px-DtP">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="center" tableViewCell="xvZ-dW-qi9" id="Ocy-gQ-Q0x">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GhH-Q1-0j3" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c4U-tl-9su" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
                                             <rect key="frame" x="45" y="-0.5" width="275" height="25"/>
                                             <animations/>
-                                            <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                            <color key="backgroundColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="25" id="leQ-QU-C10"/>
+                                                <constraint firstAttribute="height" constant="25" id="IVb-1l-T8U"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
                                             <inset key="contentEdgeInsets" minX="20" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -687,10 +687,10 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="subjectButtonDidTouch:" destination="W6S-tO-r6j" eventType="touchUpInside" id="NG6-Md-Zh8"/>
+                                                <action selector="subjectButtonDidTouch:" destination="xvZ-dW-qi9" eventType="touchUpInside" id="lSi-IK-m5X"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6qN-JU-ist" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="82T-FX-dc4" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
                                             <rect key="frame" x="0.0" y="-2" width="58" height="27"/>
                                             <animations/>
                                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
@@ -704,23 +704,23 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="streamButtonDidTouch:" destination="W6S-tO-r6j" eventType="touchUpInside" id="zwv-ly-XgJ"/>
+                                                <action selector="streamButtonDidTouch:" destination="xvZ-dW-qi9" eventType="touchUpInside" id="P9F-6S-nF5"/>
                                             </connections>
                                         </button>
                                     </subviews>
                                     <animations/>
                                     <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="GhH-Q1-0j3" secondAttribute="trailing" id="4Hd-e2-IWZ"/>
-                                        <constraint firstItem="GhH-Q1-0j3" firstAttribute="leading" secondItem="6qN-JU-ist" secondAttribute="trailing" constant="-13" id="6Dn-nd-wgj"/>
-                                        <constraint firstItem="6qN-JU-ist" firstAttribute="leading" secondItem="g3b-px-DtP" secondAttribute="leading" id="ALe-C8-tqg"/>
-                                        <constraint firstItem="GhH-Q1-0j3" firstAttribute="centerY" secondItem="6qN-JU-ist" secondAttribute="centerY" id="m8D-Uy-dLT"/>
-                                        <constraint firstItem="6qN-JU-ist" firstAttribute="centerY" secondItem="g3b-px-DtP" secondAttribute="centerY" id="vC5-Wb-QBd"/>
+                                        <constraint firstItem="82T-FX-dc4" firstAttribute="leading" secondItem="Ocy-gQ-Q0x" secondAttribute="leading" id="7mN-ZY-sQg"/>
+                                        <constraint firstItem="c4U-tl-9su" firstAttribute="centerY" secondItem="82T-FX-dc4" secondAttribute="centerY" id="Qzd-hT-sbh"/>
+                                        <constraint firstAttribute="trailing" secondItem="c4U-tl-9su" secondAttribute="trailing" id="rMp-rA-BCj"/>
+                                        <constraint firstItem="82T-FX-dc4" firstAttribute="centerY" secondItem="Ocy-gQ-Q0x" secondAttribute="centerY" id="vDA-hK-rJF"/>
+                                        <constraint firstItem="c4U-tl-9su" firstAttribute="leading" secondItem="82T-FX-dc4" secondAttribute="trailing" constant="-13" id="x5v-QM-8bS"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <animations/>
                                 <connections>
-                                    <outlet property="streamLabel" destination="6qN-JU-ist" id="zKH-W3-emb"/>
-                                    <outlet property="subjectLabel" destination="GhH-Q1-0j3" id="lIQ-xQ-kLF"/>
+                                    <outlet property="streamLabel" destination="82T-FX-dc4" id="LAf-RA-ZrQ"/>
+                                    <outlet property="subjectLabel" destination="c4U-tl-9su" id="mZu-XN-aug"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="StreamTableViewCell" rowHeight="60" id="idv-0l-ZeL" customClass="StreamTableViewCell" customModule="ZulipReader" customModuleProvider="target">
@@ -811,11 +811,11 @@
                                     </constraints>
                                     <variation key="default">
                                         <mask key="constraints">
-                                            <exclude reference="RFJ-9v-x5n"/>
-                                            <exclude reference="dMq-go-3m3"/>
-                                            <exclude reference="V1V-Jm-UyC"/>
-                                            <exclude reference="e3c-GJ-Idq"/>
                                             <exclude reference="Pjs-17-OOA"/>
+                                            <exclude reference="RFJ-9v-x5n"/>
+                                            <exclude reference="V1V-Jm-UyC"/>
+                                            <exclude reference="dMq-go-3m3"/>
+                                            <exclude reference="e3c-GJ-Idq"/>
                                             <exclude reference="TPj-yL-Chk"/>
                                         </mask>
                                     </variation>
@@ -859,8 +859,8 @@
                                     <variation key="default">
                                         <mask key="constraints">
                                             <exclude reference="Rak-V1-CFR"/>
-                                            <exclude reference="ycZ-Rp-BPS"/>
                                             <exclude reference="VIM-zW-ch1"/>
+                                            <exclude reference="ycZ-Rp-BPS"/>
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>

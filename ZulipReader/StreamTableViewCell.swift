@@ -29,6 +29,4 @@ class StreamTableViewCell: UITableViewCell {
         contentTextView.attributedText = nil
         contentTextView.attributedText = attributedContent
     }
-    
-    
 }
