@@ -3,3 +3,4 @@
 //
 
 #import "SlackTextViewController/SLKTextViewController.h"
+#import "DTCoreText/DTCoreText.h"

@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 import Spring
+import DTCoreText
 
 protocol StreamControllerDelegate: class {
     func streamController(messagesForTable: [[Cell]])
@@ -24,11 +25,10 @@ class StreamController : DataController {
         var messagesURL = NSURL()
         
         if narrowParams == nil {
-            messagesURL = getURL(.GetStreamMessages(anchor: userData.pointer, before: 12, after: 0))
+            messagesURL = getURL(.GetStreamMessages(anchor: userData.pointer, before: 50, after: 0))
         } else {
-            messagesURL = getURL(.GetNarrowMessages(anchor: userData.pointer, before: 12, after: 0, narrowParams: narrowParams!))
+            messagesURL = getURL(.GetNarrowMessages(anchor: userData.pointer, before: 50, after: 0, narrowParams: narrowParams!))
         }
-        print(messagesURL)
         Alamofire.request(.GET, messagesURL, headers: userData.header).responseJSON {[weak self] res in
             let responseJSON = JSON(data: res.data!)
             guard responseJSON["result"].stringValue == "success" else {return}
@@ -42,6 +42,18 @@ class StreamController : DataController {
             }
         }
     }
+    
+    func postMessage(type:String, content:String, to: [String], subject:String?) {
+        let postMessageURL = getURL(.PostMessage(type: type, content: content, to: to, subject: subject))
+        Alamofire.request(.POST, postMessageURL, headers: userData.header).responseJSON {res in
+            let responseJSON = JSON(data: res.data!)
+            guard responseJSON["result"].stringValue == "success" else {
+                print("error sending message")
+                return
+            }
+        }
+    }
+    
     
     func getSubscriptions(completionHandler:[String:String]->Void) {
         let subscriptionURL = getURL(.GetSubscriptions)
@@ -81,9 +93,30 @@ class StreamController : DataController {
             var content = message["content"].stringValue
             let avatarURL = message["avatar_url"].stringValue
             let stream = message["display_recipient"].stringValue
-            let streamColor = colorLookupTable[stream]!
+            var streamColor:String {
+                if message["type"].stringValue == "private" {
+                    return "6F7179"
+                } else {
+                    return colorLookupTable[stream]!
+                }
+            }
             let subject = message["subject"].stringValue
             let messageID = message["id"].stringValue
+            let messageRecipient = message["recipient_id"].stringValue
+            let type = message["type"].stringValue
+            let recipients = message["display_recipient"].arrayValue.map({$0["full_name"].stringValue})
+            let recipientEmail = message["display_recipient"].arrayValue.map({$0["email"].stringValue})
+            var mention: Bool {
+                let flags = message["flags"].arrayValue
+                for flag in flags {
+                    if flag.stringValue == "mentioned" {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+                return false
+            }
             
             if firstTime {
                 stored.stream = stream
@@ -112,7 +145,12 @@ class StreamController : DataController {
                 msgTimestamp: formattedTimestamp,
                 msgName: name,
                 msgAvatarURL: avatarURL,
-                msgID: messageID))
+                msgID: messageID,
+                msgRecipientID: messageRecipient,
+                msgType: type,
+                msgRecipients: recipients,
+                msgRecipientEmail: recipientEmail,
+                msgMention: mention))
             
             stored.stream = stream
             stored.subject = subject

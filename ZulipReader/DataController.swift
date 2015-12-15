@@ -32,6 +32,7 @@ class DataController {
         case GetStreamMessages(anchor: String, before: Int, after: Int)
         case GetSubscriptions
         case GetNarrowMessages(anchor: String, before: Int, after: Int, narrowParams: [[String]])
+        case PostMessage(type: String, content: String, to: [String], subject: String?)
         
         var url: String {
             switch self {
@@ -45,6 +46,14 @@ class DataController {
                 return "/users/me/subscriptions"
             case .GetNarrowMessages(let anchor, let before, let after, let narrowParams):
                 return "/messages?anchor=\(anchor)&num_before=\(before)&num_after=\(after)&narrow=\(narrowParams)"
+            case .PostMessage(let type, let content, let recipients, let subject):
+                if subject == nil {
+                    //PM
+                    return "/messages?type=\(type)&content=\(content)&to=\(recipients)"
+                } else {
+                    //Stream
+                    return "/messages?type=\(type)&content=\(content)&to=\(recipients[0])&subject=\(subject!)"
+                }
             }
         }
     }

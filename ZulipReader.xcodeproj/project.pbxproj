@@ -8,13 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		2C2C5BF5ACF8CDAF8E4E96AE /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB93339AFD280F7DC56DBE /* Pods.framework */; };
-		670295021C1B65E500314A04 /* StreamTableViewExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamTableViewExtendedCell.swift */; };
+		670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamExtendedCell.swift */; };
 		670295051C1C94B900314A04 /* StreamNarrowTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295041C1C94B900314A04 /* StreamNarrowTableViewController.swift */; };
-		670295071C1CAA3900314A04 /* BaseStreamTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295061C1CAA3900314A04 /* BaseStreamTableViewController.swift */; };
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
 		673251771C0A7154009A546C /* StreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251761C0A7154009A546C /* StreamController.swift */; };
 		676C98451BFD69360042CB26 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676C98441BFD69360042CB26 /* LoginController.swift */; };
-		678A6BB51C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB41C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift */; };
+		678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */; };
 		678A6BB71C10EBA200AE091B /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB61C10EBA200AE091B /* Cell.swift */; };
 		678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */; };
 		678A6BDF1C12279700AE091B /* SourceSansPro-BlackIt-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD31C12279700AE091B /* SourceSansPro-BlackIt-webfont.ttf */; };
@@ -28,8 +27,15 @@
 		678A6BE71C12279700AE091B /* SourceSansPro-Regular-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BDB1C12279700AE091B /* SourceSansPro-Regular-webfont.ttf */; };
 		678A6BE81C12279700AE091B /* SourceSansPro-Semibold-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BDC1C12279700AE091B /* SourceSansPro-Semibold-webfont.ttf */; };
 		678A6BE91C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BDD1C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf */; };
-		67A1A8AF1C03AC2F00CCA40D /* StreamTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */; };
+		67A1A8AF1C03AC2F00CCA40D /* StreamCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */; };
 		67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */; };
+		67A9DA841C1E0F5800AEEF1B /* StreamCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */; };
+		67A9DA861C1E14E400AEEF1B /* StreamHeaderNavCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67A9DA851C1E14E400AEEF1B /* StreamHeaderNavCell.xib */; };
+		67A9DA881C1E1C5100AEEF1B /* StreamExtendedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */; };
+		67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */; };
+		67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */; };
+		67A9DA901C1F581800AEEF1B /* TableViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */; };
+		67A9DA921C1F62C300AEEF1B /* TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
 		67D1F1BD1BFA6AEA006F9468 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */; };
@@ -50,13 +56,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		670295011C1B65E500314A04 /* StreamTableViewExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewExtendedCell.swift; sourceTree = "<group>"; };
+		670295011C1B65E500314A04 /* StreamExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamExtendedCell.swift; sourceTree = "<group>"; };
 		670295041C1C94B900314A04 /* StreamNarrowTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamNarrowTableViewController.swift; sourceTree = "<group>"; };
-		670295061C1CAA3900314A04 /* BaseStreamTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseStreamTableViewController.swift; sourceTree = "<group>"; };
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
 		676C98441BFD69360042CB26 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
-		678A6BB41C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewHeaderNavCell.swift; sourceTree = "<group>"; };
+		678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamHeaderNavCell.swift; sourceTree = "<group>"; };
 		678A6BB61C10EBA200AE091B /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Black-webfont.ttf"; sourceTree = "<group>"; };
 		678A6BD31C12279700AE091B /* SourceSansPro-BlackIt-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-BlackIt-webfont.ttf"; sourceTree = "<group>"; };
@@ -70,9 +75,16 @@
 		678A6BDB1C12279700AE091B /* SourceSansPro-Regular-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Regular-webfont.ttf"; sourceTree = "<group>"; };
 		678A6BDC1C12279700AE091B /* SourceSansPro-Semibold-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Semibold-webfont.ttf"; sourceTree = "<group>"; };
 		678A6BDD1C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-SemiboldIt-webfont.ttf"; sourceTree = "<group>"; };
-		67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewCell.swift; sourceTree = "<group>"; };
+		67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamCell.swift; sourceTree = "<group>"; };
 		67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamTableViewController.swift; sourceTree = "<group>"; };
 		67A9DA7E1C1CCED900AEEF1B /* ZulipReader-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ZulipReader-Bridging-Header.h"; sourceTree = "<group>"; };
+		67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StreamCell.xib; sourceTree = "<group>"; };
+		67A9DA851C1E14E400AEEF1B /* StreamHeaderNavCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StreamHeaderNavCell.xib; sourceTree = "<group>"; };
+		67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StreamExtendedCell.xib; sourceTree = "<group>"; };
+		67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamHeaderPrivateCell.swift; sourceTree = "<group>"; };
+		67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StreamHeaderPrivateCell.xib; sourceTree = "<group>"; };
+		67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewControllerDataSource.swift; sourceTree = "<group>"; };
+		67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewDelegate.swift; path = ../TableViewDelegate.swift; sourceTree = "<group>"; };
 		67B24E8D1C0E66A100A189B2 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -138,6 +150,30 @@
 			name = Fonts;
 			sourceTree = "<group>";
 		};
+		67A9DA8D1C1F544700AEEF1B /* StreamTableViews */ = {
+			isa = PBXGroup;
+			children = (
+				67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */,
+				678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */,
+				67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */,
+				670295011C1B65E500314A04 /* StreamExtendedCell.swift */,
+				67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */,
+				67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */,
+				67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */,
+				67A9DA851C1E14E400AEEF1B /* StreamHeaderNavCell.xib */,
+			);
+			name = StreamTableViews;
+			sourceTree = "<group>";
+		};
+		67A9DA8E1C1F546600AEEF1B /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				676C98441BFD69360042CB26 /* LoginController.swift */,
+				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
 		67D1F1AB1BFA6AEA006F9468 = {
 			isa = PBXGroup;
 			children = (
@@ -163,17 +199,15 @@
 			children = (
 				67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */,
 				673251741C0A5D85009A546C /* DataController.swift */,
-				676C98441BFD69360042CB26 /* LoginController.swift */,
-				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
+				678A6BB61C10EBA200AE091B /* Cell.swift */,
+				67A9DA8E1C1F546600AEEF1B /* Login */,
 				673251761C0A7154009A546C /* StreamController.swift */,
-				670295061C1CAA3900314A04 /* BaseStreamTableViewController.swift */,
+				67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */,
+				67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				670295041C1C94B900314A04 /* StreamNarrowTableViewController.swift */,
-				67A1A8AE1C03AC2F00CCA40D /* StreamTableViewCell.swift */,
-				678A6BB41C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift */,
-				670295011C1B65E500314A04 /* StreamTableViewExtendedCell.swift */,
-				678A6BB61C10EBA200AE091B /* Cell.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
+				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
 				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
 				67A9DA7E1C1CCED900AEEF1B /* ZulipReader-Bridging-Header.h */,
@@ -294,7 +328,11 @@
 				678A6BE31C12279700AE091B /* SourceSansPro-ExtraLightIt-webfont.ttf in Resources */,
 				678A6BE51C12279700AE091B /* SourceSansPro-Light-webfont.ttf in Resources */,
 				678A6BE21C12279700AE091B /* SourceSansPro-ExtraLight-webfont.ttf in Resources */,
+				67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */,
+				67A9DA861C1E14E400AEEF1B /* StreamHeaderNavCell.xib in Resources */,
 				678A6BE91C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf in Resources */,
+				67A9DA881C1E1C5100AEEF1B /* StreamExtendedCell.xib in Resources */,
+				67A9DA841C1E0F5800AEEF1B /* StreamCell.xib in Resources */,
 				67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */,
 				678A6BE41C12279700AE091B /* SourceSansPro-It-webfont.ttf in Resources */,
 				678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */,
@@ -368,18 +406,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67A9DA921C1F62C300AEEF1B /* TableViewDelegate.swift in Sources */,
 				67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */,
 				673251751C0A5D85009A546C /* DataController.swift in Sources */,
-				670295021C1B65E500314A04 /* StreamTableViewExtendedCell.swift in Sources */,
+				670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */,
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
-				678A6BB51C0FA1E100AE091B /* StreamTableViewHeaderNavCell.swift in Sources */,
+				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
+				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
+				67A9DA901C1F581800AEEF1B /* TableViewControllerDataSource.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				670295051C1C94B900314A04 /* StreamNarrowTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
-				670295071C1CAA3900314A04 /* BaseStreamTableViewController.swift in Sources */,
 				678A6BB71C10EBA200AE091B /* Cell.swift in Sources */,
 				673251771C0A7154009A546C /* StreamController.swift in Sources */,
-				67A1A8AF1C03AC2F00CCA40D /* StreamTableViewCell.swift in Sources */,
+				67A1A8AF1C03AC2F00CCA40D /* StreamCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

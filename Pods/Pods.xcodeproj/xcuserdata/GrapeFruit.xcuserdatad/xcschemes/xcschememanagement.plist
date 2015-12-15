@@ -14,6 +14,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>DTCoreText.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>DTFoundation.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Kingfisher.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -42,11 +52,6 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>296E154D4F3723EF3F909ADAB59972EC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>432ECC54282C84882B482CCB4CF227FC</key>
 		<dict>
 			<key>primary</key>
@@ -57,17 +62,32 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7D2A2C70C559FA99F69F94D9F3DD7D65</key>
+		<key>67F0D96F2033178E7B3F7B11136FC738</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C751744DD44CE86FB28E0D8FBFD19847</key>
+		<key>6EAA081B66FB4C8319DD9FC8F6DCBB53</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CF65A8EAB1A408529732FBCB036FD2FC</key>
+		<key>7316DE1B2DBB96560394FD64431C900F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>75E2976063C4CF3B431FACE72223FEA1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AA73AC63B71544008C7BD900564A8A4C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B18ADD9953C3F49D98243C2CAF7DCBFA</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -10,6 +10,7 @@ target 'ZulipReader' do
   pod 'Kingfisher', '~> 1.8'
   pod 'AMScrollingNavbar', '~> 2.0.1'
   pod 'SlackTextViewController'
+  pod 'DTCoreText'
 end
 
 target 'ZulipReaderTests' do
