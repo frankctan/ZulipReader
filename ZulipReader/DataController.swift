@@ -19,6 +19,9 @@ public struct UserData {
     var pointer = String()
 }
 
+//stream, narrow, subject
+public var State:String = "stream"
+
 class DataController {
     
     typealias Parameter = [String:AnyObject]

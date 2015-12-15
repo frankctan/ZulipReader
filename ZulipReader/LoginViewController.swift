@@ -8,6 +8,7 @@
 
 import UIKit
 import Spring
+import AMScrollingNavbar
 
 class LoginViewController: UIViewController, LoginControllerDelegate {
     
@@ -26,7 +27,6 @@ class LoginViewController: UIViewController, LoginControllerDelegate {
         usernameTextField.text = "frankctan@gmail.com"
         passwordTextField.text = "recursion"
         data.login(usernameTextField.text!, password: passwordTextField.text!)
-
     }
 
     
@@ -43,9 +43,8 @@ class LoginViewController: UIViewController, LoginControllerDelegate {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let nav = segue.destinationViewController as! UINavigationController
-        let toView = nav.topViewController as! StreamTableViewController
+        let nav = segue.destinationViewController as! ScrollingNavigationController
+        let toView = nav.viewControllers[0] as! StreamTableViewController
         toView.data.userData = data.userData
     }
 }
-

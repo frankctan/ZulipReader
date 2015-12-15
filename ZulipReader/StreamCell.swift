@@ -29,10 +29,13 @@ class StreamCell: UITableViewCell {
         contentTextView.attributedText = nil
         contentTextView.attributedText = attributedContent
 
-        switch message.type {
-        case "private": self.backgroundColor = UIColor(hex: "FEFFE0")
-        case "mentioned": self.backgroundColor = UIColor(hex: "FFE4E0")
-        default: self.backgroundColor = UIColor(hex: "FFFFFF")
+        self.backgroundColor = UIColor(hex: "FFFFFF")
+        
+        if message.type == "private" {
+            self.backgroundColor = UIColor(hex: "FEFFE0")
+        }
+        if message.mention == true {
+            self.backgroundColor = UIColor(hex: "FFE4E0")
         }
     }
 }

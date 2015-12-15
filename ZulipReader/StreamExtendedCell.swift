@@ -21,8 +21,14 @@ class StreamExtendedCell: UITableViewCell {
         contentTextView.text = nil
         contentTextView.attributedText = nil
         contentTextView.attributedText = attributedContent
+        
+        self.backgroundColor = UIColor(hex: "FFFFFF")
+        
         if message.type == "private" {
             self.backgroundColor = UIColor(hex: "FEFFE0")
+        }
+        if message.mention == true {
+            self.backgroundColor = UIColor(hex: "FFE4E0")
         }
     }
 }

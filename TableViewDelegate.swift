@@ -13,11 +13,11 @@ class TableViewDelegate: NSObject, UITableViewDelegate {
     var messages = [[Cell]]()
     var sender: StreamTableViewController?
     
-    init(send: StreamTableViewController?, messagesFromAPI: [[Cell]]) {
+    init(sender: StreamTableViewController?, messagesFromAPI: [[Cell]]) {
         super.init()
         messages = messagesFromAPI
-        if send != nil {
-        sender = send!
+        if sender != nil {
+        self.sender = sender!
         }
     }
     

@@ -10,7 +10,7 @@ import UIKit
 import AMScrollingNavbar
 import SlackTextViewController
 
-class StreamTableViewController: UITableViewController {
+class StreamTableViewController: SLKTextViewController {
     
     let data = StreamController()
     var messages = [[Cell]]()
@@ -18,25 +18,47 @@ class StreamTableViewController: UITableViewController {
     var narrowParams: [[String]]?
     var narrowTitle = "Stream"
     var narrowType = ""
-    var narrowSubject = ""
+    var narrowSubject:String?
     var narrowRecipient = [String]()
 
     var dataSource: TableViewControllerDataSource!
     var tableDelegate: TableViewDelegate!
     
+    required init!(coder decoder: NSCoder!) {
+//        super.init(tableViewStyle: UITableViewStyle.Plain)
+        super.init(coder: decoder)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         data.delegate = self
         data.getStreamMessages(narrowParams)
         
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
         tableView.registerNib(UINib(nibName: "StreamHeaderNavCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderNavCell")
         tableView.registerNib(UINib(nibName: "StreamHeaderPrivateCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderPrivateCell")
         tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
         tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
+        
+        self.data.delegate = self
+        self.data.getStreamMessages(narrowParams)
+        
+        self.bounces = true
+        self.shakeToClearEnabled = true
+        self.keyboardPanningEnabled = true
+        self.inverted = false
+        self.textView.placeholder = "Message"
+        self.textView.placeholderColor = UIColor.lightGrayColor()
+        self.textInputbar.autoHideRightButton = true
+        self.typingIndicatorView.canResignByTouch = true
+        self.rightButton.setTitle("Send", forState: UIControlState.Normal)
+        
+        if State == "stream" || State == "narrow" {
+            self.setTextInputbarHidden(true, animated: true)
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -47,21 +69,28 @@ class StreamTableViewController: UITableViewController {
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "narrowStreamSegue" {
-            let toView = segue.destinationViewController as! StreamTableViewController
-            toView.narrowParams = narrowParams
-            toView.narrowTitle = narrowTitle
-            toView.data.userData = data.userData
-        } else {
-            let toView = segue.destinationViewController as! StreamNarrowTableViewController
-            toView.narrowParams = narrowParams
-            toView.narrowTitle = narrowTitle
-            toView.narrowType = narrowType
-            toView.narrowSubject = narrowSubject
-            toView.narrowRecipient = narrowRecipient
-            toView.data.userData = data.userData
+    //MARK: SLKTextViewController
+    override func didPressRightButton(sender: AnyObject!) {
+        self.textView.refreshFirstResponder()
+        let sendMessage = self.textView.text.copy() as! String
+        super.didPressRightButton(sender)
+        
+        if narrowType == "private" {
+            narrowSubject = nil
         }
+        if State == "subject" {
+            data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
+        }
+    }
+
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let toView = segue.destinationViewController as! StreamTableViewController
+        toView.narrowParams = narrowParams
+        toView.narrowTitle = narrowTitle
+        toView.narrowType = narrowType
+        toView.narrowSubject = narrowSubject
+        toView.narrowRecipient = narrowRecipient
+        toView.data.userData = data.userData
     }
 }
 
@@ -71,7 +100,7 @@ extension StreamTableViewController: StreamControllerDelegate {
         messages = messagesForTable
         self.title = narrowTitle
         dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
-        tableDelegate = TableViewDelegate(send: self, messagesFromAPI: messages)
+        tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
         tableView.dataSource = dataSource
         tableView.delegate = tableDelegate
 
@@ -85,7 +114,9 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     func narrowStream(stream: String) {
         narrowParams = [["stream","\(stream)"]]
         narrowTitle = title!
-        performSegueWithIdentifier("narrowStreamSegue", sender: self)
+        State = "narrow"
+        print(narrowParams)
+        self.performSegueWithIdentifier("narrowStreamSegue", sender: self)
     }
     
     func narrowSubject(stream: String, subject: String) {
@@ -94,7 +125,8 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
         narrowType = "stream"
         narrowSubject = subject
         narrowRecipient = [stream]
-        performSegueWithIdentifier("narrowSubjectSegue", sender: self)
+        State = "subject"
+        self.performSegueWithIdentifier("narrowSubjectSegue", sender: self)
     }
 }
 
@@ -106,6 +138,7 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
         narrowRecipient = msgEmails
         narrowParams = [["pm_with","\(emails)"]]
         narrowTitle = cellTitle
-        performSegueWithIdentifier("narrowSubjectSegue", sender: self)
+        State = "subject"
+        self.performSegueWithIdentifier("narrowSubjectSegue", sender: self)
     }
 }

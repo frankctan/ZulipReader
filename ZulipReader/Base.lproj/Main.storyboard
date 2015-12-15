@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -14,15 +13,8 @@
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
-            <string>SourceSansPro-Regular</string>
-            <string>SourceSansPro-Regular</string>
-            <string>SourceSansPro-Regular</string>
-            <string>SourceSansPro-Regular</string>
-            <string>SourceSansPro-Regular</string>
-            <string>SourceSansPro-Regular</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Semibold-webfont.ttf">
-            <string>SourceSansPro-Semibold</string>
             <string>SourceSansPro-Semibold</string>
         </mutableArray>
     </customFonts>
@@ -157,369 +149,73 @@
                         <outlet property="dialogView" destination="0NL-fA-Rjv" id="zDi-v5-BMS"/>
                         <outlet property="passwordTextField" destination="kvf-C2-51d" id="au3-fc-Cqt"/>
                         <outlet property="usernameTextField" destination="AOI-qb-zLI" id="aV5-yY-5M1"/>
-                        <segue destination="yqC-eh-oxJ" kind="show" identifier="loginSegue" id="yoG-KV-IaA"/>
+                        <segue destination="gOa-O0-Tyl" kind="show" identifier="loginSegue" id="p9j-8C-Qcd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="216" y="396"/>
         </scene>
-        <!--Stream Table View Controller-->
-        <scene sceneID="TT7-cM-hZd">
+        <!--narrow-->
+        <scene sceneID="bXl-j7-xyg">
             <objects>
-                <tableViewController automaticallyAdjustsScrollViewInsets="NO" id="YVC-VZ-7XT" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="91" sectionHeaderHeight="28" sectionFooterHeight="28" id="zfM-OV-shD">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamHeaderNavCell" rowHeight="24" id="6J7-HK-Qwk" customClass="StreamHeaderNavCell" customModule="ZulipReader" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="320" height="24"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="center" tableViewCell="6J7-HK-Qwk" id="SrK-ii-L2m">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3RJ-JY-MtV" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
-                                            <rect key="frame" x="45" y="-0.5" width="275" height="25"/>
-                                            <animations/>
-                                            <color key="backgroundColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="25" id="CLd-lt-ZzR"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <inset key="contentEdgeInsets" minX="20" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                            <state key="normal" title="Button">
-                                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            </state>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                                    <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                    <real key="value" value="2"/>
-                                                </userDefinedRuntimeAttribute>
-                                            </userDefinedRuntimeAttributes>
-                                            <connections>
-                                                <action selector="subjectButtonDidTouch:" destination="6J7-HK-Qwk" eventType="touchUpInside" id="h5j-fk-uAm"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GsZ-9M-lQM" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
-                                            <rect key="frame" x="0.0" y="-2" width="58" height="27"/>
-                                            <animations/>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="9" maxY="0.0"/>
-                                            <state key="normal" title="Button" backgroundImage="Path 3">
-                                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            </state>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                    <real key="value" value="0.0"/>
-                                                </userDefinedRuntimeAttribute>
-                                            </userDefinedRuntimeAttributes>
-                                            <connections>
-                                                <action selector="streamButtonDidTouch:" destination="6J7-HK-Qwk" eventType="touchUpInside" id="S9m-QS-ubc"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <animations/>
-                                    <constraints>
-                                        <constraint firstItem="GsZ-9M-lQM" firstAttribute="leading" secondItem="SrK-ii-L2m" secondAttribute="leading" id="3i8-Jo-q1L"/>
-                                        <constraint firstAttribute="trailing" secondItem="3RJ-JY-MtV" secondAttribute="trailing" id="K43-Ad-Nl3"/>
-                                        <constraint firstItem="GsZ-9M-lQM" firstAttribute="centerY" secondItem="SrK-ii-L2m" secondAttribute="centerY" id="PuK-3B-JX6"/>
-                                        <constraint firstItem="3RJ-JY-MtV" firstAttribute="centerY" secondItem="GsZ-9M-lQM" secondAttribute="centerY" id="whR-7f-Wde"/>
-                                        <constraint firstItem="3RJ-JY-MtV" firstAttribute="leading" secondItem="GsZ-9M-lQM" secondAttribute="trailing" constant="-13" id="y8F-C2-8CP"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <animations/>
-                                <connections>
-                                    <outlet property="streamLabel" destination="GsZ-9M-lQM" id="6F8-Ii-zTm"/>
-                                    <outlet property="subjectLabel" destination="3RJ-JY-MtV" id="b15-EJ-csN"/>
-                                </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="StreamCell" rowHeight="60" id="ca6-sx-bGl" customClass="StreamCell" customModule="ZulipReader" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="52" width="320" height="60"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ca6-sx-bGl" id="usF-ak-ppv">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="752" text="100w" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h86-Nx-EWr">
-                                            <rect key="frame" x="278" y="4" width="33.5" height="19.5"/>
-                                            <animations/>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pgX-OD-SpK" customClass="DesignableImageView" customModule="Spring">
-                                            <rect key="frame" x="5" y="4" width="40" height="40"/>
-                                            <animations/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="pgX-OD-SpK" secondAttribute="height" multiplier="1:1" id="1LM-l6-BEr"/>
-                                                <constraint firstAttribute="width" constant="50" id="TBC-Xf-04r"/>
-                                                <constraint firstAttribute="width" constant="50" id="fQy-QZ-HM5"/>
-                                                <constraint firstAttribute="width" constant="40" id="nR0-B1-506"/>
-                                                <constraint firstAttribute="height" constant="50" id="s9f-hS-Xzi"/>
-                                            </constraints>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                    <real key="value" value="0.0"/>
-                                                </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                    <real key="value" value="5"/>
-                                                </userDefinedRuntimeAttribute>
-                                            </userDefinedRuntimeAttributes>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="TBC-Xf-04r"/>
-                                                    <exclude reference="fQy-QZ-HM5"/>
-                                                    <exclude reference="s9f-hS-Xzi"/>
-                                                </mask>
-                                            </variation>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Frank Tan (Fall 2015)" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AZJ-T0-jB6">
-                                            <rect key="frame" x="50" y="4" width="224" height="20.5"/>
-                                            <animations/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="50" id="ByR-Uo-FfF"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="15"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="ByR-Uo-FfF"/>
-                                                </mask>
-                                            </variation>
-                                        </label>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" scrollEnabled="NO" editable="NO" text="Text" translatesAutoresizingMaskIntoConstraints="NO" id="5CQ-NB-g0N" customClass="AutoTextView" customModule="Spring">
-                                            <rect key="frame" x="50" y="28" width="261.5" height="22"/>
-                                            <animations/>
-                                            <accessibility key="accessibilityConfiguration">
-                                                <accessibilityTraits key="traits" notEnabled="YES"/>
-                                            </accessibility>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                            <dataDetectorType key="dataDetectorTypes" address="YES"/>
-                                        </textView>
-                                    </subviews>
-                                    <animations/>
-                                    <constraints>
-                                        <constraint firstItem="pgX-OD-SpK" firstAttribute="top" secondItem="usF-ak-ppv" secondAttribute="top" constant="4" id="4LZ-MY-voD"/>
-                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="top" secondItem="AZJ-T0-jB6" secondAttribute="bottom" constant="0.5" id="Aaa-WP-eYf"/>
-                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="top" secondItem="AZJ-T0-jB6" secondAttribute="bottom" constant="4" id="IGF-2x-B8z"/>
-                                        <constraint firstItem="h86-Nx-EWr" firstAttribute="leading" secondItem="AZJ-T0-jB6" secondAttribute="trailing" constant="4" id="K7g-f7-p3x"/>
-                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="leading" secondItem="AZJ-T0-jB6" secondAttribute="leading" id="KbS-tr-3co"/>
-                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="leading" secondItem="usF-ak-ppv" secondAttribute="leading" constant="8" id="KoN-az-UeV"/>
-                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="trailing" secondItem="h86-Nx-EWr" secondAttribute="trailing" id="S5p-s6-Bjm"/>
-                                        <constraint firstItem="pgX-OD-SpK" firstAttribute="leading" secondItem="usF-ak-ppv" secondAttribute="leading" constant="5" id="U7X-WR-zAc"/>
-                                        <constraint firstAttribute="bottom" secondItem="h86-Nx-EWr" secondAttribute="bottom" constant="8" id="W6a-T2-7Ck"/>
-                                        <constraint firstAttribute="bottom" secondItem="5CQ-NB-g0N" secondAttribute="bottom" priority="900" constant="10" id="XNU-P1-nBK"/>
-                                        <constraint firstItem="AZJ-T0-jB6" firstAttribute="top" secondItem="pgX-OD-SpK" secondAttribute="top" id="bj3-Bg-4fq"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="h86-Nx-EWr" secondAttribute="trailing" id="eg6-qk-iTu"/>
-                                        <constraint firstItem="h86-Nx-EWr" firstAttribute="top" secondItem="pgX-OD-SpK" secondAttribute="top" id="iUg-0c-qcB"/>
-                                        <constraint firstItem="AZJ-T0-jB6" firstAttribute="leading" secondItem="pgX-OD-SpK" secondAttribute="trailing" constant="5" id="pP4-r8-NFm"/>
-                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="top" secondItem="usF-ak-ppv" secondAttribute="top" constant="8" id="rMr-Yc-wG1"/>
-                                        <constraint firstItem="5CQ-NB-g0N" firstAttribute="leading" secondItem="AZJ-T0-jB6" secondAttribute="leading" id="vrg-4j-bVF"/>
-                                        <constraint firstAttribute="bottom" secondItem="5CQ-NB-g0N" secondAttribute="bottom" constant="8" id="z7o-Fa-d9r"/>
-                                    </constraints>
-                                    <variation key="default">
-                                        <mask key="constraints">
-                                            <exclude reference="Aaa-WP-eYf"/>
-                                            <exclude reference="KoN-az-UeV"/>
-                                            <exclude reference="rMr-Yc-wG1"/>
-                                            <exclude reference="vrg-4j-bVF"/>
-                                            <exclude reference="z7o-Fa-d9r"/>
-                                            <exclude reference="W6a-T2-7Ck"/>
-                                        </mask>
-                                    </variation>
-                                </tableViewCellContentView>
-                                <animations/>
-                                <connections>
-                                    <outlet property="badgeImageView" destination="pgX-OD-SpK" id="4VL-ly-Rhq"/>
-                                    <outlet property="contentTextView" destination="5CQ-NB-g0N" id="MKY-7s-efa"/>
-                                    <outlet property="nameLabel" destination="AZJ-T0-jB6" id="UgI-I6-EVy"/>
-                                    <outlet property="timeLabel" destination="h86-Nx-EWr" id="6FS-On-pUk"/>
-                                </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="StreamExtendedCell" rowHeight="52" id="Dk6-Ac-3uW" customClass="StreamExtendedCell" customModule="ZulipReader" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="112" width="320" height="52"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Dk6-Ac-3uW" id="45j-04-Xya">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="52"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" scrollEnabled="NO" editable="NO" text="Text" translatesAutoresizingMaskIntoConstraints="NO" id="IFW-m5-oZI" customClass="AutoTextView" customModule="Spring">
-                                            <rect key="frame" x="50" y="12" width="261.5" height="30"/>
-                                            <animations/>
-                                            <accessibility key="accessibilityConfiguration">
-                                                <accessibilityTraits key="traits" notEnabled="YES"/>
-                                            </accessibility>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                            <dataDetectorType key="dataDetectorTypes" address="YES"/>
-                                        </textView>
-                                    </subviews>
-                                    <animations/>
-                                    <constraints>
-                                        <constraint firstAttribute="trailingMargin" secondItem="IFW-m5-oZI" secondAttribute="trailing" id="0Sr-Ro-hw0"/>
-                                        <constraint firstItem="IFW-m5-oZI" firstAttribute="leading" secondItem="45j-04-Xya" secondAttribute="leading" constant="8" id="IDK-MA-E7o"/>
-                                        <constraint firstItem="IFW-m5-oZI" firstAttribute="top" secondItem="45j-04-Xya" secondAttribute="topMargin" constant="4" id="SBP-9s-259"/>
-                                        <constraint firstAttribute="bottom" secondItem="IFW-m5-oZI" secondAttribute="bottom" priority="900" constant="10" id="X3j-Yn-7eT"/>
-                                        <constraint firstItem="IFW-m5-oZI" firstAttribute="top" secondItem="45j-04-Xya" secondAttribute="top" constant="8" id="eFn-bY-jyF"/>
-                                        <constraint firstAttribute="bottom" secondItem="IFW-m5-oZI" secondAttribute="bottom" constant="8" id="jKj-KV-3eh"/>
-                                        <constraint firstItem="IFW-m5-oZI" firstAttribute="leading" secondItem="45j-04-Xya" secondAttribute="leading" constant="50" id="pon-40-cRM"/>
-                                    </constraints>
-                                    <variation key="default">
-                                        <mask key="constraints">
-                                            <exclude reference="IDK-MA-E7o"/>
-                                            <exclude reference="eFn-bY-jyF"/>
-                                            <exclude reference="jKj-KV-3eh"/>
-                                        </mask>
-                                    </variation>
-                                </tableViewCellContentView>
-                                <animations/>
-                                <connections>
-                                    <outlet property="contentTextView" destination="IFW-m5-oZI" id="Y4H-ru-Q9M"/>
-                                </connections>
-                            </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamHeaderPrivateCell" rowHeight="24" id="pFk-yX-p0f" customClass="StreamHeaderPrivateCell" customModule="ZulipReader" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="164" width="320" height="24"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="center" tableViewCell="pFk-yX-p0f" id="o4S-VE-VsB">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Iv-nS-Ujp" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
-                                            <rect key="frame" x="0.0" y="0.0" width="58" height="24"/>
-                                            <animations/>
-                                            <color key="backgroundColor" red="0.43529411764705883" green="0.44313725490196076" blue="0.47450980392156861" alpha="1" colorSpace="calibratedRGB"/>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="9" maxY="0.0"/>
-                                            <state key="normal" title="Button">
-                                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            </state>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                    <real key="value" value="0.0"/>
-                                                </userDefinedRuntimeAttribute>
-                                            </userDefinedRuntimeAttributes>
-                                            <connections>
-                                                <action selector="streamButtonDidTouch:" destination="pFk-yX-p0f" eventType="touchUpInside" id="nOT-xu-MW7"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <animations/>
-                                    <constraints>
-                                        <constraint firstItem="3Iv-nS-Ujp" firstAttribute="leading" secondItem="o4S-VE-VsB" secondAttribute="leading" id="9ZY-lY-0eq"/>
-                                        <constraint firstItem="3Iv-nS-Ujp" firstAttribute="centerY" secondItem="o4S-VE-VsB" secondAttribute="centerY" id="KOU-kN-kTq"/>
-                                        <constraint firstItem="3Iv-nS-Ujp" firstAttribute="leading" secondItem="o4S-VE-VsB" secondAttribute="leading" id="eQ4-bO-t3j"/>
-                                        <constraint firstItem="3Iv-nS-Ujp" firstAttribute="top" secondItem="o4S-VE-VsB" secondAttribute="top" id="mIP-PD-oiO"/>
-                                        <constraint firstAttribute="bottom" secondItem="3Iv-nS-Ujp" secondAttribute="bottom" id="vhv-V0-Gjz"/>
-                                    </constraints>
-                                    <variation key="default">
-                                        <mask key="constraints">
-                                            <exclude reference="9ZY-lY-0eq"/>
-                                            <exclude reference="KOU-kN-kTq"/>
-                                        </mask>
-                                    </variation>
-                                </tableViewCellContentView>
-                                <animations/>
-                                <connections>
-                                    <outlet property="streamLabel" destination="3Iv-nS-Ujp" id="0CF-Tc-wUo"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="YVC-VZ-7XT" id="ssd-Vf-WZ5"/>
-                            <outlet property="delegate" destination="YVC-VZ-7XT" id="Htu-P4-72x"/>
-                        </connections>
-                    </tableView>
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" id="t3d-cw-spU"/>
+                <viewController storyboardIdentifier="subject" title="narrow" id="4Kg-yh-i76" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <segue destination="dg4-9Y-7TO" kind="show" identifier="narrowStreamSegue" id="OBq-31-lsf"/>
-                        <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="YEb-GM-xhR"/>
+                        <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="yY5-0b-0hF"/>
                     </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fe0-aL-iX5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="prw-Y2-Yds" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="998" y="396"/>
+            <point key="canvasLocation" x="1433" y="396"/>
         </scene>
-        <!--Stream Table View Controller-->
-        <scene sceneID="RqD-LL-WUg">
-            <objects>
-                <tableViewController id="dg4-9Y-7TO" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Bc1-hK-Huk">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <connections>
-                            <outlet property="dataSource" destination="dg4-9Y-7TO" id="v1E-fa-y73"/>
-                            <outlet property="delegate" destination="dg4-9Y-7TO" id="W6b-wE-5v0"/>
-                        </connections>
-                    </tableView>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="0JY-b2-Bn2"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fw9-Mz-clw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1392" y="396"/>
-        </scene>
-        <!--Stream Narrow Table View Controller-->
+        <!--subject-->
         <scene sceneID="MBH-6m-FC7">
             <objects>
-                <viewController id="xY6-rM-163" customClass="StreamNarrowTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="3X1-je-24T"/>
-                        <viewControllerLayoutGuide type="bottom" id="AKA-Oe-jBy"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="YSd-8M-rtR">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
+                <viewController title="subject" id="xY6-rM-163" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wep-NU-yK6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1192" y="1091"/>
+            <point key="canvasLocation" x="1218" y="1192"/>
+        </scene>
+        <!--stream-->
+        <scene sceneID="kno-lS-Ej6">
+            <objects>
+                <viewController storyboardIdentifier="stream" title="stream" id="aza-hl-kgP" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="Yiv-FB-6RM"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="mL0-Tc-s7k"/>
+                        <segue destination="4Kg-yh-i76" kind="show" identifier="narrowStreamSegue" id="dA5-Fg-YuS"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EG0-k3-UfS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1016" y="396"/>
         </scene>
         <!--Scrolling Navigation Controller-->
-        <scene sceneID="kw6-P3-LRQ">
+        <scene sceneID="Ktj-Mh-Joe">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yqC-eh-oxJ" customClass="ScrollingNavigationController" customModule="AMScrollingNavbar" sceneMemberID="viewController">
+                <navigationController id="gOa-O0-Tyl" customClass="ScrollingNavigationController" customModule="AMScrollingNavbar" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="MMx-4n-6ev">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="SP7-c5-m5g">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <animations/>
-                        <color key="barTintColor" red="0.45405891537666321" green="0.78984063863754272" blue="0.49477306008338928" alpha="1" colorSpace="calibratedRGB"/>
-                        <textAttributes key="titleTextAttributes">
-                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="YVC-VZ-7XT" kind="relationship" relationship="rootViewController" id="0oX-aH-NhB"/>
+                        <segue destination="aza-hl-kgP" kind="relationship" relationship="rootViewController" id="OdG-RB-Wm5"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KjT-Oy-kPp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jMZ-NK-MHT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="604" y="396"/>
+            <point key="canvasLocation" x="612" y="396"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Path 3" width="19" height="27"/>
-    </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="0JY-b2-Bn2"/>
+        <segue reference="mL0-Tc-s7k"/>
     </inferredMetricsTieBreakers>
 </document>

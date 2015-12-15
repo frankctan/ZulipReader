@@ -109,11 +109,7 @@ class StreamController : DataController {
             var mention: Bool {
                 let flags = message["flags"].arrayValue
                 for flag in flags {
-                    if flag.stringValue == "mentioned" {
-                        return true
-                    } else {
-                        return false
-                    }
+                    if flag.stringValue == "mentioned" { return true }
                 }
                 return false
             }
