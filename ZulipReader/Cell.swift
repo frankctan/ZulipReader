@@ -23,7 +23,7 @@ class Cell {
     //PMs
     var recipientID = String()
     var type = String()
-    var recipients = [String]()
+    var recipientNames = [String]()
     var recipientEmail = [String]()
     var mention = Bool()
     
@@ -45,7 +45,7 @@ class Cell {
         avatarURL = msgAvatarURL
         recipientID = msgRecipientID
         type = msgType
-        recipients = msgRecipients
+        recipientNames = msgRecipients
         recipientEmail = msgRecipientEmail
         mention = msgMention
     }

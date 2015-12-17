@@ -37,7 +37,7 @@ class StreamController : DataController {
             var colorDict = [String:String]()
             controller.getSubscriptions(){
                 colorDict = $0
-                let messagesForTable = controller.parseMessages(response, colorLookupTable: colorDict)
+                let messagesForTable = controller.parseMessages(response, colorLookupTable: streamColorLookup)
                 controller.delegate?.streamController(messagesForTable)
             }
         }
@@ -82,6 +82,7 @@ class StreamController : DataController {
         struct Previous {
             var stream = ""
             var subject = ""
+            var recipientEmail:Set<String> = []
         }
         
         var stored = Previous()
@@ -97,14 +98,18 @@ class StreamController : DataController {
                 if message["type"].stringValue == "private" {
                     return "6F7179"
                 } else {
-                    return colorLookupTable[stream]!
+                    if streamColorLookup[stream] != nil {
+                        return streamColorLookup[stream]!
+                    } else {
+                        return "282B35"
+                    }
                 }
             }
             let subject = message["subject"].stringValue
             let messageID = message["id"].stringValue
             let messageRecipient = message["recipient_id"].stringValue
             let type = message["type"].stringValue
-            let recipients = message["display_recipient"].arrayValue.map({$0["full_name"].stringValue})
+            let recipientNames = message["display_recipient"].arrayValue.map({$0["full_name"].stringValue})
             let recipientEmail = message["display_recipient"].arrayValue.map({$0["email"].stringValue})
             var mention: Bool {
                 let flags = message["flags"].arrayValue
@@ -117,6 +122,7 @@ class StreamController : DataController {
             if firstTime {
                 stored.stream = stream
                 stored.subject = subject
+                stored.recipientEmail = Set(recipientEmail)
                 messagesForTable.append([Cell]())
                 firstTime = false
             }
@@ -128,10 +134,13 @@ class StreamController : DataController {
             let timestamp = NSDate(timeIntervalSince1970: (message["timestamp"].doubleValue))
             let formattedTimestamp = timeAgoSinceDate(timestamp, numericDates: true)
             
-            if stored.stream != stream || stored.subject != subject {
+            let setRecipientEmail = Set(recipientEmail)
+            
+            if stored.stream != stream || stored.subject != subject || setRecipientEmail != stored.recipientEmail {
                 messagesForTable.append([Cell]())
                 sectionCounter += 1
             }
+//            print("stored: \("
             
             messagesForTable[sectionCounter].append(Cell(
                 msgStream: stream,
@@ -144,12 +153,13 @@ class StreamController : DataController {
                 msgID: messageID,
                 msgRecipientID: messageRecipient,
                 msgType: type,
-                msgRecipients: recipients,
+                msgRecipients: recipientNames,
                 msgRecipientEmail: recipientEmail,
                 msgMention: mention))
             
             stored.stream = stream
             stored.subject = subject
+            stored.recipientEmail = setRecipientEmail
         }
         
         return messagesForTable

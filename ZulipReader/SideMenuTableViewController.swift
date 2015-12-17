@@ -9,16 +9,12 @@
 import UIKit
 import AMScrollingNavbar
 
-protocol SideMenuDelegate: class {
-    func sideMenuDelegate(stream: String)
-}
-
 class SideMenuTableViewController: UITableViewController {
     
     var streamColor = [(String, String)]()
-    var streamSegue = ""
     var titleCells = ["Private", "Starred", "@Mention"]
     var sectionTitles = ["GENERAL","STREAMS"]
+    var selection = ""
     
     override func viewDidLoad() {
         for (k,v) in Array(streamColorLookup).sort({$0.0 < $1.0}) {
@@ -44,19 +40,21 @@ class SideMenuTableViewController: UITableViewController {
         if indexPath.section == 0 {
             cell!.configureWithStream(titleCells[indexPath.row], color: "FFFFFF")
         }
-        
-        
         if indexPath.section == 1 {
             let cellLabels = streamColor[indexPath.row]
             cell!.configureWithStream(cellLabels.0, color: cellLabels.1)
         }
-        
         return cell!
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        streamSegue = streamColor[indexPath.row].0
+        if indexPath.section == 0 {
+            selection = titleCells[indexPath.row]
+        } else {
+            selection = streamColor[indexPath.row].0
+        }
         revealViewController().revealToggleAnimated(true)
+        performSegueWithIdentifier("pushSegue", sender: self)
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -65,9 +63,18 @@ class SideMenuTableViewController: UITableViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let nav = segue.destinationViewController as! ScrollingNavigationController
-        let toView = nav.viewControllers[0] as! StreamTableViewController
-        toView.narrowParams = [["stream","\(streamSegue)"]]
-        toView.narrowTitle = streamSegue
+        let toController = nav.viewControllers[0] as! StreamTableViewController
+        toController.narrowTitle = selection
         State = "narrow"
+        switch selection {
+        case "Private":
+            toController.narrowParams = [["is","private"]]
+        case "Starred":
+            toController.narrowParams = [["is","starred"]]
+        case "@Mention":
+            toController.narrowParams = [["is","mentioned"]]
+        default:
+            toController.narrowParams = [["stream",selection]]
+        }
     }
 }

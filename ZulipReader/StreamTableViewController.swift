@@ -16,6 +16,7 @@ class StreamTableViewController: SLKTextViewController {
     @IBOutlet weak var menuButton: UIBarButtonItem!
 
     @IBAction func homeButtonDidTouch(sender: AnyObject) {
+        State = "stream"
         narrowTitle = "Stream"
         narrowParams = nil
         self.data.getStreamMessages(narrowParams)
@@ -42,7 +43,6 @@ class StreamTableViewController: SLKTextViewController {
         super.viewDidLoad()
         data.delegate = self
         
-        
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
@@ -52,10 +52,7 @@ class StreamTableViewController: SLKTextViewController {
         tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
         tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
         
-        
-        self.data.delegate = self
         self.data.getStreamMessages(narrowParams)
-        
         self.setTextInputbarHidden(true, animated: false)
         
         self.bounces = true
@@ -74,7 +71,6 @@ class StreamTableViewController: SLKTextViewController {
             //            revealViewController().rearViewRevealWidth = 150
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
-        
         data.getStreamMessages(narrowParams)
         
     }
@@ -101,14 +97,14 @@ class StreamTableViewController: SLKTextViewController {
         }
     }
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let toView = segue.destinationViewController as! StreamTableViewController
-        toView.narrowParams = narrowParams
-        toView.narrowTitle = narrowTitle
-        toView.narrowType = narrowType
-        toView.narrowSubject = narrowSubject
-        toView.narrowRecipient = narrowRecipient
-    }
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        let toView = segue.destinationViewController as! StreamTableViewController
+//        toView.narrowParams = narrowParams
+//        toView.narrowTitle = narrowTitle
+//        toView.narrowType = narrowType
+//        toView.narrowSubject = narrowSubject
+//        toView.narrowRecipient = narrowRecipient
+//    }
 }
 
 //MARK: StreamControllerDelegate
@@ -122,6 +118,7 @@ extension StreamTableViewController: StreamControllerDelegate {
         tableView.delegate = tableDelegate
 
         self.tableView.reloadData()
+        guard !messages.isEmpty else {return}
         self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.last!.count-1, inSection: messages.count-1), atScrollPosition: .Bottom, animated: true)
     }
 }

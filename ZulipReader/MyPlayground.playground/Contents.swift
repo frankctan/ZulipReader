@@ -369,4 +369,12 @@ for (k,v) in Array(ugh).sort({$0.0 < $1.0}) {
 lol
 
 
+let a = [1,2,3,4]
+let b = Set(a)
+
+let c:Set<Int> = [1,2,3,4]
+
+b.intersect(c) == b
+
+b == c
 

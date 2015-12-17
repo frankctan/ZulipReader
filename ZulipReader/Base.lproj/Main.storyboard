@@ -242,6 +242,9 @@
                         </connections>
                     </tableView>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <segue destination="gOa-O0-Tyl" kind="custom" identifier="pushSegue" customClass="SWRevealViewControllerSeguePushController" id="zD2-Tr-MIe"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jsc-ti-u2z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -293,4 +296,7 @@
         <image name="house283-1" width="23" height="21"/>
         <image name="menu" width="22" height="22"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="zD2-Tr-MIe"/>
+    </inferredMetricsTieBreakers>
 </document>

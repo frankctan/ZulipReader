@@ -25,19 +25,19 @@ class StreamHeaderPrivateCell: UITableViewCell {
     var type = ""
     var subject = ""
 
-//    @IBAction func privateButtonDidTouch(sender: AnyObject) {
-//        delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmails, msgType: type, msgSubject: subject, msgEmails: recipients)
-//    }
+    @IBAction func privateButtonDidTouch(sender: AnyObject) {
+        delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmails, msgType: type, msgSubject: subject, msgEmails: recipients)
+    }
     
     func configureWithStream(message: Cell) {
         
         recipientID = message.recipientID
-        recipients = message.recipients
+        recipients = message.recipientNames
         type = message.type
         subject = message.subject
         recipients = message.recipientEmail
         
-        let recipientCount = message.recipients.count
+        let recipientCount = message.recipientEmail.count
         
         for emailCount in 0..<message.recipientEmail.count {
             if emailCount == 0 {
@@ -50,7 +50,7 @@ class StreamHeaderPrivateCell: UITableViewCell {
         if recipientCount > 1 {
             title = "You & \(recipientCount) others"
         } else {
-            title = "You & \(message.recipients[0])"
+            title = "You & \(message.recipientNames[0])"
         }
         privateLabel.setTitle(title, forState: UIControlState.Normal)
     }
