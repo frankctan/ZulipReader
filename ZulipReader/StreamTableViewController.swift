@@ -96,15 +96,6 @@ class StreamTableViewController: SLKTextViewController {
             data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
         }
     }
-
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        let toView = segue.destinationViewController as! StreamTableViewController
-//        toView.narrowParams = narrowParams
-//        toView.narrowTitle = narrowTitle
-//        toView.narrowType = narrowType
-//        toView.narrowSubject = narrowSubject
-//        toView.narrowRecipient = narrowRecipient
-//    }
 }
 
 //MARK: StreamControllerDelegate

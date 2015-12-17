@@ -158,6 +158,7 @@
 		67A9DA8D1C1F544700AEEF1B /* StreamTableViews */ = {
 			isa = PBXGroup;
 			children = (
+				67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */,
 				67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */,
 				678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */,
 				67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */,
@@ -220,7 +221,6 @@
 				67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
-				67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,

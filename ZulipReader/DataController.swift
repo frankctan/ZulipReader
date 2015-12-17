@@ -36,6 +36,7 @@ class DataController {
         case GetSubscriptions
         case GetNarrowMessages(anchor: String, before: Int, after: Int, narrowParams: [[String]])
         case PostMessage(type: String, content: String, to: [String], subject: String?)
+        case longPoll(queueID: String, lastEventId: String)
         
         var url: String {
             switch self {
@@ -57,6 +58,8 @@ class DataController {
                     //Stream
                     return "/messages?type=\(type)&content=\(content)&to=\(recipients[0])&subject=\(subject!)"
                 }
+            case .longPoll(let queueID, let lastEventId):
+                return "/events?queue_id=\(queueID)&last_event_id=\(lastEventId)"
             }
         }
     }

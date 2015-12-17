@@ -34,9 +34,8 @@ class StreamController : DataController {
             guard responseJSON["result"].stringValue == "success" else {return}
             let response = responseJSON["messages"].arrayValue
             guard let controller = self else {return}
-            var colorDict = [String:String]()
             controller.getSubscriptions(){
-                colorDict = $0
+                streamColorLookup = $0
                 let messagesForTable = controller.parseMessages(response, colorLookupTable: streamColorLookup)
                 controller.delegate?.streamController(messagesForTable)
             }
@@ -53,6 +52,25 @@ class StreamController : DataController {
             }
         }
     }
+//    
+//    func callLongPoll() {
+//        longPoll() {result in
+//            
+//            
+//        }
+//    }
+//    
+//    func longPoll(completionHandler: (result: [JSON]) -> Void) {
+//        let longPollURL = getURL(.longPoll(queueID: userData.queueID, lastEventId: "-1"))
+//        Alamofire.request(.GET, longPollURL, headers: userData.header).responseJSON {res in
+//            let responseJSON = JSON(data:res.data!)
+//            guard responseJSON["result"].stringValue == "success" else {
+//                print("long poll error")
+//                return
+//            }
+//            completionHandler(result: responseJSON["events"].arrayValue)
+//        }
+//    }
     
     func getSubscriptions(completionHandler:[String:String]->Void) {
         let subscriptionURL = getURL(.GetSubscriptions)
