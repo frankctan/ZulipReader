@@ -17,6 +17,7 @@ public struct UserData {
     var header = Header()
     var queueID = String()
     var pointer = String()
+    var email = String()
 }
 
 //stream, narrow, subject
@@ -43,7 +44,8 @@ class DataController {
             case .Login(let username, let password):
                 return "/fetch_api_key?username=\(username)&password=\(password)"
             case .Register:
-                return "/register?event_types=[\"message\",\"pointer\",\"realm_user\"]"
+//                return "/register?event_types=[\"message\",\"pointer\",\"realm_user\"]"
+                return "/register?event_types=[\"message\"]"
             case .GetStreamMessages(let anchor, let before, let after):
                 return "/messages?anchor=\(anchor)&num_before=\(before)&num_after=\(after)"
             case .GetSubscriptions:

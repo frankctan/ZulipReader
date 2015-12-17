@@ -24,13 +24,13 @@ class Cell {
     var recipientID = String()
     var type = String()
     var recipientNames = [String]()
-    var recipientEmail = [String]()
+    var setRecipientEmail = Set<String>()
     var mention = Bool()
     
     
     init() {}
     
-    init(msgStream: String, msgStreamColor: String, msgSubject: String, msgContent: String, msgTimestamp: String, msgName: String, msgAvatarURL: String, msgID: String, msgRecipientID: String, msgType: String, msgRecipients: [String], msgRecipientEmail: [String], msgMention: Bool) {
+    init(msgStream: String, msgStreamColor: String, msgSubject: String, msgContent: String, msgTimestamp: String, msgName: String, msgAvatarURL: String, msgID: String, msgRecipientID: String, msgType: String, msgRecipients: [String], msgRecipientEmail: Set<String>, msgMention: Bool) {
         stream = msgStream
         streamColor = msgStreamColor
         subject = msgSubject
@@ -46,7 +46,7 @@ class Cell {
         recipientID = msgRecipientID
         type = msgType
         recipientNames = msgRecipients
-        recipientEmail = msgRecipientEmail
+        setRecipientEmail = msgRecipientEmail
         mention = msgMention
     }
 }

@@ -12,3 +12,25 @@
 //    ]
 //}
 
+import SwiftyJSON
+
+
+let stuff: [JSON] = [
+    [
+    "type": "heartbeat",
+    "id": 0
+    ]
+    ]
+
+stuff[0]["type"].stringValue
+
+
+var a:Set<String> = ["abc","abe"]
+
+a.remove("abc")
+
+print(a)
+
+a.remove("bed")
+
+print(a)

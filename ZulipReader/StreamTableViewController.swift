@@ -31,6 +31,8 @@ class StreamTableViewController: SLKTextViewController {
     var narrowType = ""
     var narrowSubject:String?
     var narrowRecipient = [String]()
+    
+    var longPollFlag = false
 
     var dataSource: TableViewControllerDataSource!
     var tableDelegate: TableViewDelegate!
@@ -95,6 +97,7 @@ class StreamTableViewController: SLKTextViewController {
         if State == "subject" {
             data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
         }
+        data.getStreamMessages(narrowParams)
     }
 }
 
@@ -111,6 +114,30 @@ extension StreamTableViewController: StreamControllerDelegate {
         self.tableView.reloadData()
         guard !messages.isEmpty else {return}
         self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.last!.count-1, inSection: messages.count-1), atScrollPosition: .Bottom, animated: true)
+        if longPollFlag == false {
+            longPollFlag = true
+            data.callLongPoll()
+        }
+    }
+    
+    func longPollDelegate(appendMessages: [[Cell]]) {
+        print("in long poll delegate")
+        for longPollMessages in appendMessages {
+            print(longPollMessages)
+            messages.append(longPollMessages)
+        }
+        print(messages.count)
+        
+        longPollFlag = true
+        data.callLongPoll()
+        
+        guard State == "stream" else {return}
+        dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
+        tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
+        tableView.dataSource = dataSource
+        tableView.delegate = tableDelegate
+        self.tableView.reloadData()
+        
     }
 }
 
@@ -120,19 +147,21 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
         narrowParams = [["stream","\(stream)"]]
         narrowTitle = stream
         State = "narrow"
-        
+        longPollFlag = false
         data.getStreamMessages(narrowParams)
         self.setTextInputbarHidden(true, animated: true)
     }
     
     func narrowSubject(stream: String, subject: String) {
         narrowParams = [["stream","\(stream)"],["topic","\(subject)"]]
+        let encodedParams = [["stream","\(stream)"],["topic","\(subject)"]]
         narrowTitle = subject
         narrowType = "stream"
         narrowSubject = subject
         narrowRecipient = [stream]
         State = "subject"
-        data.getStreamMessages(narrowParams)
+        longPollFlag = false
+        data.getStreamMessages(encodedParams)
         self.setTextInputbarHidden(false, animated: true)
     }
 }
@@ -142,10 +171,11 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
     func narrowConversation(recipientID: String, cellTitle: String, emails: String, msgType: String, msgSubject: String, msgEmails: [String]) {
         narrowType = msgType
         narrowSubject = msgSubject
-        narrowRecipient = msgEmails
+        narrowRecipient = [emails]
         narrowParams = [["pm_with","\(emails)"]]
         narrowTitle = cellTitle
         State = "subject"
+        longPollFlag = false
         data.getStreamMessages(narrowParams)
         self.setTextInputbarHidden(false, animated: true)
     }

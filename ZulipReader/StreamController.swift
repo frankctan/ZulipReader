@@ -14,20 +14,23 @@ import DTCoreText
 
 protocol StreamControllerDelegate: class {
     func streamController(messagesForTable: [[Cell]])
+    func longPollDelegate(appendMessages: [[Cell]])
 }
 
 
 class StreamController : DataController {
     
     weak var delegate: StreamControllerDelegate?
+        var eventID = -1
     
     func getStreamMessages(narrowParams:[[String]]?) {
         var messagesURL = NSURL()
         
         if narrowParams == nil {
-            messagesURL = getURL(.GetStreamMessages(anchor: userData.pointer, before: 50, after: 0))
+            messagesURL = getURL(.GetStreamMessages(anchor: userData.pointer, before: 50, after: eventID+100))
         } else {
-            messagesURL = getURL(.GetNarrowMessages(anchor: userData.pointer, before: 50, after: 0, narrowParams: narrowParams!))
+            messagesURL = getURL(.GetNarrowMessages(anchor: userData.pointer, before: 50, after: eventID+100, narrowParams: narrowParams!))
+            
         }
         Alamofire.request(.GET, messagesURL, headers: userData.header).responseJSON {[weak self] res in
             let responseJSON = JSON(data: res.data!)
@@ -44,6 +47,7 @@ class StreamController : DataController {
     
     func postMessage(type:String, content:String, to: [String], subject:String?) {
         let postMessageURL = getURL(.PostMessage(type: type, content: content, to: to, subject: subject))
+        print(postMessageURL)
         Alamofire.request(.POST, postMessageURL, headers: userData.header).responseJSON {res in
             let responseJSON = JSON(data: res.data!)
             guard responseJSON["result"].stringValue == "success" else {
@@ -52,25 +56,37 @@ class StreamController : DataController {
             }
         }
     }
-//    
-//    func callLongPoll() {
-//        longPoll() {result in
-//            
-//            
-//        }
-//    }
-//    
-//    func longPoll(completionHandler: (result: [JSON]) -> Void) {
-//        let longPollURL = getURL(.longPoll(queueID: userData.queueID, lastEventId: "-1"))
-//        Alamofire.request(.GET, longPollURL, headers: userData.header).responseJSON {res in
-//            let responseJSON = JSON(data:res.data!)
-//            guard responseJSON["result"].stringValue == "success" else {
-//                print("long poll error")
-//                return
-//            }
-//            completionHandler(result: responseJSON["events"].arrayValue)
-//        }
-//    }
+    
+
+    
+    func callLongPoll() {
+        print("LONG POLLING")
+        var appendMessages = [[Cell]]()
+        longPoll() {result in
+            self.eventID += 1
+            guard !result.isEmpty else {return}
+            if result[0]["type"].stringValue == "heartbeart" {
+                print("heartbeat")
+                return
+            }
+            print(result[0]["message"])
+           appendMessages = self.parseMessages([result[0]["message"]], colorLookupTable: streamColorLookup)
+            self.delegate?.longPollDelegate(appendMessages)
+        }
+    }
+    
+    func longPoll(completionHandler: (result: [JSON]) -> Void) {
+        let longPollURL = getURL(.longPoll(queueID: userData.queueID, lastEventId: String(eventID)))
+        Alamofire.request(.GET, longPollURL, headers: userData.header).responseJSON {res in
+            let responseJSON = JSON(data:res.data!)
+            guard responseJSON["result"].stringValue == "success" else {
+                print("long poll error")
+                return
+            }
+            let response = responseJSON["events"].arrayValue
+            completionHandler(result: response)
+        }
+    }
     
     func getSubscriptions(completionHandler:[String:String]->Void) {
         let subscriptionURL = getURL(.GetSubscriptions)
@@ -137,10 +153,15 @@ class StreamController : DataController {
                 return false
             }
             
+            var setRecipientEmail = Set(recipientEmail)
+            if setRecipientEmail.count > 1 {
+                setRecipientEmail.remove(userData.email)
+            }
+            
             if firstTime {
                 stored.stream = stream
                 stored.subject = subject
-                stored.recipientEmail = Set(recipientEmail)
+                stored.recipientEmail = setRecipientEmail
                 messagesForTable.append([Cell]())
                 firstTime = false
             }
@@ -152,13 +173,10 @@ class StreamController : DataController {
             let timestamp = NSDate(timeIntervalSince1970: (message["timestamp"].doubleValue))
             let formattedTimestamp = timeAgoSinceDate(timestamp, numericDates: true)
             
-            let setRecipientEmail = Set(recipientEmail)
-            
             if stored.stream != stream || stored.subject != subject || setRecipientEmail != stored.recipientEmail {
                 messagesForTable.append([Cell]())
                 sectionCounter += 1
             }
-//            print("stored: \("
             
             messagesForTable[sectionCounter].append(Cell(
                 msgStream: stream,
@@ -172,7 +190,7 @@ class StreamController : DataController {
                 msgRecipientID: messageRecipient,
                 msgType: type,
                 msgRecipients: recipientNames,
-                msgRecipientEmail: recipientEmail,
+                msgRecipientEmail: setRecipientEmail,
                 msgMention: mention))
             
             stored.stream = stream
