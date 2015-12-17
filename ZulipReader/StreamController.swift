@@ -54,7 +54,6 @@ class StreamController : DataController {
         }
     }
     
-    
     func getSubscriptions(completionHandler:[String:String]->Void) {
         let subscriptionURL = getURL(.GetSubscriptions)
         Alamofire.request(.GET, subscriptionURL, headers: userData.header).responseJSON {[weak self] res in
@@ -73,6 +72,7 @@ class StreamController : DataController {
         for subs in allSubs {
             colorDict[subs["name"].stringValue] = subs["color"].stringValue
         }
+        streamColorLookup = colorDict
         return colorDict
     }
     

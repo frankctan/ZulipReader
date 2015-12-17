@@ -12,6 +12,17 @@ import SlackTextViewController
 
 class StreamTableViewController: SLKTextViewController {
     
+    //TODO: create a new view for navigation!
+    @IBOutlet weak var menuButton: UIBarButtonItem!
+
+    @IBAction func homeButtonDidTouch(sender: AnyObject) {
+        narrowTitle = "Stream"
+        narrowParams = nil
+        self.data.getStreamMessages(narrowParams)
+        self.tableView.reloadData()
+        self.setTextInputbarHidden(true, animated: true)
+    }
+    
     let data = StreamController()
     var messages = [[Cell]]()
     
@@ -25,14 +36,13 @@ class StreamTableViewController: SLKTextViewController {
     var tableDelegate: TableViewDelegate!
     
     required init!(coder decoder: NSCoder!) {
-//        super.init(tableViewStyle: UITableViewStyle.Plain)
         super.init(coder: decoder)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         data.delegate = self
-        data.getStreamMessages(narrowParams)
+        
         
         tableView.estimatedRowHeight = 60
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -43,8 +53,11 @@ class StreamTableViewController: SLKTextViewController {
         tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
         tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
         
+        
         self.data.delegate = self
         self.data.getStreamMessages(narrowParams)
+        
+        self.setTextInputbarHidden(true, animated: false)
         
         self.bounces = true
         self.shakeToClearEnabled = true
@@ -56,9 +69,15 @@ class StreamTableViewController: SLKTextViewController {
         self.typingIndicatorView.canResignByTouch = true
         self.rightButton.setTitle("Send", forState: UIControlState.Normal)
         
-        if State == "stream" || State == "narrow" {
-            self.setTextInputbarHidden(true, animated: true)
+        if self.revealViewController() != nil {
+            menuButton.target = self.revealViewController()
+            menuButton.action = "revealToggle:"
+            //            revealViewController().rearViewRevealWidth = 150
+            self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
+        
+        data.getStreamMessages(narrowParams)
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -90,7 +109,6 @@ class StreamTableViewController: SLKTextViewController {
         toView.narrowType = narrowType
         toView.narrowSubject = narrowSubject
         toView.narrowRecipient = narrowRecipient
-        toView.data.userData = data.userData
     }
 }
 
@@ -113,20 +131,24 @@ extension StreamTableViewController: StreamControllerDelegate {
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
     func narrowStream(stream: String) {
         narrowParams = [["stream","\(stream)"]]
-        narrowTitle = title!
+        narrowTitle = stream
         State = "narrow"
-        print(narrowParams)
-        self.performSegueWithIdentifier("narrowStreamSegue", sender: self)
+        
+        data.getStreamMessages(narrowParams)
+        self.tableView.reloadData()
+        self.setTextInputbarHidden(true, animated: true)
     }
     
     func narrowSubject(stream: String, subject: String) {
         narrowParams = [["stream","\(stream)"],["topic","\(subject)"]]
-        narrowTitle = "\(stream) > \(subject)"
+        narrowTitle = subject
         narrowType = "stream"
         narrowSubject = subject
         narrowRecipient = [stream]
         State = "subject"
-        self.performSegueWithIdentifier("narrowSubjectSegue", sender: self)
+        data.getStreamMessages(narrowParams)
+        self.tableView.reloadData()
+        self.setTextInputbarHidden(false, animated: true)
     }
 }
 
@@ -139,6 +161,8 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
         narrowParams = [["pm_with","\(emails)"]]
         narrowTitle = cellTitle
         State = "subject"
-        self.performSegueWithIdentifier("narrowSubjectSegue", sender: self)
+        data.getStreamMessages(narrowParams)
+        self.tableView.reloadData()
+        self.setTextInputbarHidden(false, animated: true)
     }
 }

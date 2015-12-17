@@ -348,10 +348,25 @@
 //
 //
 
-var a = (1,1)
-a.0
+//var a = (1,1)
+//a.0
+//
+//
+//var b = ["haha":"no", "ugh":"yes","a":"b"]
+//
+//var lol = b.sort {$0.0 < $1.0}
+//
+//print(lol)
 
+var ugh = ["food": "#b0a5fd", "settlers": "#94c849", "code review": "#c2c2c2", "compilers": "#a6c7e5", "git": "#76ce90", "coffee": "#95a5fd", "iOS": "#bd86e5", "eventstorm": "#ee7e4a", "friday-jobs-prep": "#f5ce6e", "books": "#fae589", "announce": "#76ce90", "data": "#bfd56f", "programming": "#b0a5fd", "Swift": "#a6dcbf", "455 Broadway": "#c2726a", "The Loop": "#a6dcbf", "design": "#a6dcbf", "F2 2015": "#95a5fd", "advice": "#a6dcbf", "checkins": "#c6a8ad", "graphics": "#f4ae55", "writing review": "#f4ae55", "Java": "#94c849", "commits": "#9987e1", "OSS at HS": "#e7cc4d", "ruby": "#f5ce6e", "pairing": "#addfe5", "javascript": "#e79ab5", "talks": "#a47462", "network": "#94c849", "Victory": "#e79ab5", "zulip": "#a6c7e5", "social": "#bfd56f", "Small Answers": "#4f8de4", "Congratulations": "#c2726a", "projects": "#e4523d", "help": "#c8bebf", "hardware": "#53a063", "blogging": "#bd86e5", "tools": "#ee7e4a"]
 
+var lol = [(String,String)]()
+
+for (k,v) in Array(ugh).sort({$0.0 < $1.0}) {
+    lol.append((k,v))
+}
+
+lol
 
 
 

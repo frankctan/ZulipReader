@@ -21,13 +21,13 @@ public struct UserData {
 
 //stream, narrow, subject
 public var State:String = "stream"
+public var userData = UserData()
+public var streamColorLookup = [String:String]()
 
 class DataController {
     
     typealias Parameter = [String:AnyObject]
     let baseURL = "https://api.zulip.com/v1"
-    
-    var userData = UserData()
     
     enum ResourcePath {
         case Login(username: String, password: String)

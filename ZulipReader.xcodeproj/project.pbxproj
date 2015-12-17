@@ -35,6 +35,9 @@
 		67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */; };
 		67A9DA901C1F581800AEEF1B /* TableViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */; };
 		67A9DA921C1F62C300AEEF1B /* TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */; };
+		67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */; };
+		67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */; };
+		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
 		67D1F1BD1BFA6AEA006F9468 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */; };
@@ -83,6 +86,10 @@
 		67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StreamHeaderPrivateCell.xib; sourceTree = "<group>"; };
 		67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewControllerDataSource.swift; sourceTree = "<group>"; };
 		67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewDelegate.swift; path = ../TableViewDelegate.swift; sourceTree = "<group>"; };
+		67A9DA931C209D2300AEEF1B /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
+		67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
+		67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuCell.swift; sourceTree = "<group>"; };
 		67B24E8D1C0E66A100A189B2 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -172,6 +179,15 @@
 			name = Login;
 			sourceTree = "<group>";
 		};
+		67A9DA961C209D4600AEEF1B /* SWRevealViewController */ = {
+			isa = PBXGroup;
+			children = (
+				67A9DA931C209D2300AEEF1B /* SWRevealViewController.h */,
+				67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */,
+			);
+			name = SWRevealViewController;
+			sourceTree = "<group>";
+		};
 		67D1F1AB1BFA6AEA006F9468 = {
 			isa = PBXGroup;
 			children = (
@@ -204,12 +220,15 @@
 				67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
+				67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */,
+				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
-				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
-				67A9DA7E1C1CCED900AEEF1B /* ZulipReader-Bridging-Header.h */,
 				67D1F1C31BFA6AEA006F9468 /* Info.plist */,
+				67A9DA7E1C1CCED900AEEF1B /* ZulipReader-Bridging-Header.h */,
+				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
 				67B24E8D1C0E66A100A189B2 /* MyPlayground.playground */,
+				67A9DA961C209D4600AEEF1B /* SWRevealViewController */,
 				678A6BEA1C1227AD00AE091B /* Fonts */,
 			);
 			path = ZulipReader;
@@ -410,8 +429,11 @@
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
+				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,
+				67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */,
 				67A9DA901C1F581800AEEF1B /* TableViewControllerDataSource.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
+				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
 				678A6BB71C10EBA200AE091B /* Cell.swift in Sources */,
 				673251771C0A7154009A546C /* StreamController.swift in Sources */,

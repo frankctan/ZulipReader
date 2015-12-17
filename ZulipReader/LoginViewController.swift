@@ -41,10 +41,4 @@ class LoginViewController: UIViewController, LoginControllerDelegate {
 
         }
     }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let nav = segue.destinationViewController as! ScrollingNavigationController
-        let toView = nav.viewControllers[0] as! StreamTableViewController
-        toView.data.userData = data.userData
-    }
 }

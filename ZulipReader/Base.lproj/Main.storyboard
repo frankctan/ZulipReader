@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
@@ -10,6 +10,7 @@
             <string>SourceSansPro-Bold</string>
         </mutableArray>
         <mutableArray key="SourceSansPro-Regular-webfont.ttf">
+            <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
             <string>SourceSansPro-Regular</string>
@@ -149,50 +150,157 @@
                         <outlet property="dialogView" destination="0NL-fA-Rjv" id="zDi-v5-BMS"/>
                         <outlet property="passwordTextField" destination="kvf-C2-51d" id="au3-fc-Cqt"/>
                         <outlet property="usernameTextField" destination="AOI-qb-zLI" id="aV5-yY-5M1"/>
-                        <segue destination="gOa-O0-Tyl" kind="show" identifier="loginSegue" id="p9j-8C-Qcd"/>
+                        <segue destination="xki-48-tS5" kind="show" identifier="loginSegue" id="IdH-of-GIb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="216" y="396"/>
+            <point key="canvasLocation" x="216" y="380"/>
+        </scene>
+        <!--Reveal View Controller-->
+        <scene sceneID="YBn-l2-90w">
+            <objects>
+                <viewController id="xki-48-tS5" customClass="SWRevealViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Drf-Hx-Eek"/>
+                        <viewControllerLayoutGuide type="bottom" id="ucF-Uk-hAz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="a7B-Rs-QZC">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <segue destination="gOa-O0-Tyl" kind="custom" identifier="sw_front" customClass="SWRevealViewControllerSegueSetController" id="5iZ-Ld-U7R"/>
+                        <segue destination="4Xf-qU-BNc" kind="custom" identifier="sw_rear" customClass="SWRevealViewControllerSegueSetController" id="qui-zH-vfu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yrx-Gx-1fC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="216" y="1049"/>
+        </scene>
+        <!--Side Menu Table View Controller-->
+        <scene sceneID="ewD-n8-ycP">
+            <objects>
+                <tableViewController id="4Xf-qU-BNc" customClass="SideMenuTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Q3n-Fn-Sec">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="sideCell" rowHeight="25" id="BG4-kQ-ldN" customClass="SideMenuCell" customModule="ZulipReader" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="320" height="25"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BG4-kQ-ldN" id="P7c-r4-rJU">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="24.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg">
+                                            <rect key="frame" x="28" y="1" width="39.5" height="22.5"/>
+                                            <animations/>
+                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <animations/>
+                                    <constraints>
+                                        <constraint firstItem="wxQ-QN-6kg" firstAttribute="centerY" secondItem="P7c-r4-rJU" secondAttribute="centerY" id="Reo-gC-gJ0"/>
+                                        <constraint firstItem="wxQ-QN-6kg" firstAttribute="leading" secondItem="P7c-r4-rJU" secondAttribute="leadingMargin" constant="20" id="lmt-eP-x0L"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <animations/>
+                                <connections>
+                                    <outlet property="streamLabel" destination="wxQ-QN-6kg" id="N2c-jP-QZU"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="4Xf-qU-BNc" id="WQj-j7-JrA"/>
+                            <outlet property="delegate" destination="4Xf-qU-BNc" id="9XN-8E-FC3"/>
+                        </connections>
+                    </tableView>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <segue destination="7MU-9n-hHN" kind="custom" identifier="menuNarrowSegue" customClass="SWRevealViewControllerSeguePushController" id="1rU-33-0od"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jsc-ti-u2z" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="612" y="1049"/>
         </scene>
         <!--narrow-->
         <scene sceneID="bXl-j7-xyg">
             <objects>
                 <viewController storyboardIdentifier="subject" title="narrow" id="4Kg-yh-i76" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="joT-fX-JkO">
+                        <barButtonItem key="leftBarButtonItem" image="menu" id="Y7g-6b-ZA9"/>
+                        <barButtonItem key="rightBarButtonItem" image="house283-1" id="rRN-sM-I6j">
+                            <connections>
+                                <action selector="homeButtonDidTouch:" destination="4Kg-yh-i76" id="GEP-5y-B17"/>
+                                <segue destination="Mn3-7D-l9q" kind="unwind" unwindAction="cancelToStream:" id="yYe-fu-3sZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="menuButton" destination="Y7g-6b-ZA9" id="TNB-EX-zeh"/>
                         <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="yY5-0b-0hF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="prw-Y2-Yds" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Mn3-7D-l9q" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1433" y="396"/>
+            <point key="canvasLocation" x="1427" y="574"/>
         </scene>
         <!--subject-->
         <scene sceneID="MBH-6m-FC7">
             <objects>
                 <viewController title="subject" id="xY6-rM-163" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="yC0-eR-0g4">
+                        <barButtonItem key="leftBarButtonItem" image="menu" id="CW2-KF-hVz"/>
+                        <barButtonItem key="rightBarButtonItem" image="house283-1" id="Vo2-wY-knS">
+                            <connections>
+                                <action selector="homeButtonDidTouch:" destination="xY6-rM-163" id="Tar-uN-XSX"/>
+                                <segue destination="hzB-p3-3Gu" kind="unwind" unwindAction="cancelToStream:" id="8aa-Ld-UUt"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="menuButton" destination="CW2-KF-hVz" id="lO5-0v-ws8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wep-NU-yK6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="hzB-p3-3Gu" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1218" y="1192"/>
+            <point key="canvasLocation" x="1427" y="1407"/>
         </scene>
         <!--stream-->
         <scene sceneID="kno-lS-Ej6">
             <objects>
                 <viewController storyboardIdentifier="stream" title="stream" id="aza-hl-kgP" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="Yiv-FB-6RM"/>
+                    <navigationItem key="navigationItem" id="Yiv-FB-6RM">
+                        <barButtonItem key="leftBarButtonItem" image="menu" id="DWV-8b-xFP"/>
+                        <barButtonItem key="rightBarButtonItem" image="house283-1" id="L3t-QM-R9m">
+                            <connections>
+                                <action selector="homeButtonDidTouch:" destination="aza-hl-kgP" id="OOG-zZ-wzO"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="menuButton" destination="DWV-8b-xFP" id="dqu-7e-M9z"/>
                         <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="mL0-Tc-s7k"/>
                         <segue destination="4Kg-yh-i76" kind="show" identifier="narrowStreamSegue" id="dA5-Fg-YuS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EG0-k3-UfS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1016" y="396"/>
+            <point key="canvasLocation" x="1008" y="380"/>
         </scene>
         <!--Scrolling Navigation Controller-->
         <scene sceneID="Ktj-Mh-Joe">
@@ -212,10 +320,35 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jMZ-NK-MHT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="612" y="396"/>
+            <point key="canvasLocation" x="612" y="380"/>
+        </scene>
+        <!--Scrolling Navigation Controller-->
+        <scene sceneID="d3p-X2-Q7u">
+            <objects>
+                <navigationController id="7MU-9n-hHN" customClass="ScrollingNavigationController" customModule="AMScrollingNavbar" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="UUe-5Q-l4U">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="4Kg-yh-i76" kind="relationship" relationship="rootViewController" id="V5b-rJ-dg5"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Za-SG-pSH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1024" y="1259"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="house283-1" width="23" height="21"/>
+        <image name="menu" width="22" height="22"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="mL0-Tc-s7k"/>
+        <segue reference="V5b-rJ-dg5"/>
     </inferredMetricsTieBreakers>
 </document>

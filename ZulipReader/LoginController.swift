@@ -31,7 +31,7 @@ class LoginController : DataController {
             loginInfo["password"] = response.data["api_key"].stringValue
 
             guard let controller = self else {return}
-            controller.userData.header = controller.createAuthorizationHeader(loginInfo)
+            userData.header = controller.createAuthorizationHeader(loginInfo)
             controller.registerQueueIdPointer()
         }
     }
@@ -43,8 +43,8 @@ class LoginController : DataController {
             guard response.flag == true else {return}
 
             guard let controller = self else {return}
-            controller.userData.queueID = response.data["queue_id"].stringValue
-            controller.userData.pointer = response.data["pointer"].stringValue
+            userData.queueID = response.data["queue_id"].stringValue
+            userData.pointer = response.data["pointer"].stringValue
             controller.delegate?.loginController(response.data["msg"].stringValue)
         }
     }
