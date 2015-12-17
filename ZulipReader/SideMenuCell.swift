@@ -11,9 +11,10 @@ import UIKit
 class SideMenuCell: UITableViewCell {
 
     @IBOutlet weak var streamLabel: UILabel!
+    @IBOutlet weak var streamColor: UIView!
     
     func configureWithStream(stream: String, color: String) {
         streamLabel.text = stream
-        streamLabel.tintColor = UIColor(hex: color)
+        streamColor.backgroundColor = UIColor(hex: color)
     }
 }

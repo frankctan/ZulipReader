@@ -19,7 +19,6 @@ class StreamTableViewController: SLKTextViewController {
         narrowTitle = "Stream"
         narrowParams = nil
         self.data.getStreamMessages(narrowParams)
-        self.tableView.reloadData()
         self.setTextInputbarHidden(true, animated: true)
     }
     
@@ -135,7 +134,6 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
         State = "narrow"
         
         data.getStreamMessages(narrowParams)
-        self.tableView.reloadData()
         self.setTextInputbarHidden(true, animated: true)
     }
     
@@ -147,7 +145,6 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
         narrowRecipient = [stream]
         State = "subject"
         data.getStreamMessages(narrowParams)
-        self.tableView.reloadData()
         self.setTextInputbarHidden(false, animated: true)
     }
 }
@@ -162,7 +159,6 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
         narrowTitle = cellTitle
         State = "subject"
         data.getStreamMessages(narrowParams)
-        self.tableView.reloadData()
         self.setTextInputbarHidden(false, animated: true)
     }
 }

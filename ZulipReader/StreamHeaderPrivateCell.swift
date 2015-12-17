@@ -25,9 +25,9 @@ class StreamHeaderPrivateCell: UITableViewCell {
     var type = ""
     var subject = ""
 
-    @IBAction func privateButtonDidTouch(sender: AnyObject) {
-        delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmails, msgType: type, msgSubject: subject, msgEmails: recipients)
-    }
+//    @IBAction func privateButtonDidTouch(sender: AnyObject) {
+//        delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmails, msgType: type, msgSubject: subject, msgEmails: recipients)
+//    }
     
     func configureWithStream(message: Cell) {
         

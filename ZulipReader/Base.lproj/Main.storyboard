@@ -191,29 +191,47 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="sideCell" rowHeight="25" id="BG4-kQ-ldN" customClass="SideMenuCell" customModule="ZulipReader" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="320" height="25"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="sideCell" rowHeight="18" id="BG4-kQ-ldN" customClass="SideMenuCell" customModule="ZulipReader" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="320" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BG4-kQ-ldN" id="P7c-r4-rJU">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="24.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="17.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg">
-                                            <rect key="frame" x="28" y="1" width="39.5" height="22.5"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg" customClass="SpringLabel" customModule="Spring">
+                                            <rect key="frame" x="38" y="-1" width="35" height="19.5"/>
                                             <animations/>
-                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
+                                            <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gu7-zD-Jd5">
+                                            <rect key="frame" x="15" y="1" width="15" height="15"/>
+                                            <animations/>
+                                            <color key="backgroundColor" red="0.45405891539999998" green="0.78984063859999998" blue="0.4947730601" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="15" id="JlM-jT-S5H"/>
+                                                <constraint firstAttribute="height" constant="15" id="lou-7E-tgv"/>
+                                            </constraints>
+                                        </view>
                                     </subviews>
                                     <animations/>
                                     <constraints>
+                                        <constraint firstItem="gu7-zD-Jd5" firstAttribute="centerY" secondItem="wxQ-QN-6kg" secondAttribute="centerY" id="Dak-mk-cbz"/>
                                         <constraint firstItem="wxQ-QN-6kg" firstAttribute="centerY" secondItem="P7c-r4-rJU" secondAttribute="centerY" id="Reo-gC-gJ0"/>
-                                        <constraint firstItem="wxQ-QN-6kg" firstAttribute="leading" secondItem="P7c-r4-rJU" secondAttribute="leadingMargin" constant="20" id="lmt-eP-x0L"/>
+                                        <constraint firstItem="wxQ-QN-6kg" firstAttribute="leading" secondItem="gu7-zD-Jd5" secondAttribute="trailing" constant="8" id="VHR-Eu-DhJ"/>
+                                        <constraint firstItem="gu7-zD-Jd5" firstAttribute="leading" secondItem="P7c-r4-rJU" secondAttribute="leading" constant="5" id="YMt-AR-k0b"/>
+                                        <constraint firstItem="wxQ-QN-6kg" firstAttribute="leading" secondItem="P7c-r4-rJU" secondAttribute="leadingMargin" constant="30" id="lmt-eP-x0L"/>
                                     </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="YMt-AR-k0b"/>
+                                        </mask>
+                                    </variation>
                                 </tableViewCellContentView>
                                 <animations/>
                                 <connections>
+                                    <outlet property="streamColor" destination="gu7-zD-Jd5" id="AJo-ca-4LV"/>
                                     <outlet property="streamLabel" destination="wxQ-QN-6kg" id="N2c-jP-QZU"/>
                                 </connections>
                             </tableViewCell>
@@ -224,60 +242,10 @@
                         </connections>
                     </tableView>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <segue destination="7MU-9n-hHN" kind="custom" identifier="menuNarrowSegue" customClass="SWRevealViewControllerSeguePushController" id="1rU-33-0od"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jsc-ti-u2z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="612" y="1049"/>
-        </scene>
-        <!--narrow-->
-        <scene sceneID="bXl-j7-xyg">
-            <objects>
-                <viewController storyboardIdentifier="subject" title="narrow" id="4Kg-yh-i76" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="joT-fX-JkO">
-                        <barButtonItem key="leftBarButtonItem" image="menu" id="Y7g-6b-ZA9"/>
-                        <barButtonItem key="rightBarButtonItem" image="house283-1" id="rRN-sM-I6j">
-                            <connections>
-                                <action selector="homeButtonDidTouch:" destination="4Kg-yh-i76" id="GEP-5y-B17"/>
-                                <segue destination="Mn3-7D-l9q" kind="unwind" unwindAction="cancelToStream:" id="yYe-fu-3sZ"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <outlet property="menuButton" destination="Y7g-6b-ZA9" id="TNB-EX-zeh"/>
-                        <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="yY5-0b-0hF"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="prw-Y2-Yds" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="Mn3-7D-l9q" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="1427" y="574"/>
-        </scene>
-        <!--subject-->
-        <scene sceneID="MBH-6m-FC7">
-            <objects>
-                <viewController title="subject" id="xY6-rM-163" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="yC0-eR-0g4">
-                        <barButtonItem key="leftBarButtonItem" image="menu" id="CW2-KF-hVz"/>
-                        <barButtonItem key="rightBarButtonItem" image="house283-1" id="Vo2-wY-knS">
-                            <connections>
-                                <action selector="homeButtonDidTouch:" destination="xY6-rM-163" id="Tar-uN-XSX"/>
-                                <segue destination="hzB-p3-3Gu" kind="unwind" unwindAction="cancelToStream:" id="8aa-Ld-UUt"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <outlet property="menuButton" destination="CW2-KF-hVz" id="lO5-0v-ws8"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Wep-NU-yK6" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="hzB-p3-3Gu" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="1427" y="1407"/>
         </scene>
         <!--stream-->
         <scene sceneID="kno-lS-Ej6">
@@ -294,8 +262,6 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="menuButton" destination="DWV-8b-xFP" id="dqu-7e-M9z"/>
-                        <segue destination="xY6-rM-163" kind="show" identifier="narrowSubjectSegue" id="mL0-Tc-s7k"/>
-                        <segue destination="4Kg-yh-i76" kind="show" identifier="narrowStreamSegue" id="dA5-Fg-YuS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EG0-k3-UfS" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -322,33 +288,9 @@
             </objects>
             <point key="canvasLocation" x="612" y="380"/>
         </scene>
-        <!--Scrolling Navigation Controller-->
-        <scene sceneID="d3p-X2-Q7u">
-            <objects>
-                <navigationController id="7MU-9n-hHN" customClass="ScrollingNavigationController" customModule="AMScrollingNavbar" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="UUe-5Q-l4U">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="4Kg-yh-i76" kind="relationship" relationship="rootViewController" id="V5b-rJ-dg5"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4Za-SG-pSH" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1024" y="1259"/>
-        </scene>
     </scenes>
     <resources>
         <image name="house283-1" width="23" height="21"/>
         <image name="menu" width="22" height="22"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="mL0-Tc-s7k"/>
-        <segue reference="V5b-rJ-dg5"/>
-    </inferredMetricsTieBreakers>
 </document>
