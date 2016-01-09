@@ -11,6 +11,7 @@ target 'ZulipReader' do
   pod 'AMScrollingNavbar', '~> 2.0.1'
   pod 'SlackTextViewController'
   pod 'DTCoreText'
+  pod 'RealmSwift'
 end
 
 target 'ZulipReaderTests' do

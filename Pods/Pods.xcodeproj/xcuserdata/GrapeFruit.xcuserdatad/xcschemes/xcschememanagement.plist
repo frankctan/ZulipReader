@@ -34,6 +34,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Realm.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>RealmSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>SlackTextViewController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -52,6 +62,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>23EE11B7626BE2329C75BC706778628F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>432ECC54282C84882B482CCB4CF227FC</key>
 		<dict>
 			<key>primary</key>
@@ -62,12 +77,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>67F0D96F2033178E7B3F7B11136FC738</key>
+		<key>5698F79F36A1559960C44AA05FB607E6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6EAA081B66FB4C8319DD9FC8F6DCBB53</key>
+		<key>6A6ACAC00935BFD3E8F428EF7E19670F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -77,7 +92,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>75E2976063C4CF3B431FACE72223FEA1</key>
+		<key>8AA89D780C217C03BD98486AEE4087CF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A2A583FAD69F6161BC4F78D73048AE17</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -87,7 +107,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B18ADD9953C3F49D98243C2CAF7DCBFA</key>
+		<key>C0B157D1C6FA13D91ADC6A0432748550</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -57,10 +57,7 @@ class StreamController : DataController {
         }
     }
     
-
-    
     func callLongPoll() {
-        print("LONG POLLING")
         var appendMessages = [[Cell]]()
         longPoll() {result in
             self.eventID += 1

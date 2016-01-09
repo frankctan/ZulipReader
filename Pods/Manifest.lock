@@ -13,6 +13,11 @@ PODS:
   - DTFoundation/UIKit (1.7.8):
     - DTFoundation/Core
   - Kingfisher (1.8.2)
+  - Realm (0.97.0):
+    - Realm/Headers (= 0.97.0)
+  - Realm/Headers (0.97.0)
+  - RealmSwift (0.97.0):
+    - Realm (= 0.97.0)
   - SlackTextViewController (1.7.2)
   - Spring (1.0.3)
   - SwiftyJSON (2.3.1)
@@ -22,6 +27,7 @@ DEPENDENCIES:
   - AMScrollingNavbar (~> 2.0.1)
   - DTCoreText
   - Kingfisher (~> 1.8)
+  - RealmSwift
   - SlackTextViewController
   - Spring (from `https://github.com/MengTo/Spring.git`, branch `swift2`)
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
@@ -47,6 +53,8 @@ SPEC CHECKSUMS:
   DTCoreText: 934a16fe9ffdd169c96261721b39dc312b75713d
   DTFoundation: 46e2b2fafe78d67febfd8d1f85fe9845a093f00e
   Kingfisher: b39315e9dbed7e8ffe73a9ca1be2ee006d1d57e4
+  Realm: b498a6fb9d288b171ff98d0e2d4384c295be8990
+  RealmSwift: d014810dec75c9a3f1a33926d2dabfed855c582c
   SlackTextViewController: 1f4e8f68c156ef93de73fd422db2b8d5d5b0f4e7
   Spring: 3f02b5dc3308572ef177b3cad0fa7bbc4b0706f7
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
