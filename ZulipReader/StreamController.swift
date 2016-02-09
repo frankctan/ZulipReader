@@ -10,7 +10,6 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 import Spring
-import DTCoreText
 
 protocol StreamControllerDelegate: class {
     func streamController(messagesForTable: [[Cell]])

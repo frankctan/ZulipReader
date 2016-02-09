@@ -70,11 +70,10 @@ class StreamTableViewController: SLKTextViewController {
         if self.revealViewController() != nil {
             menuButton.target = self.revealViewController()
             menuButton.action = "revealToggle:"
-            //            revealViewController().rearViewRevealWidth = 150
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
-        data.getStreamMessages(narrowParams)
-        
+//        data.getStreamMessages(narrowParams)
+      
     }
     
     override func viewDidAppear(animated: Bool) {

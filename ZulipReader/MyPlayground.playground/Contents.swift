@@ -34,3 +34,8 @@ print(a)
 a.remove("bed")
 
 print(a)
+
+
+let urlString = "https://www.google.com/"
+urlString.stringByAdd
+

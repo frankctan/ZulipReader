@@ -6,47 +6,43 @@
 //  Copyright © 2015 Frank Tan. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import Spring
-import DTCoreText
+import RealmSwift
 
 class Cell {
-    var stream = String()
-    var streamColor = String()
-    var subject = String()
-    var content = NSAttributedString()
-    var timestamp = String()
-    var name = String()
-    var avatarURL = String()
-    var messageID = String()
-    
-    //PMs
-    var recipientID = String()
-    var type = String()
-    var recipientNames = [String]()
-    var setRecipientEmail = Set<String>()
-    var mention = Bool()
-    
-    
-    init() {}
-    
-    init(msgStream: String, msgStreamColor: String, msgSubject: String, msgContent: String, msgTimestamp: String, msgName: String, msgAvatarURL: String, msgID: String, msgRecipientID: String, msgType: String, msgRecipients: [String], msgRecipientEmail: Set<String>, msgMention: Bool) {
-        stream = msgStream
-        streamColor = msgStreamColor
-        subject = msgSubject
-        messageID = msgID
-        content = htmlToAttributedString(msgContent + "<style>body{font-family:\"SourceSansPro-Regular\";font-size:15px;line-height:15px;}</style>")
-//        let data = msgContent.dataUsingEncoding(NSUTF8StringEncoding)
-//        let haha = DTHTMLAttributedStringBuilder(HTML: msgContent.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!, options: nil, documentAttributes: nil)
-//        let ugh = DTHTMLAttributedStringBuilder(HTML: data!, options: [DTDefaultFontSize : NSNumber(float: 12)], documentAttributes: nil)
-//        content = ugh.generatedAttributedString()
-        timestamp = msgTimestamp
-        name = msgName
-        avatarURL = msgAvatarURL
-        recipientID = msgRecipientID
-        type = msgType
-        recipientNames = msgRecipients
-        setRecipientEmail = msgRecipientEmail
-        mention = msgMention
-    }
+  dynamic var stream = String()
+  dynamic var streamColor = String()
+  dynamic var subject = String()
+  dynamic var content = NSAttributedString()
+  dynamic var timestamp = String()
+  dynamic var name = String()
+  dynamic var avatarURL = String()
+  dynamic var messageID = String()
+  
+  //PMs
+  dynamic var recipientID = String()
+  dynamic var type = String()
+  dynamic var recipientNames = [String]()
+  dynamic var setRecipientEmail = Set<String>()
+  dynamic var mention = Bool()
+  
+  
+  init() {}
+  
+  init(msgStream: String, msgStreamColor: String, msgSubject: String, msgContent: String, msgTimestamp: String, msgName: String, msgAvatarURL: String, msgID: String, msgRecipientID: String, msgType: String, msgRecipients: [String], msgRecipientEmail: Set<String>, msgMention: Bool) {
+    stream = msgStream
+    streamColor = msgStreamColor
+    subject = msgSubject
+    messageID = msgID
+    content = htmlToAttributedString(msgContent + "<style>body{font-family:\"SourceSansPro-Regular\";font-size:15px;line-height:15px;}</style>")
+    timestamp = msgTimestamp
+    name = msgName
+    avatarURL = msgAvatarURL
+    recipientID = msgRecipientID
+    type = msgType
+    recipientNames = msgRecipients
+    setRecipientEmail = msgRecipientEmail
+    mention = msgMention
+  }
 }

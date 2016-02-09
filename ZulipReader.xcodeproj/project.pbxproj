@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B856384A8DA269EAD1D235E /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D131FB900BB18938931304B /* Pods_ZulipReader.framework */; };
 		2C2C5BF5ACF8CDAF8E4E96AE /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB93339AFD280F7DC56DBE /* Pods.framework */; };
 		670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamExtendedCell.swift */; };
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
@@ -38,13 +39,13 @@
 		67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */; };
 		67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */; };
 		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
+		67BA7DAE1C6A8374004366BE /* ZulipReader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 67BA7DAC1C6A8374004366BE /* ZulipReader.xcdatamodeld */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
 		67D1F1BD1BFA6AEA006F9468 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */; };
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
 		67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */; };
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
-		773A18EB6096D2487AD86E19 /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1EF400047655F589DA7BD5FB /* Pods-ZulipReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.release.xcconfig"; sourceTree = "<group>"; };
 		670295011C1B65E500314A04 /* StreamExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamExtendedCell.swift; sourceTree = "<group>"; };
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 		67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
 		67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuCell.swift; sourceTree = "<group>"; };
 		67B24E8D1C0E66A100A189B2 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
+		67BA7DAD1C6A8374004366BE /* ZulipReader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ZulipReader.xcdatamodel; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -101,10 +104,9 @@
 		67D1F1C81BFA6AEA006F9468 /* ZulipReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZulipReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZulipReaderTests.swift; sourceTree = "<group>"; };
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.release.xcconfig"; sourceTree = "<group>"; };
+		8D131FB900BB18938931304B /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C62E46B9B2D4C76C57E89F84 /* Pods-ZulipReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.debug.xcconfig"; sourceTree = "<group>"; };
 		C6AB93339AFD280F7DC56DBE /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DEA9AAA36DBF7B557DF32C4D /* Pods-ZulipReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				773A18EB6096D2487AD86E19 /* Pods_ZulipReader.framework in Frameworks */,
+				1B856384A8DA269EAD1D235E /* Pods_ZulipReader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,11 +129,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		148423DE181B2BB9490C5FBC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C62E46B9B2D4C76C57E89F84 /* Pods-ZulipReader.debug.xcconfig */,
+				1EF400047655F589DA7BD5FB /* Pods-ZulipReader.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		5C8E98633BCDDCEFAEEC1B78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				C6AB93339AFD280F7DC56DBE /* Pods.framework */,
-				DBFE5A1337B87567DF856B32 /* Pods_ZulipReader.framework */,
+				8D131FB900BB18938931304B /* Pods_ZulipReader.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -196,7 +207,7 @@
 				67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */,
 				67D1F1B51BFA6AEA006F9468 /* Products */,
 				5C8E98633BCDDCEFAEEC1B78 /* Frameworks */,
-				C6E19BCE13932922DB6B3D87 /* Pods */,
+				148423DE181B2BB9490C5FBC /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -213,6 +224,7 @@
 			isa = PBXGroup;
 			children = (
 				67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */,
+				67BA7DAC1C6A8374004366BE /* ZulipReader.xcdatamodeld */,
 				673251741C0A5D85009A546C /* DataController.swift */,
 				678A6BB61C10EBA200AE091B /* Cell.swift */,
 				67A9DA8E1C1F546600AEEF1B /* Login */,
@@ -243,15 +255,6 @@
 			path = ZulipReaderTests;
 			sourceTree = "<group>";
 		};
-		C6E19BCE13932922DB6B3D87 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				DEA9AAA36DBF7B557DF32C4D /* Pods-ZulipReader.debug.xcconfig */,
-				8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -259,12 +262,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 67D1F1D11BFA6AEA006F9468 /* Build configuration list for PBXNativeTarget "ZulipReader" */;
 			buildPhases = (
-				6DE9F83F465E70A5066116D7 /* Check Pods Manifest.lock */,
+				50938CB448E9F14BA52061C3 /* Check Pods Manifest.lock */,
 				67D1F1B01BFA6AEA006F9468 /* Sources */,
 				67D1F1B11BFA6AEA006F9468 /* Frameworks */,
 				67D1F1B21BFA6AEA006F9468 /* Resources */,
-				6D8F6152833B0D03A8E68D49 /* Embed Pods Frameworks */,
-				071112DF3BDDF78FA1D2D89E /* Copy Pods Resources */,
+				2E76AA626D5FAD2A753EE0EF /* Embed Pods Frameworks */,
+				BAB938F09870687965F9AC91 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -370,22 +373,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		071112DF3BDDF78FA1D2D89E /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6D8F6152833B0D03A8E68D49 /* Embed Pods Frameworks */ = {
+		2E76AA626D5FAD2A753EE0EF /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -400,7 +388,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6DE9F83F465E70A5066116D7 /* Check Pods Manifest.lock */ = {
+		50938CB448E9F14BA52061C3 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -413,6 +401,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		BAB938F09870687965F9AC91 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -435,6 +438,7 @@
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
+				67BA7DAE1C6A8374004366BE /* ZulipReader.xcdatamodeld in Sources */,
 				678A6BB71C10EBA200AE091B /* Cell.swift in Sources */,
 				673251771C0A7154009A546C /* StreamController.swift in Sources */,
 				67A1A8AF1C03AC2F00CCA40D /* StreamCell.swift in Sources */,
@@ -564,7 +568,7 @@
 		};
 		67D1F1D21BFA6AEA006F9468 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DEA9AAA36DBF7B557DF32C4D /* Pods-ZulipReader.debug.xcconfig */;
+			baseConfigurationReference = C62E46B9B2D4C76C57E89F84 /* Pods-ZulipReader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -579,7 +583,7 @@
 		};
 		67D1F1D31BFA6AEA006F9468 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */;
+			baseConfigurationReference = 1EF400047655F589DA7BD5FB /* Pods-ZulipReader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -593,7 +597,6 @@
 		};
 		67D1F1D51BFA6AEA006F9468 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DEA9AAA36DBF7B557DF32C4D /* Pods-ZulipReader.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = ZulipReaderTests/Info.plist;
@@ -606,7 +609,6 @@
 		};
 		67D1F1D61BFA6AEA006F9468 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8814DA7832891AEE9664648E /* Pods-ZulipReader.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = ZulipReaderTests/Info.plist;
@@ -648,6 +650,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		67BA7DAC1C6A8374004366BE /* ZulipReader.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				67BA7DAD1C6A8374004366BE /* ZulipReader.xcdatamodel */,
+			);
+			currentVersion = 67BA7DAD1C6A8374004366BE /* ZulipReader.xcdatamodel */;
+			path = ZulipReader.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 67D1F1AC1BFA6AEA006F9468 /* Project object */;
 }

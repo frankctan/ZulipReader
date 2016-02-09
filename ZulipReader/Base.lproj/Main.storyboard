@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -65,13 +65,13 @@
                                             <action selector="loginButtonDidTouch:" destination="BYZ-38-t0r" eventType="touchUpInside" id="50e-HO-z9t"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Zulip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qwg-6e-XYB" customClass="DesignableLabel" customModule="Spring">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Zulip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qwg-6e-XYB" customClass="DesignableLabel" customModule="Spring">
                                         <rect key="frame" x="107" y="67" width="67" height="41"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Bold" family="Source Sans Pro" pointSize="30"/>
                                         <color key="textColor" red="0.1717500985" green="0.63812547919999996" blue="0.2866695225" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log in to" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uhO-2s-Tii" customClass="DesignableLabel" customModule="Spring">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Log in to" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uhO-2s-Tii" customClass="DesignableLabel" customModule="Spring">
                                         <rect key="frame" x="91" y="22" width="99" height="37"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="27"/>
                                         <color key="textColor" red="0.1717500985" green="0.63812547919999996" blue="0.2866695225" alpha="1" colorSpace="calibratedRGB"/>
@@ -124,8 +124,8 @@
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="0NL-fA-Rjv" secondAttribute="trailing" constant="20" id="D0q-t2-fNp"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ppn-wR-djV"/>
+                            <constraint firstItem="0NL-fA-Rjv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="124" id="QfA-35-jq0"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="WRY-5m-gzb"/>
-                            <constraint firstItem="0NL-fA-Rjv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="124" id="ZTw-Vd-uz3"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="4" id="gld-MS-fUm"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="mVZ-UA-jom"/>
                         </constraints>
@@ -133,7 +133,6 @@
                             <mask key="constraints">
                                 <exclude reference="D0q-t2-fNp"/>
                                 <exclude reference="WRY-5m-gzb"/>
-                                <exclude reference="ZTw-Vd-uz3"/>
                                 <exclude reference="gld-MS-fUm"/>
                             </mask>
                         </variation>
@@ -192,7 +191,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg" customClass="SpringLabel" customModule="Spring">
                                             <rect key="frame" x="38" y="-1" width="35" height="20"/>
                                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gu7-zD-Jd5">

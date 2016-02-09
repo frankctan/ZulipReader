@@ -3,5 +3,4 @@
 //
 
 #import "SlackTextViewController/SLKTextViewController.h"
-#import "DTCoreText/DTCoreText.h"
 #import "SWRevealViewController.h"
