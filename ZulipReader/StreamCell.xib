@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9060" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -27,14 +27,12 @@
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="752" text="100w" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aKS-m6-HeY">
                         <rect key="frame" x="278" y="4" width="33.5" height="19.5"/>
-                        <animations/>
                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aqC-mp-N5r" customClass="DesignableImageView" customModule="Spring">
                         <rect key="frame" x="5" y="4" width="40" height="40"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="width" constant="50" id="Zo1-u0-LVB"/>
                             <constraint firstAttribute="height" constant="50" id="aHu-kA-4rs"/>
@@ -60,7 +58,6 @@
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Frank Tan (Fall 2015)" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PZw-IZ-CVX">
                         <rect key="frame" x="50" y="4" width="224" height="20.5"/>
-                        <animations/>
                         <constraints>
                             <constraint firstAttribute="height" constant="50" id="die-B8-JxD"/>
                         </constraints>
@@ -75,7 +72,6 @@
                     </label>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" scrollEnabled="NO" editable="NO" text="Text" translatesAutoresizingMaskIntoConstraints="NO" id="se8-My-XVd" customClass="AutoTextView" customModule="Spring">
                         <rect key="frame" x="50" y="28" width="261.5" height="22"/>
-                        <animations/>
                         <accessibility key="accessibilityConfiguration">
                             <accessibilityTraits key="traits" notEnabled="YES"/>
                         </accessibility>
@@ -84,7 +80,6 @@
                         <dataDetectorType key="dataDetectorTypes" address="YES"/>
                     </textView>
                 </subviews>
-                <animations/>
                 <constraints>
                     <constraint firstItem="se8-My-XVd" firstAttribute="leading" secondItem="jQC-lF-sDY" secondAttribute="leading" constant="8" id="1cE-cO-AaG"/>
                     <constraint firstAttribute="trailingMargin" secondItem="aKS-m6-HeY" secondAttribute="trailing" id="2T9-Fc-8iX"/>
@@ -115,7 +110,6 @@
                     </mask>
                 </variation>
             </tableViewCellContentView>
-            <animations/>
             <connections>
                 <outlet property="badgeImageView" destination="aqC-mp-N5r" id="t64-WB-1aB"/>
                 <outlet property="contentTextView" destination="se8-My-XVd" id="kfB-XV-gev"/>

@@ -8,28 +8,27 @@
 
 import UIKit
 import Spring
-import RealmSwift
 
 class Cell {
-  dynamic var stream = String()
-  dynamic var streamColor = String()
-  dynamic var subject = String()
-  dynamic var content = NSAttributedString()
-  dynamic var timestamp = String()
-  dynamic var name = String()
-  dynamic var avatarURL = String()
-  dynamic var messageID = String()
-  
-  //PMs
-  dynamic var recipientID = String()
-  dynamic var type = String()
-  dynamic var recipientNames = [String]()
-  dynamic var setRecipientEmail = Set<String>()
-  dynamic var mention = Bool()
-  
-  
+dynamic var stream = String()
+dynamic var streamColor = String()
+dynamic var subject = String()
+dynamic var content = NSAttributedString()
+dynamic var timestamp = String()
+dynamic var name = String()
+dynamic var avatarURL = String()
+dynamic var messageID = String()
+
+//PMs
+dynamic var recipientID = String()
+dynamic var type = String()
+dynamic var recipientNames = [String]()
+dynamic var setRecipientEmail = Set<String>()
+dynamic var mention = Bool()
+
+
   init() {}
-  
+
   init(msgStream: String, msgStreamColor: String, msgSubject: String, msgContent: String, msgTimestamp: String, msgName: String, msgAvatarURL: String, msgID: String, msgRecipientID: String, msgType: String, msgRecipients: [String], msgRecipientEmail: Set<String>, msgMention: Bool) {
     stream = msgStream
     streamColor = msgStreamColor

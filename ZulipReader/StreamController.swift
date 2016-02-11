@@ -11,12 +11,12 @@ import Alamofire
 import SwiftyJSON
 import Spring
 import Locksmith
+import RealmSwift
 
 protocol StreamControllerDelegate: class {
   func statusUpdate(flag: Bool)
   //  func streamController(messagesForTable: [[Cell]])
   //  func longPollDelegate(appendMessages: [[Cell]])
-  
 }
 
 class StreamController : DataController {
@@ -51,6 +51,7 @@ class StreamController : DataController {
   }
   
   func getQueueIDAndPointer() {
+    
     Alamofire.request(Router.Register).responseJSON {[weak self] res in
       let response = JSON(data:res.data!)
       guard let controller = self,
@@ -64,10 +65,78 @@ class StreamController : DataController {
       controller.queueID = response["queue_id"].stringValue
       controller.pointer = response["pointer"].stringValue
       controller.maxMessageID = response["max_message_id"].stringValue
+      
+      //      controller.getNarrowMessages(controller.maxMessageID, before: 10, after: 0, narrow:"[[\"is\",\"private\"]]")
+      
+      controller.getOldMessages(controller.maxMessageID, before: 0, after: 0)
+      
+    }
+  }
+  let realm = try! Realm()
+  func getOldMessages(anchor: String, before: Int, after: Int) {
+    print("getOldMesages")
+    
+    Alamofire.request(Router.GetOldMessages(anchor: anchor, before: before, after: after)).responseJSON {[weak self] res in
+      let response = JSON(data:res.data!)
+      guard let controller = self else {fatalError("unable to assign controller")}
+      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
+      let messages = response["messages"].arrayValue
+      
+      
+      var writeStrings:[String: String] = [:]
+      var writeDoubles: [String:Double] = [:]
+      var writeArrays:[String: [String]] = [:]
+      for message in messages {
+        var messageDict = message.dictionaryObject
+//        for (key,value) in messageDict {
+//          
+//          if let stringValue = value.string {
+//            writeStrings[key] = stringValue
+//          }
+//          else if let doubleValue = value.double {
+//            writeDoubles[key] = doubleValue
+//          }
+//          else if let arrayValue = value.array {
+//            writeArrays[key] = arrayValue.map {$0.stringValue}
+//          }
+//          else {
+//            print("didn't make the cut... \(key): \(value)")
+//          }
+//        }
+        
+        
+//        print("writeArrays: \(writeArrays)")
+        let message = Message(value: messageDict!)
+//        let stringAttributes = Message(value: writeStrings)
+//        let doubleAttributes = Message(value: writeDoubles)
+//        let arrayAttributes = Message(value: writeArrays)
+//        print("trying Realm...")
+        
+        try! controller.realm.write {
+          controller.realm.add(message)
+//          controller.realm.create(message, value: doubleAttributes, update: true)
+//          controller.realm.add(arrayAttributes)
+          //          controller.realm.add(doubleAttributes)
+          print("realm config: \(Realm.Configuration.defaultConfiguration.path!)")
+        }
+      }
+    }
+  }
+  
+  
+  func getNarrowMessages(anchor: String, before: Int, after: Int, narrow: String) {
+    print("getNarrowMessages")
+    Alamofire.request(Router.GetNarrowMessages(anchor: anchor, before: before, after: after, narrow: narrow)).responseJSON {[weak self] res in
+      let response = JSON(data:res.data!)
+      guard let controller = self else {fatalError("unable to assign controller")}
+      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
+      let messages = response["messages"][0].dictionaryValue
+      
     }
   }
   
   func clearDefaults() {
+    Router.basicAuth = nil
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }

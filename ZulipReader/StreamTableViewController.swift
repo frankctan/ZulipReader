@@ -10,33 +10,35 @@ import UIKit
 import AMScrollingNavbar
 import SlackTextViewController
 
-class StreamTableViewController: SLKTextViewController {
+var State = ""
+
+class StreamTableViewController: SLKTextViewController, StreamControllerDelegate {
   
   //TODO: create a new view for navigation!
   @IBOutlet weak var menuButton: UIBarButtonItem!
-  
-  @IBAction func homeButtonDidTouch(sender: AnyObject) {
-    State = "stream"
-    narrowTitle = "Stream"
-    narrowParams = nil
+//
+//  @IBAction func homeButtonDidTouch(sender: AnyObject) {
+//    State = "stream"
+//    narrowTitle = "Stream"
+//    narrowParams = nil
 //    self.data.getStreamMessages(narrowParams)
-    self.setTextInputbarHidden(true, animated: true)
-  }
+//    self.setTextInputbarHidden(true, animated: true)
+//  }
   
   let data = StreamController()
-  var messages = [[Cell]]()
-  
+//  var messages = [[Cell]]()
+//  
   var narrowParams: [[String]]?
   var narrowTitle = "Stream"
   var narrowType = ""
   var narrowSubject:String?
   var narrowRecipient = [String]()
-  
+//
   var longPollFlag = false
-  
+//
   var dataSource: TableViewControllerDataSource!
   var tableDelegate: TableViewDelegate!
-  
+//
   required init!(coder decoder: NSCoder!) {
     super.init(coder: decoder)
   }
@@ -79,6 +81,7 @@ class StreamTableViewController: SLKTextViewController {
     if let navigationController = self.navigationController as? ScrollingNavigationController {
       navigationController.followScrollView(tableView, delay: 0.0)
     }
+    print("in streamTableViewController:viewDidAppear")
     tableView.showLoading()
     loadData()
   }
@@ -91,7 +94,6 @@ class StreamTableViewController: SLKTextViewController {
     } else {
       data.getQueueIDAndPointer()
     }
-//    self.data.getStreamMessages(narrowParams)
   }
   
   //MARK: -StreamControllerDelegate
@@ -100,65 +102,65 @@ class StreamTableViewController: SLKTextViewController {
       loadData()
     }
   }
-  
-  
-  
-  //MARK: SLKTextViewController
-  override func didPressRightButton(sender: AnyObject!) {
-    self.textView.refreshFirstResponder()
-    let sendMessage = self.textView.text.copy() as! String
-    super.didPressRightButton(sender)
-    
-    if narrowType == "private" {
-      narrowSubject = nil
-    }
-    if State == "subject" {
+}
+
+//  
+//  //MARK: SLKTextViewController
+//  override func didPressRightButton(sender: AnyObject!) {
+//    self.textView.refreshFirstResponder()
+//    let sendMessage = self.textView.text.copy() as! String
+//    super.didPressRightButton(sender)
+//    
+//    if narrowType == "private" {
+//      narrowSubject = nil
+//    }
+//    if State == "subject" {
 //      data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
-    }
+//    }
 //    data.getStreamMessages(narrowParams)
-  }
-}
-
-//MARK: StreamControllerDelegate
-extension StreamTableViewController: StreamControllerDelegate {
-  func streamController(messagesForTable: [[Cell]]) {
-    messages = messagesForTable
-    self.title = narrowTitle
-    dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
-    tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
-    tableView.dataSource = dataSource
-    tableView.delegate = tableDelegate
-    
-    self.tableView.reloadData()
-    guard !messages.isEmpty else {return}
-    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.last!.count-1, inSection: messages.count-1), atScrollPosition: .Bottom, animated: true)
-    if longPollFlag == false {
-      longPollFlag = true
-//      data.callLongPoll()
-    }
-  }
-  
-  func longPollDelegate(appendMessages: [[Cell]]) {
-    print("in long poll delegate")
-    for longPollMessages in appendMessages {
-      print(longPollMessages)
-      messages.append(longPollMessages)
-    }
-    print(messages.count)
-    
-    longPollFlag = true
-//    data.callLongPoll()
-    
-    guard State == "stream" else {return}
-    dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
-    tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
-    tableView.dataSource = dataSource
-    tableView.delegate = tableDelegate
-    self.tableView.reloadData()
-    
-  }
-}
-
+//  }
+//}
+//
+////MARK: StreamControllerDelegate
+//extension StreamTableViewController: StreamControllerDelegate {
+//  func streamController(messagesForTable: [[Cell]]) {
+//    messages = messagesForTable
+//    self.title = narrowTitle
+//    dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
+//    tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
+//    tableView.dataSource = dataSource
+//    tableView.delegate = tableDelegate
+//    
+//    self.tableView.reloadData()
+//    guard !messages.isEmpty else {return}
+//    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.last!.count-1, inSection: messages.count-1), atScrollPosition: .Bottom, animated: true)
+//    if longPollFlag == false {
+//      longPollFlag = true
+////      data.callLongPoll()
+//    }
+//  }
+//  
+//  func longPollDelegate(appendMessages: [[Cell]]) {
+//    print("in long poll delegate")
+//    for longPollMessages in appendMessages {
+//      print(longPollMessages)
+//      messages.append(longPollMessages)
+//    }
+//    print(messages.count)
+//    
+//    longPollFlag = true
+////    data.callLongPoll()
+//    
+//    guard State == "stream" else {return}
+//    dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
+//    tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
+//    tableView.dataSource = dataSource
+//    tableView.delegate = tableDelegate
+//    self.tableView.reloadData()
+//    
+//  }
+//}
+//
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {

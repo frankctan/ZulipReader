@@ -3,9 +3,11 @@ PODS:
   - AMScrollingNavbar (2.0.9)
   - Kingfisher (1.8.2)
   - Locksmith (2.0.6)
-  - Realm (0.98.0):
-    - Realm/Headers (= 0.98.0)
-  - Realm/Headers (0.98.0)
+  - Realm (0.98.1):
+    - Realm/Headers (= 0.98.1)
+  - Realm/Headers (0.98.1)
+  - RealmSwift (0.98.1):
+    - Realm (= 0.98.1)
   - SlackTextViewController (1.7.2)
   - Spring (1.0.3)
   - SwiftyJSON (2.3.1)
@@ -15,7 +17,7 @@ DEPENDENCIES:
   - AMScrollingNavbar (~> 2.0.1)
   - Kingfisher (~> 1.8)
   - Locksmith
-  - Realm
+  - RealmSwift
   - SlackTextViewController
   - Spring (from `https://github.com/MengTo/Spring.git`, branch `swift2`)
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
@@ -40,7 +42,8 @@ SPEC CHECKSUMS:
   AMScrollingNavbar: 6ee57388f84b8f33f31a7944abf51b9afa16bafd
   Kingfisher: b39315e9dbed7e8ffe73a9ca1be2ee006d1d57e4
   Locksmith: 42ec3d535448e3c218f4342782b07a222b1acfd1
-  Realm: 28efc598b8b1b378d27a222d9fc037a29ae68642
+  Realm: ca4a4122e939e228e10694fc49011386cb2ecb07
+  RealmSwift: 7d3c7033427816a2c3417ba0d004d694987e503a
   SlackTextViewController: 1f4e8f68c156ef93de73fd422db2b8d5d5b0f4e7
   Spring: 3f02b5dc3308572ef177b3cad0fa7bbc4b0706f7
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3

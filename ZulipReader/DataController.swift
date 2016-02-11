@@ -21,8 +21,6 @@ public struct UserData {
 }
 
 //stream, narrow, subject
-public var State:String = "stream"
-public var userData = UserData()
 public var streamColorLookup = [String:String]()
 
 class DataController {
@@ -36,9 +34,9 @@ class DataController {
     
     case Login(username: String, password: String)
     case Register
-    //    case GetStreamMessages(anchor: String, before: Int, after: Int)
+    case GetOldMessages(anchor: String, before: Int, after: Int)
     //    case GetSubscriptions
-    //    case GetNarrowMessages(anchor: String, before: Int, after: Int, narrowParams: [[String]])
+    case GetNarrowMessages(anchor: String, before: Int, after: Int, narrow: String)
     //    case PostMessage(type: String, content: String, to: [String], subject: String?)
     //    case longPoll(queueID: String, lastEventId: String)
     
@@ -46,6 +44,8 @@ class DataController {
       switch self {
       case .Login, .Register:
         return .POST
+      case .GetOldMessages, .GetNarrowMessages:
+        return .GET
       }
     }
     
@@ -56,6 +56,10 @@ class DataController {
           return ("/fetch_api_key", ["username": username, "password": password])
         case .Register:
           return("/register", ["event_types:": ["message","pointer"]])
+        case .GetOldMessages(let anchor, let before, let after):
+          return("/messages", ["anchor": anchor, "num_before": before, "num_after": after])
+          case .GetNarrowMessages(let anchor, let before, let after, let narrow):
+          return("/messages", ["anchor": anchor, "num_before": before, "num_after": after, "narrow": narrow])
         }
       }()
       
@@ -68,6 +72,7 @@ class DataController {
       }
       
       let encoding = Alamofire.ParameterEncoding.URL
+      print(encoding.encode(URLRequest, parameters: result.parameters).0)
       return encoding.encode(URLRequest, parameters: result.parameters).0
     }
     //      switch self {
