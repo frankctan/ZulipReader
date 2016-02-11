@@ -19,6 +19,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Locksmith.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-ZulipReader.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -47,22 +52,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0815287D6E8B43E94E9ABFAB3A0E8049</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>0C2837134CC25F157FCFDF3DE6C6B2F4</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>1E142477B4A5367D50A7E0538A49A65F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>432ECC54282C84882B482CCB4CF227FC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>51A74CC948D1F129327192C092E8CCF9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -72,12 +67,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A11A4D3651E56DAAEA44B47429403990</key>
+		<key>5DBBBE8293250B2DECB277EE570C036F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>ECC8076C142880316CB315006C4D1914</key>
+		<key>796AB839FF80FA9E70653DFBC7F69476</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>89E13CD7AA7ACBBD0FEAF6AEDC4870B2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>92943306EC8070DF9CD02ECD505D2CD5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B38CCA2570072E04E2B73D38FD3336E8</key>
 		<dict>
 			<key>primary</key>
 			<true/>

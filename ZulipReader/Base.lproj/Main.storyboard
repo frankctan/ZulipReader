@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xki-48-tS5">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
@@ -23,7 +23,7 @@
         <!--Login View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="LoginViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="BYZ-38-t0r" customClass="LoginViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -142,12 +142,11 @@
                         <outlet property="dialogView" destination="0NL-fA-Rjv" id="zDi-v5-BMS"/>
                         <outlet property="passwordTextField" destination="kvf-C2-51d" id="au3-fc-Cqt"/>
                         <outlet property="usernameTextField" destination="AOI-qb-zLI" id="aV5-yY-5M1"/>
-                        <segue destination="xki-48-tS5" kind="show" identifier="loginSegue" id="IdH-of-GIb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="216" y="380"/>
+            <point key="canvasLocation" x="116" y="55"/>
         </scene>
         <!--Reveal View Controller-->
         <scene sceneID="YBn-l2-90w">
@@ -166,11 +165,12 @@
                     <connections>
                         <segue destination="gOa-O0-Tyl" kind="custom" identifier="sw_front" customClass="SWRevealViewControllerSegueSetController" id="5iZ-Ld-U7R"/>
                         <segue destination="4Xf-qU-BNc" kind="custom" identifier="sw_rear" customClass="SWRevealViewControllerSegueSetController" id="qui-zH-vfu"/>
+                        <segue destination="BYZ-38-t0r" kind="presentation" identifier="loginSegue" id="lQC-UU-ves"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yrx-Gx-1fC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="216" y="1049"/>
+            <point key="canvasLocation" x="116" y="741"/>
         </scene>
         <!--Side Menu Table View Controller-->
         <scene sceneID="ewD-n8-ycP">
@@ -185,10 +185,10 @@
                                 <rect key="frame" x="0.0" y="28" width="320" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BG4-kQ-ldN" id="P7c-r4-rJU">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="17.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg" customClass="SpringLabel" customModule="Spring">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg" customClass="SpringLabel" customModule="Spring">
                                             <rect key="frame" x="38" y="-1" width="35" height="20"/>
                                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -282,6 +282,6 @@
         <image name="menu" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="5iZ-Ld-U7R"/>
+        <segue reference="zD2-Tr-MIe"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -9,80 +9,43 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import Locksmith
 
 protocol LoginControllerDelegate: class {
-  func loginController(msg: String)
+  func didFinishFetch(flag: Bool)
 }
 
 class LoginController : DataController {
   
   weak var delegate: LoginControllerDelegate?
   
-  
-  func login(username: String, password: String) {
-    let loginURL = getURL(.Login(username: username, password: password))
-    
-    Alamofire.request(.POST, loginURL).responseJSON {[weak self] res in
-      guard let response = self?.evalJSONResult(res) else {return}
-      guard response.flag == true else {return}
+  func fetchKey(username: String, password: String) {
+    Alamofire.request(Router.Login(username: username, password: password)).responseJSON {[weak self] res in
+      guard let controller = self,
+        let delegate = controller.delegate else {fatalError("unable to assign controller/delegate")}
+      let response = JSON(data: res.data!)
+      print("fetchKey: \(response["msg"].stringValue)")
       
-      var loginInfo = ["username":"", "password":""]
-      loginInfo["username"] = username
-      loginInfo["password"] = response.data["api_key"].stringValue
-      userData.email = username
-      
-      guard let controller = self else {return}
-      userData.header = controller.createAuthorizationHeader(loginInfo)
-      controller.registerQueueIdPointer()
+      guard response["result"].stringValue == "success" else {delegate.didFinishFetch(false); return}
+      var header: [String: String] = [:]
+      header["username"] = response["email"].stringValue
+      header["password"] = response["api_key"].stringValue
+
+      controller.setKeychainAndHeader(header)
+      delegate.didFinishFetch(true)
     }
   }
   
-  func createAuthorizationHeader(credentials: Header) -> Header {
-    let credentialData = "\(credentials["username"]!):\(credentials["password"]!)".dataUsingEncoding(NSUTF8StringEncoding)!.base64EncodedStringWithOptions([])
-    return ["Authorization": "Basic \(credentialData)"]
-  }
-  
-  func registerQueueIdPointer() {
-    let regURL = getURL(.Register)
-    Alamofire.request(.POST, regURL, headers: userData.header).responseJSON {[weak self] res in
-      guard let response = self?.evalJSONResult(res) else {return}
-      guard response.flag == true else {return}
-      
-      guard let controller = self else {return}
-      userData.queueID = response.data["queue_id"].stringValue
-      userData.pointer = response.data["max_message_id"].stringValue
-      controller.registerUserDefaults()
-      controller.delegate?.loginController(response.data["msg"].stringValue)
+  private func setKeychainAndHeader(header: Header) {
+    Router.basicAuth = createAuthorizationHeader(header)
+    do {
+      try Locksmith.saveData(["Authorization": Router.basicAuth!], forUserAccount: "default")
     }
+    catch {fatalError("keychain can't be set")}
   }
   
-  func registerUserDefaults() {
-    let userDict:[String : AnyObject] =
-    ["header" : userData.header,
-      "queueID" : userData.queueID,
-      "pointer" : userData.pointer,
-      "email" : userData.email]
-    
-    NSUserDefaults.standardUserDefaults().setValuesForKeysWithDictionary(userDict)
-    let sync = NSUserDefaults.standardUserDefaults().synchronize()
-    print("sync: \(sync)")
-    print("registered user defaults!")
-  }
-  
-  func evalJSONResult(input: (Response<AnyObject, NSError>)) -> (flag: Bool, data: JSON) {
-    let responseData = JSON(data: input.data!)
-    guard responseData["result"].stringValue == "success" else {
-      delegate?.loginController(responseData["msg"].stringValue)
-      return (false, responseData)
-    }
-    return (true, responseData)
-  }
-  
-  func isLoggedIn() -> Bool {
-    if userData.queueID == "" {
-      return false
-    } else {
-      return true
-    }
+  private func createAuthorizationHeader(header: Header) -> String {
+    let head = "\(header["username"]!):\(header["password"]!)".dataUsingEncoding(NSUTF8StringEncoding)!.base64EncodedStringWithOptions([])
+    return "Basic \(head)"
   }
 }
