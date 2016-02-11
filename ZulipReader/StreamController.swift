@@ -62,18 +62,23 @@ class StreamController : DataController {
         delegate.statusUpdate(false)
         return
       }
-      
       controller.queueID = response["queue_id"].stringValue
       controller.pointer = response["pointer"].stringValue
       controller.maxMessageID = response["max_message_id"].stringValue
-      controller.getOldMessages(controller.maxMessageID, before: 0, after: 0)
       
+      //      controller.getOldMessages(controller.maxMessageID, before: 0, after: 0)
+      controller.getNarrowMessages(controller.maxMessageID, before: 10, after: 0, narrow:"[[\"is\",\"private\"]]")
+      //      controller.getSubscriptions()
+      controller.subscriptions("subscriptions") {[weak self] array in
+        self?.subscriptionsToRealm(array)
+      }
+      print("realm config: \(Realm.Configuration.defaultConfiguration.path!)")
     }
   }
   let realm = try! Realm()
+  
   func getOldMessages(anchor: String, before: Int, after: Int) {
     print("getOldMesages")
-    
     Alamofire.request(Router.GetOldMessages(anchor: anchor, before: before, after: after)).responseJSON {[weak self] res in
       let response = JSON(data:res.data!)
       guard let controller = self else {fatalError("unable to assign controller")}
@@ -83,14 +88,58 @@ class StreamController : DataController {
     }
   }
   
+  func getNarrowMessages(anchor: String, before: Int, after: Int, narrow: String) {
+    print("getNarrowMessages")
+    Alamofire.request(Router.GetNarrowMessages(anchor: anchor, before: before, after: after, narrow: narrow)).responseJSON {[weak self] res in
+      let response = JSON(data:res.data!)
+      guard let controller = self else {fatalError("unable to assign controller")}
+      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
+      let messages = response["messages"].arrayValue
+      controller.messagesToRealm(messages)
+    }
+  }
+  
+  func getSubscriptions() {
+    print("getSubscriptions")
+    Alamofire.request(Router.GetSubscriptions).responseJSON {[weak self] res in
+      let response = JSON(data:res.data!)
+      guard let controller = self else {fatalError("unable to assign controller")}
+      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
+      let subscriptions = response["subscriptions"].arrayValue
+      controller.subscriptionsToRealm(subscriptions)
+    }
+  }
+  
+  func subscriptions(param: String, completion: (response: [JSON]) -> ()) {
+    Alamofire.request(Router.GetSubscriptions).responseJSON {[weak self] res in
+      let response = JSON(data:res.data!)
+      //      guard let controller = self else {fatalError("unable to assign controller")}
+      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
+      let output = response[param].arrayValue
+      completion(response: output)
+    }
+  }
+  
   func messagesToRealm(messages: [JSON]) {
     for message in messages {
       let messageDict = message.dictionaryObject
-      let message = Message(value: messageDict!)
+      let msg = Message(value: messageDict!)
       do {
         try realm.write {
-          realm.add(message)
-          print("realm config: \(Realm.Configuration.defaultConfiguration.path!)")
+          realm.add(msg)
+        }
+      } catch { fatalError("could not write to realm") }
+    }
+  }
+  
+  //TODO: refactor subs and messages to Realm
+  func subscriptionsToRealm(subs: [JSON]) {
+    for sub in subs {
+      let dict = sub.dictionaryObject
+      let subscription = Subscription(value: dict!)
+      do {
+        try realm.write {
+          realm.add(subscription)
         }
       } catch { fatalError("could not write to realm") }
     }
@@ -108,16 +157,6 @@ class StreamController : DataController {
   }
   
   
-  //  func getNarrowMessages(anchor: String, before: Int, after: Int, narrow: String) {
-  //      controller.getNarrowMessages(controller.maxMessageID, before: 10, after: 0, narrow:"[[\"is\",\"private\"]]")
-  //    print("getNarrowMessages")
-  //    Alamofire.request(Router.GetNarrowMessages(anchor: anchor, before: before, after: after, narrow: narrow)).responseJSON {[weak self] res in
-  //      let response = JSON(data:res.data!)
-  //      guard let controller = self else {fatalError("unable to assign controller")}
-  //      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
-  //      let messages = response["messages"][0].dictionaryValue
-  //    }
-  //  }
   //
   //  func getStreamMessages(narrowParams:[[String]]?) {
   //    var messagesURL = NSURL()
