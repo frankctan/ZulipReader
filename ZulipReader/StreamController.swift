@@ -62,12 +62,10 @@ class StreamController : DataController {
         delegate.statusUpdate(false)
         return
       }
+      
       controller.queueID = response["queue_id"].stringValue
       controller.pointer = response["pointer"].stringValue
       controller.maxMessageID = response["max_message_id"].stringValue
-      
-      //      controller.getNarrowMessages(controller.maxMessageID, before: 10, after: 0, narrow:"[[\"is\",\"private\"]]")
-      
       controller.getOldMessages(controller.maxMessageID, before: 0, after: 0)
       
     }
@@ -81,67 +79,45 @@ class StreamController : DataController {
       guard let controller = self else {fatalError("unable to assign controller")}
       guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
       let messages = response["messages"].arrayValue
-      
-      
-      var writeStrings:[String: String] = [:]
-      var writeDoubles: [String:Double] = [:]
-      var writeArrays:[String: [String]] = [:]
-      for message in messages {
-        var messageDict = message.dictionaryObject
-//        for (key,value) in messageDict {
-//          
-//          if let stringValue = value.string {
-//            writeStrings[key] = stringValue
-//          }
-//          else if let doubleValue = value.double {
-//            writeDoubles[key] = doubleValue
-//          }
-//          else if let arrayValue = value.array {
-//            writeArrays[key] = arrayValue.map {$0.stringValue}
-//          }
-//          else {
-//            print("didn't make the cut... \(key): \(value)")
-//          }
-//        }
-        
-        
-//        print("writeArrays: \(writeArrays)")
-        let message = Message(value: messageDict!)
-//        let stringAttributes = Message(value: writeStrings)
-//        let doubleAttributes = Message(value: writeDoubles)
-//        let arrayAttributes = Message(value: writeArrays)
-//        print("trying Realm...")
-        
-        try! controller.realm.write {
-          controller.realm.add(message)
-//          controller.realm.create(message, value: doubleAttributes, update: true)
-//          controller.realm.add(arrayAttributes)
-          //          controller.realm.add(doubleAttributes)
+      controller.messagesToRealm(messages)
+    }
+  }
+  
+  func messagesToRealm(messages: [JSON]) {
+    for message in messages {
+      let messageDict = message.dictionaryObject
+      let message = Message(value: messageDict!)
+      do {
+        try realm.write {
+          realm.add(message)
           print("realm config: \(Realm.Configuration.defaultConfiguration.path!)")
         }
-      }
+      } catch { fatalError("could not write to realm") }
     }
   }
   
   
-  func getNarrowMessages(anchor: String, before: Int, after: Int, narrow: String) {
-    print("getNarrowMessages")
-    Alamofire.request(Router.GetNarrowMessages(anchor: anchor, before: before, after: after, narrow: narrow)).responseJSON {[weak self] res in
-      let response = JSON(data:res.data!)
-      guard let controller = self else {fatalError("unable to assign controller")}
-      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
-      let messages = response["messages"][0].dictionaryValue
-      
-    }
-  }
   
   func clearDefaults() {
     Router.basicAuth = nil
+    realm.deleteAll()
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }
     catch {fatalError("unable to clear Locksmith")}
   }
+  
+  
+  //  func getNarrowMessages(anchor: String, before: Int, after: Int, narrow: String) {
+  //      controller.getNarrowMessages(controller.maxMessageID, before: 10, after: 0, narrow:"[[\"is\",\"private\"]]")
+  //    print("getNarrowMessages")
+  //    Alamofire.request(Router.GetNarrowMessages(anchor: anchor, before: before, after: after, narrow: narrow)).responseJSON {[weak self] res in
+  //      let response = JSON(data:res.data!)
+  //      guard let controller = self else {fatalError("unable to assign controller")}
+  //      guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
+  //      let messages = response["messages"][0].dictionaryValue
+  //    }
+  //  }
   //
   //  func getStreamMessages(narrowParams:[[String]]?) {
   //    var messagesURL = NSURL()

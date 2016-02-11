@@ -34,8 +34,8 @@ class DataController {
     
     case Login(username: String, password: String)
     case Register
+    case GetSubscriptions
     case GetOldMessages(anchor: String, before: Int, after: Int)
-    //    case GetSubscriptions
     case GetNarrowMessages(anchor: String, before: Int, after: Int, narrow: String)
     //    case PostMessage(type: String, content: String, to: [String], subject: String?)
     //    case longPoll(queueID: String, lastEventId: String)
@@ -44,18 +44,20 @@ class DataController {
       switch self {
       case .Login, .Register:
         return .POST
-      case .GetOldMessages, .GetNarrowMessages:
+      case .GetSubscriptions, .GetOldMessages, .GetNarrowMessages:
         return .GET
       }
     }
     
     var URLRequest: NSMutableURLRequest {
-      let result: (path: String, parameters: [String: AnyObject]) = {
+      let result: (path: String, parameters: [String: AnyObject]?) = {
         switch self {
         case .Login(let username, let password):
           return ("/fetch_api_key", ["username": username, "password": password])
         case .Register:
           return("/register", ["event_types:": ["message","pointer"]])
+        case .GetSubscriptions:
+          return("/users/me/subscriptions", nil)
         case .GetOldMessages(let anchor, let before, let after):
           return("/messages", ["anchor": anchor, "num_before": before, "num_after": after])
           case .GetNarrowMessages(let anchor, let before, let after, let narrow):
