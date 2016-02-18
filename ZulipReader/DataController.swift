@@ -19,7 +19,6 @@ public struct UserData {
   var pointer = String()
   var email = String()
 }
-
 //stream, narrow, subject
 public var streamColorLookup = [String:String]()
 

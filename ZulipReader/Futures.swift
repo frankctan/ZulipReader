@@ -6,6 +6,42 @@
 //  Copyright © 2016 Frank Tan. All rights reserved.
 //
 
+import Alamofire
+import SwiftyJSON
+
+
+public enum ZulipErrorDomain: ErrorType {
+  case ZulipRequestFailure(message: String)
+  case NetworkRequestFailure
+  
+  var description: String {
+    switch self {
+    case .ZulipRequestFailure(let message): return message
+    case .NetworkRequestFailure: return "Network Request Failure"
+    }
+  }
+}
+
+public func AlamofireRequest(urlRequest: URLRequestConvertible) -> Future<JSON, ZulipErrorDomain> {
+  return Future<JSON, ZulipErrorDomain> { completion in
+    Alamofire.request(urlRequest).response { _, _, res, err in
+      let response = JSON(data: res!)
+      let result: Result<JSON, ZulipErrorDomain>
+      if err != nil {
+        result = Result.Error(Box(ZulipErrorDomain.NetworkRequestFailure))
+      }
+      else {
+        if response["result"].stringValue == "success" {
+          result = Result.Success(Box(response))
+        }
+        else {
+          result = Result.Error(Box(ZulipErrorDomain.ZulipRequestFailure(message: response["msg"].stringValue)))
+        }
+      }
+      completion(result)
+    }
+  }
+}
 
 public final class Box<T> {
   public let unbox: T
@@ -106,4 +142,6 @@ extension Future {
     })
   }
 }
+
+
 
