@@ -25,7 +25,7 @@ class LoginViewController: UIViewController, LoginControllerDelegate {
   
   @IBAction func loginButtonDidTouch(sender: UIButton) {
     usernameTextField.text = "frankctan@gmail.com"
-    passwordTextField.text = "recursion"
+    passwordTextField.text = "recursion1"
     
     guard let userName = usernameTextField.text,
       let password = passwordTextField.text
@@ -34,7 +34,7 @@ class LoginViewController: UIViewController, LoginControllerDelegate {
         dialogView.animate()
         return
     }
-    data.fetchKey(userName, password: password)
+    data.loginNow(userName, password: password)
   }
   
   func didFinishFetch(flag: Bool) {

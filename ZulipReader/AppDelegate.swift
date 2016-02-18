@@ -19,7 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     
     //TODO: -THIS DELETES REALM FILES.
-    try! NSFileManager.defaultManager().removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
+    do {
+    try NSFileManager.defaultManager().removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
+    }
+    catch {print("could not delete")}
     print("deleted realm files")
     
     self.window?.backgroundColor = UIColor.whiteColor()

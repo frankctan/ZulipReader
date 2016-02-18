@@ -88,11 +88,12 @@ class StreamTableViewController: SLKTextViewController, StreamControllerDelegate
   
   func loadData() {
     if !data.isLoggedIn() {
+      print("showing login screen")
       let storyBoard = UIStoryboard(name: "Main", bundle: nil)
       let controller = storyBoard.instantiateViewControllerWithIdentifier("LoginViewController")
       presentViewController(controller, animated: true, completion: nil)
     } else {
-      data.getQueueIDAndPointer()
+      data.loadMessages()
     }
   }
   

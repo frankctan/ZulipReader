@@ -42,6 +42,7 @@ class StreamController : DataController {
   }
   
   func isLoggedIn() -> Bool {
+//    try! Locksmith.deleteDataForUserAccount("default")
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
         Router.basicAuth = authHead
@@ -50,39 +51,89 @@ class StreamController : DataController {
     return false
   }
   
-  func getQueueIDAndPointer() {
-    
-    Alamofire.request(Router.Register).responseJSON {[weak self] res in
+  func loadMessages() {
+    let getQueueIDAndPointer = Router.Register
+    var getOldMessages = Router.GetOldMessages(anchor: maxMessageID, before: 0, after: 0)
+    let getSubscriptions = Router.GetSubscriptions
+    //
+    //    makeRequest(getQueueIDAndPointer,
+    //      failure: {[weak self] in
+    //        self?.clearDefaults()
+    //        self?.delegate?.statusUpdate(false)
+    //        return
+    //      },
+    //      completion: {[weak self] response in
+    //        self?.queueID = response["queue_id"].stringValue
+    //        self?.pointer = response["pointer"].stringValue
+    //        self?.maxMessageID = response["max_message_id"].stringValue
+    //
+    //        //Get Old Messages
+    //        var getOldMessages = Router.GetOldMessages(anchor: self?.maxMessageID, before: 0, after: 0)
+    //        self?.makeRequest(getOldMessages, failure: nil) { [weak self] response in
+    //          let messages = response["messages"].arrayValue
+    //          self?.messagesToRealm(messages)
+    //        }
+    //
+    //        //Get Subscriptions
+    //        self?.makeRequest(getSubscriptions, failure: nil) { [weak self] response in
+    //          let subscriptions = response["subscriptions"].arrayValue
+    //          self?.subscriptionsToRealm(subscriptions)
+    //        }
+    //      }
+    //    )
+  }
+  
+  
+  func makeRequest(request: URLRequestConvertible, failure: (() -> ())?, completion: (response: JSON) -> ()) {
+    Alamofire.request(request).responseJSON {res in
       let response = JSON(data:res.data!)
-      guard let controller = self,
-        let delegate = controller.delegate else {fatalError("unable to assign controller")}
       guard response["result"].stringValue == "success" else {
-        print("getQueueIDAndPointer: \(response["msg"].stringValue)")
+        print(response["msg"].stringValue)
+        if let fail = failure {
+          fail()
+        }
+        return
+      }
+      completion(response: response)
+    }
+  }
+  
+  func getQueueIDAndPointer() {
+    makeRequest(Router.Register,
+      failure: { [weak self] in
+        guard let controller = self,
+          let delegate = controller.delegate else {return}
         controller.clearDefaults()
         delegate.statusUpdate(false)
         return
+      },
+      completion: { [weak self] response in
+        guard let controller = self else {return}
+        controller.queueID = response["queue_id"].stringValue
+        controller.pointer = response["pointer"].stringValue
+        controller.maxMessageID = response["max_message_id"].stringValue
       }
-      controller.queueID = response["queue_id"].stringValue
-      controller.pointer = response["pointer"].stringValue
-      controller.maxMessageID = response["max_message_id"].stringValue
-      
-      //      controller.getOldMessages(controller.maxMessageID, before: 0, after: 0)
-      controller.getNarrowMessages(controller.maxMessageID, before: 10, after: 0, narrow:"[[\"is\",\"private\"]]")
-      //      controller.getSubscriptions()
-      controller.subscriptions("subscriptions") {[weak self] array in
-        self?.subscriptionsToRealm(array)
-      }
-      print("realm config: \(Realm.Configuration.defaultConfiguration.path!)")
-    }
+    )
   }
+  
+  //    //      controller.getOldMessages(controller.maxMessageID, before: 0, after: 0)
+  //    controller.getNarrowMessages(controller.maxMessageID, before: 10, after: 0, narrow:"[[\"is\",\"private\"]]")
+  //    //      controller.getSubscriptions()
+  //    controller.subscriptions("subscriptions") {[weak self] array in
+  //      self?.subscriptionsToRealm(array)
+  //    }
+  //    print("realm config: \(Realm.Configuration.defaultConfiguration.path!)")
+  //  }
+  //}
+  
   let realm = try! Realm()
   
   func getOldMessages(anchor: String, before: Int, after: Int) {
     print("getOldMesages")
     Alamofire.request(Router.GetOldMessages(anchor: anchor, before: before, after: after)).responseJSON {[weak self] res in
       let response = JSON(data:res.data!)
-      guard let controller = self else {fatalError("unable to assign controller")}
       guard response["result"].stringValue == "success" else {print(response["msg"].stringValue); return}
+      guard let controller = self else {fatalError("unable to assign controller")}
       let messages = response["messages"].arrayValue
       controller.messagesToRealm(messages)
     }
@@ -119,6 +170,7 @@ class StreamController : DataController {
       completion(response: output)
     }
   }
+  
   
   func messagesToRealm(messages: [JSON]) {
     for message in messages {
