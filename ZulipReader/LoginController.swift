@@ -9,65 +9,61 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import Locksmith
 
 protocol LoginControllerDelegate: class {
-    func loginController(msg: String)
+  func didFinishFetch(flag: Bool)
 }
 
 class LoginController : DataController {
-    
-    weak var delegate: LoginControllerDelegate?
-    
-    
-    func login(username: String, password: String) {
-        let loginURL = getURL(.Login(username: username, password: password))
+  
+  weak var delegate: LoginControllerDelegate?
+  
+  func login(username: String, password: String) {
+    fetchSecretKey(username, password: password).start {[weak self] result in
+      guard let controller = self, let delegate = controller.delegate else {fatalError()}
+      switch result {
+      case .Success(let header):
+        let authHeader = header.unbox
+        controller.saveInKeychain(authHeader)
+        controller.setRouterHeader(authHeader)
+        delegate.didFinishFetch(true)
         
-        Alamofire.request(.POST, loginURL).responseJSON {[weak self] res in
-            guard let response = self?.evalJSONResult(res) else {return}
-            guard response.flag == true else {return}
-            
-            var loginInfo = ["username":"", "password":""]
-            loginInfo["username"] = username
-            loginInfo["password"] = response.data["api_key"].stringValue
-
-            guard let controller = self else {return}
-            userData.header = controller.createAuthorizationHeader(loginInfo)
-            controller.registerQueueIdPointer()
-        }
+      case .Error(let error):
+        print(error.unbox.description)
+        delegate.didFinishFetch(false)
+      }
     }
-    
-    func registerQueueIdPointer() {
-        let regURL = getURL(.Register)
-        Alamofire.request(.POST, regURL, headers: userData.header).responseJSON {[weak self] res in
-            guard let response = self?.evalJSONResult(res) else {return}
-            guard response.flag == true else {return}
-
-            guard let controller = self else {return}
-            userData.queueID = response.data["queue_id"].stringValue
-            userData.pointer = response.data["pointer"].stringValue
-            controller.delegate?.loginController(response.data["msg"].stringValue)
-        }
+  }
+  
+  private func fetchSecretKey(username: String, password: String) -> Future<String, ZulipErrorDomain> {
+    return createLoginRequest(username, password: password)
+      .andThen(AlamofireRequest)
+      .andThen(createHeader)
+  }
+  
+  private func createLoginRequest(username: String, password: String) -> Future<URLRequestConvertible, ZulipErrorDomain> {
+    let urlRequest = Router.Login(username: username, password: password)
+    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
+  }
+  
+  private func createHeader(response: JSON) -> Future<String, ZulipErrorDomain> {
+    let email = response["email"].stringValue
+    let secretKey = response["api_key"].stringValue
+    let header = "Basic " + "\(email):\(secretKey)".dataUsingEncoding(NSUTF8StringEncoding)!.base64EncodedStringWithOptions([])
+    return Future<String, ZulipErrorDomain>(value: header)
+  }
+  
+  private func saveInKeychain(header: String) {
+    do {
+      try Locksmith.saveData(["Authorization": header], forUserAccount: "default")
+      print("auth header saved header to keychain!")
     }
-    
-    func createAuthorizationHeader(credentials: Header) -> Header {
-        let credentialData = "\(credentials["username"]!):\(credentials["password"]!)".dataUsingEncoding(NSUTF8StringEncoding)!.base64EncodedStringWithOptions([])
-        return ["Authorization": "Basic \(credentialData)"]
-    }
-    
-    func evalJSONResult(input: (Response<AnyObject, NSError>)) -> (flag: Bool, data: JSON) {
-        let responseData = JSON(data: input.data!)
-        guard responseData["result"].stringValue == "success" else {
-            delegate?.loginController(responseData["msg"].stringValue)
-            return (false, responseData)
-        }
-        return (true, responseData)
-    }
-    
-    func isLoggedIn() -> Bool {
-        if userData.queueID == "" {
-            return false
-        } else {
-        return true
-        }
-    }
+    catch {fatalError("keychain can't be set")}
+  }
+  
+  private func setRouterHeader(header: String) {
+    Router.basicAuth = header
+    print("set Router Header!")
+  }
 }

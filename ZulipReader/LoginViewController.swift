@@ -8,37 +8,46 @@
 
 import UIKit
 import Spring
-import AMScrollingNavbar
 
-class LoginViewController: UIViewController, LoginControllerDelegate {
+class LoginViewController: UIViewController {
+  
+  let data = LoginController()
+  
+  @IBOutlet weak var dialogView: DesignableView!
+  @IBOutlet weak var usernameTextField: DesignableTextField!
+  @IBOutlet weak var passwordTextField: DesignableTextField!
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    data.delegate = self
+  }
+  
+  @IBAction func loginButtonDidTouch(sender: UIButton) {
+    usernameTextField.text = "frankctan@gmail.com"
+    passwordTextField.text = "recursion"
     
-    let data = LoginController()
-    
-    @IBOutlet weak var dialogView: DesignableView!
-    @IBOutlet weak var usernameTextField: DesignableTextField!
-    @IBOutlet weak var passwordTextField: DesignableTextField!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        data.delegate = self
+    guard let userName = usernameTextField.text,
+      let password = passwordTextField.text
+      else {
+        dialogView.animation = "shake"
+        dialogView.animate()
+        return
     }
+    data.login(userName, password: password)
+  }
+}
 
-    @IBAction func loginButtonDidTouch(sender: UIButton) {
-        usernameTextField.text = "frankctan@gmail.com"
-        passwordTextField.text = "recursion"
-        data.login(usernameTextField.text!, password: passwordTextField.text!)
+//MARK: LoginControllerDelegate
+extension LoginViewController: LoginControllerDelegate {
+  func didFinishFetch(flag: Bool) {
+    if flag {
+      self.dismissViewControllerAnimated(true, completion: nil)
     }
-
-    
-    func loginController(msg: String) {
-        usernameTextField.text = ""
-        passwordTextField.text = ""
-        if data.isLoggedIn() {
-            performSegueWithIdentifier("loginSegue", sender: self)
-        } else {
-            dialogView.animation = "shake"
-            dialogView.animate()
-
-        }
+    else {
+      usernameTextField.text = ""
+      passwordTextField.text = ""
+      dialogView.animation = "shake"
+      dialogView.animate()
     }
+  }
 }

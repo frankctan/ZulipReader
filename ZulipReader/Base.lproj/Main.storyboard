@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xki-48-tS5">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -23,7 +23,7 @@
         <!--Login View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="LoginViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="BYZ-38-t0r" customClass="LoginViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -37,7 +37,6 @@
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AOI-qb-zLI" customClass="DesignableTextField" customModule="Spring" propertyAccessControl="none">
                                         <rect key="frame" x="15" y="118" width="250" height="44"/>
-                                        <animations/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="V3B-gC-ZeC"/>
                                         </constraints>
@@ -46,7 +45,6 @@
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kvf-C2-51d" customClass="DesignableTextField" customModule="Spring">
                                         <rect key="frame" x="15" y="172" width="250" height="44"/>
-                                        <animations/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="ovL-mo-wVQ"/>
                                         </constraints>
@@ -55,7 +53,6 @@
                                     </textField>
                                     <button opaque="NO" alpha="0.80000000000000004" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QNE-uF-cOI" customClass="SpringButton" customModule="Spring">
                                         <rect key="frame" x="15" y="226" width="250" height="44"/>
-                                        <animations/>
                                         <color key="backgroundColor" red="0.17175009846687317" green="0.63812547922134399" blue="0.28666952252388" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="6iL-qT-4XE"/>
@@ -68,22 +65,19 @@
                                             <action selector="loginButtonDidTouch:" destination="BYZ-38-t0r" eventType="touchUpInside" id="50e-HO-z9t"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Zulip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qwg-6e-XYB" customClass="DesignableLabel" customModule="Spring">
-                                        <rect key="frame" x="107" y="66.5" width="67" height="41.5"/>
-                                        <animations/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Zulip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qwg-6e-XYB" customClass="DesignableLabel" customModule="Spring">
+                                        <rect key="frame" x="107" y="67" width="67" height="41"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Bold" family="Source Sans Pro" pointSize="30"/>
                                         <color key="textColor" red="0.1717500985" green="0.63812547919999996" blue="0.2866695225" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log in to" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uhO-2s-Tii" customClass="DesignableLabel" customModule="Spring">
-                                        <rect key="frame" x="90.5" y="22" width="99.5" height="36.5"/>
-                                        <animations/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Log in to" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uhO-2s-Tii" customClass="DesignableLabel" customModule="Spring">
+                                        <rect key="frame" x="91" y="22" width="99" height="37"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="27"/>
                                         <color key="textColor" red="0.1717500985" green="0.63812547919999996" blue="0.2866695225" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <animations/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="Qwg-6e-XYB" firstAttribute="centerX" secondItem="uhO-2s-Tii" secondAttribute="centerX" id="2jx-nL-lrN"/>
@@ -126,13 +120,12 @@
                                 </variation>
                             </view>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="0NL-fA-Rjv" secondAttribute="trailing" constant="20" id="D0q-t2-fNp"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ppn-wR-djV"/>
+                            <constraint firstItem="0NL-fA-Rjv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="124" id="QfA-35-jq0"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="WRY-5m-gzb"/>
-                            <constraint firstItem="0NL-fA-Rjv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="124" id="ZTw-Vd-uz3"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="4" id="gld-MS-fUm"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="mVZ-UA-jom"/>
                         </constraints>
@@ -140,7 +133,6 @@
                             <mask key="constraints">
                                 <exclude reference="D0q-t2-fNp"/>
                                 <exclude reference="WRY-5m-gzb"/>
-                                <exclude reference="ZTw-Vd-uz3"/>
                                 <exclude reference="gld-MS-fUm"/>
                             </mask>
                         </variation>
@@ -150,12 +142,11 @@
                         <outlet property="dialogView" destination="0NL-fA-Rjv" id="zDi-v5-BMS"/>
                         <outlet property="passwordTextField" destination="kvf-C2-51d" id="au3-fc-Cqt"/>
                         <outlet property="usernameTextField" destination="AOI-qb-zLI" id="aV5-yY-5M1"/>
-                        <segue destination="xki-48-tS5" kind="show" identifier="loginSegue" id="IdH-of-GIb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="216" y="380"/>
+            <point key="canvasLocation" x="116" y="55"/>
         </scene>
         <!--Reveal View Controller-->
         <scene sceneID="YBn-l2-90w">
@@ -168,18 +159,18 @@
                     <view key="view" contentMode="scaleToFill" id="a7B-Rs-QZC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <segue destination="gOa-O0-Tyl" kind="custom" identifier="sw_front" customClass="SWRevealViewControllerSegueSetController" id="5iZ-Ld-U7R"/>
                         <segue destination="4Xf-qU-BNc" kind="custom" identifier="sw_rear" customClass="SWRevealViewControllerSegueSetController" id="qui-zH-vfu"/>
+                        <segue destination="BYZ-38-t0r" kind="presentation" identifier="loginSegue" id="lQC-UU-ves"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yrx-Gx-1fC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="216" y="1049"/>
+            <point key="canvasLocation" x="116" y="741"/>
         </scene>
         <!--Side Menu Table View Controller-->
         <scene sceneID="ewD-n8-ycP">
@@ -188,26 +179,23 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Q3n-Fn-Sec">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="sideCell" rowHeight="18" id="BG4-kQ-ldN" customClass="SideMenuCell" customModule="ZulipReader" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="320" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BG4-kQ-ldN" id="P7c-r4-rJU">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="17.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg" customClass="SpringLabel" customModule="Spring">
-                                            <rect key="frame" x="38" y="-1" width="35" height="19.5"/>
-                                            <animations/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wxQ-QN-6kg" customClass="SpringLabel" customModule="Spring">
+                                            <rect key="frame" x="38" y="-1" width="35" height="20"/>
                                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gu7-zD-Jd5">
                                             <rect key="frame" x="15" y="1" width="15" height="15"/>
-                                            <animations/>
                                             <color key="backgroundColor" red="0.45405891539999998" green="0.78984063859999998" blue="0.4947730601" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="15" id="JlM-jT-S5H"/>
@@ -215,7 +203,6 @@
                                             </constraints>
                                         </view>
                                     </subviews>
-                                    <animations/>
                                     <constraints>
                                         <constraint firstItem="gu7-zD-Jd5" firstAttribute="centerY" secondItem="wxQ-QN-6kg" secondAttribute="centerY" id="Dak-mk-cbz"/>
                                         <constraint firstItem="wxQ-QN-6kg" firstAttribute="centerY" secondItem="P7c-r4-rJU" secondAttribute="centerY" id="Reo-gC-gJ0"/>
@@ -229,7 +216,6 @@
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
-                                <animations/>
                                 <connections>
                                     <outlet property="streamColor" destination="gu7-zD-Jd5" id="AJo-ca-4LV"/>
                                     <outlet property="streamLabel" destination="wxQ-QN-6kg" id="N2c-jP-QZU"/>
@@ -248,7 +234,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jsc-ti-u2z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="612" y="1049"/>
+            <point key="canvasLocation" x="626" y="1049"/>
         </scene>
         <!--stream-->
         <scene sceneID="kno-lS-Ej6">
@@ -280,7 +266,6 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="SP7-c5-m5g">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

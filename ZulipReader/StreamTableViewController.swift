@@ -10,143 +10,194 @@ import UIKit
 import AMScrollingNavbar
 import SlackTextViewController
 
-class StreamTableViewController: SLKTextViewController {
-    
-    //TODO: create a new view for navigation!
-    @IBOutlet weak var menuButton: UIBarButtonItem!
+var State = ""
 
-    @IBAction func homeButtonDidTouch(sender: AnyObject) {
-        State = "stream"
-        narrowTitle = "Stream"
-        narrowParams = nil
-        self.data.getStreamMessages(narrowParams)
-        self.setTextInputbarHidden(true, animated: true)
-    }
+class StreamTableViewController: SLKTextViewController, StreamControllerDelegate {
+  
+  //TODO: create a new view for navigation!
+  @IBOutlet weak var menuButton: UIBarButtonItem!
+//
+//  @IBAction func homeButtonDidTouch(sender: AnyObject) {
+//    State = "stream"
+//    narrowTitle = "Stream"
+//    narrowParams = nil
+//    self.data.getStreamMessages(narrowParams)
+//    self.setTextInputbarHidden(true, animated: true)
+//  }
+  
+  let data = StreamController()
+//  var messages = [[Cell]]()
+//  
+  var narrowParams: [[String]]?
+  var narrowTitle = "Stream"
+  var narrowType = ""
+  var narrowSubject:String?
+  var narrowRecipient = [String]()
+//
+  var longPollFlag = false
+//
+  var dataSource: TableViewControllerDataSource!
+  var tableDelegate: TableViewDelegate!
+//
+  required init!(coder decoder: NSCoder!) {
+    super.init(coder: decoder)
+  }
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    data.delegate = self
     
-    let data = StreamController()
-    var messages = [[Cell]]()
+    tableView.estimatedRowHeight = 60
+    tableView.rowHeight = UITableViewAutomaticDimension
+    tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     
-    var narrowParams: [[String]]?
-    var narrowTitle = "Stream"
-    var narrowType = ""
-    var narrowSubject:String?
-    var narrowRecipient = [String]()
+    tableView.registerNib(UINib(nibName: "StreamHeaderNavCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderNavCell")
+    tableView.registerNib(UINib(nibName: "StreamHeaderPrivateCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderPrivateCell")
+    tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
+    tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
+    
 
-    var dataSource: TableViewControllerDataSource!
-    var tableDelegate: TableViewDelegate!
+    self.setTextInputbarHidden(true, animated: false)
+    self.bounces = true
+    self.shakeToClearEnabled = true
+    self.keyboardPanningEnabled = true
+    self.inverted = false
+    self.textView.placeholder = "Message"
+    self.textView.placeholderColor = UIColor.lightGrayColor()
+    self.textInputbar.autoHideRightButton = true
+    self.typingIndicatorView.canResignByTouch = true
+    self.rightButton.setTitle("Send", forState: UIControlState.Normal)
     
-    required init!(coder decoder: NSCoder!) {
-        super.init(coder: decoder)
+    if self.revealViewController() != nil {
+      menuButton.target = self.revealViewController()
+      menuButton.action = "revealToggle:"
+      self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     }
+  }
+  
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        data.delegate = self
-        
-        tableView.estimatedRowHeight = 60
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        
-        tableView.registerNib(UINib(nibName: "StreamHeaderNavCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderNavCell")
-        tableView.registerNib(UINib(nibName: "StreamHeaderPrivateCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderPrivateCell")
-        tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
-        tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
-        
-        self.data.getStreamMessages(narrowParams)
-        self.setTextInputbarHidden(true, animated: false)
-        
-        self.bounces = true
-        self.shakeToClearEnabled = true
-        self.keyboardPanningEnabled = true
-        self.inverted = false
-        self.textView.placeholder = "Message"
-        self.textView.placeholderColor = UIColor.lightGrayColor()
-        self.textInputbar.autoHideRightButton = true
-        self.typingIndicatorView.canResignByTouch = true
-        self.rightButton.setTitle("Send", forState: UIControlState.Normal)
-        
-        if self.revealViewController() != nil {
-            menuButton.target = self.revealViewController()
-            menuButton.action = "revealToggle:"
-            //            revealViewController().rearViewRevealWidth = 150
-            self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
-        }
-        data.getStreamMessages(narrowParams)
-        
+    if let navigationController = self.navigationController as? ScrollingNavigationController {
+      navigationController.followScrollView(tableView, delay: 0.0)
     }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if let navigationController = self.navigationController as? ScrollingNavigationController {
-            navigationController.followScrollView(tableView, delay: 0.0)
-        }
+    print("in streamTableViewController:viewDidAppear")
+    tableView.showLoading()
+    loadData()
+  }
+  
+  func loadData() {
+    if !data.isLoggedIn() {
+      print("showing login screen")
+      let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+      let controller = storyBoard.instantiateViewControllerWithIdentifier("LoginViewController")
+      presentViewController(controller, animated: true, completion: nil)
+    } else {
+      data.loadMessages()
     }
-    
-    //MARK: SLKTextViewController
-    override func didPressRightButton(sender: AnyObject!) {
-        self.textView.refreshFirstResponder()
-        let sendMessage = self.textView.text.copy() as! String
-        super.didPressRightButton(sender)
-        
-        if narrowType == "private" {
-            narrowSubject = nil
-        }
-        if State == "subject" {
-            data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
-        }
+  }
+  
+  //MARK: -StreamControllerDelegate
+  func statusUpdate(flag: Bool) {
+    if flag {
+      loadData()
     }
+  }
 }
 
-//MARK: StreamControllerDelegate
-extension StreamTableViewController: StreamControllerDelegate {
-    func streamController(messagesForTable: [[Cell]]) {
-        messages = messagesForTable
-        self.title = narrowTitle
-        dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
-        tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
-        tableView.dataSource = dataSource
-        tableView.delegate = tableDelegate
-
-        self.tableView.reloadData()
-        guard !messages.isEmpty else {return}
-        self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.last!.count-1, inSection: messages.count-1), atScrollPosition: .Bottom, animated: true)
-    }
-}
-
+//  
+//  //MARK: SLKTextViewController
+//  override func didPressRightButton(sender: AnyObject!) {
+//    self.textView.refreshFirstResponder()
+//    let sendMessage = self.textView.text.copy() as! String
+//    super.didPressRightButton(sender)
+//    
+//    if narrowType == "private" {
+//      narrowSubject = nil
+//    }
+//    if State == "subject" {
+//      data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
+//    }
+//    data.getStreamMessages(narrowParams)
+//  }
+//}
+//
+////MARK: StreamControllerDelegate
+//extension StreamTableViewController: StreamControllerDelegate {
+//  func streamController(messagesForTable: [[Cell]]) {
+//    messages = messagesForTable
+//    self.title = narrowTitle
+//    dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
+//    tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
+//    tableView.dataSource = dataSource
+//    tableView.delegate = tableDelegate
+//    
+//    self.tableView.reloadData()
+//    guard !messages.isEmpty else {return}
+//    self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: messages.last!.count-1, inSection: messages.count-1), atScrollPosition: .Bottom, animated: true)
+//    if longPollFlag == false {
+//      longPollFlag = true
+////      data.callLongPoll()
+//    }
+//  }
+//  
+//  func longPollDelegate(appendMessages: [[Cell]]) {
+//    print("in long poll delegate")
+//    for longPollMessages in appendMessages {
+//      print(longPollMessages)
+//      messages.append(longPollMessages)
+//    }
+//    print(messages.count)
+//    
+//    longPollFlag = true
+////    data.callLongPoll()
+//    
+//    guard State == "stream" else {return}
+//    dataSource = TableViewControllerDataSource(send: self, messagesFromAPI: messages)
+//    tableDelegate = TableViewDelegate(sender: self, messagesFromAPI: messages)
+//    tableView.dataSource = dataSource
+//    tableView.delegate = tableDelegate
+//    self.tableView.reloadData()
+//    
+//  }
+//}
+//
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
-    func narrowStream(stream: String) {
-        narrowParams = [["stream","\(stream)"]]
-        narrowTitle = stream
-        State = "narrow"
-        
-        data.getStreamMessages(narrowParams)
-        self.setTextInputbarHidden(true, animated: true)
-    }
-    
-    func narrowSubject(stream: String, subject: String) {
-        narrowParams = [["stream","\(stream)"],["topic","\(subject)"]]
-        narrowTitle = subject
-        narrowType = "stream"
-        narrowSubject = subject
-        narrowRecipient = [stream]
-        State = "subject"
-        data.getStreamMessages(narrowParams)
-        self.setTextInputbarHidden(false, animated: true)
-    }
+  func narrowStream(stream: String) {
+    narrowParams = [["stream","\(stream)"]]
+    narrowTitle = stream
+    State = "narrow"
+    longPollFlag = false
+//    data.getStreamMessages(narrowParams)
+    self.setTextInputbarHidden(true, animated: true)
+  }
+  
+  func narrowSubject(stream: String, subject: String) {
+    narrowParams = [["stream","\(stream)"],["topic","\(subject)"]]
+    let encodedParams = [["stream","\(stream)"],["topic","\(subject)"]]
+    narrowTitle = subject
+    narrowType = "stream"
+    narrowSubject = subject
+    narrowRecipient = [stream]
+    State = "subject"
+    longPollFlag = false
+//    data.getStreamMessages(encodedParams)
+    self.setTextInputbarHidden(false, animated: true)
+  }
 }
 
 //MARK: StreamHeaderPrivateCellDelegate
 extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
-    func narrowConversation(recipientID: String, cellTitle: String, emails: String, msgType: String, msgSubject: String, msgEmails: [String]) {
-        narrowType = msgType
-        narrowSubject = msgSubject
-        narrowRecipient = msgEmails
-        narrowParams = [["pm_with","\(emails)"]]
-        narrowTitle = cellTitle
-        State = "subject"
-        data.getStreamMessages(narrowParams)
-        self.setTextInputbarHidden(false, animated: true)
-    }
+  func narrowConversation(recipientID: String, cellTitle: String, emails: String, msgType: String, msgSubject: String, msgEmails: [String]) {
+    narrowType = msgType
+    narrowSubject = msgSubject
+    narrowRecipient = [emails]
+    narrowParams = [["pm_with","\(emails)"]]
+    narrowTitle = cellTitle
+    State = "subject"
+    longPollFlag = false
+//    data.getStreamMessages(narrowParams)
+    self.setTextInputbarHidden(false, animated: true)
+  }
 }

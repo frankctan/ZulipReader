@@ -28,7 +28,6 @@ class StreamCell: UITableViewCell {
         contentTextView.text = nil
         contentTextView.attributedText = nil
         contentTextView.attributedText = attributedContent
-
         self.backgroundColor = UIColor(hex: "FFFFFF")
         
         if message.type == "private" {
