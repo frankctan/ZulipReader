@@ -39,7 +39,7 @@ class Message: Object {
   }
   let _backingDisplayRecipient = List<RealmString>()
 
-  dynamic var sender_id = 0.0
+  dynamic var sender_id: Int = 0
   dynamic var avatar_url = ""
   
   dynamic var sender_email = ""
@@ -48,9 +48,9 @@ class Message: Object {
   dynamic var subject = ""
   dynamic var sender_full_name = ""
   dynamic var sender_domain = ""
-  dynamic var timestamp = 0.0
-  dynamic var id = 0.0
-  dynamic var recipient_id = 0.0
+  dynamic var timestamp: Int = 0
+  dynamic var id: Int = 0
+  dynamic var recipient_id: Int = 0
   dynamic var type = ""
   dynamic var content_type = ""
   

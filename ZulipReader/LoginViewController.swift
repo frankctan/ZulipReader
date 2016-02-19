@@ -8,9 +8,8 @@
 
 import UIKit
 import Spring
-import Locksmith
 
-class LoginViewController: UIViewController, LoginControllerDelegate {
+class LoginViewController: UIViewController {
   
   let data = LoginController()
   
@@ -36,7 +35,10 @@ class LoginViewController: UIViewController, LoginControllerDelegate {
     }
     data.login(userName, password: password)
   }
-  
+}
+
+//MARK: LoginControllerDelegate
+extension LoginViewController: LoginControllerDelegate {
   func didFinishFetch(flag: Bool) {
     if flag {
       self.dismissViewControllerAnimated(true, completion: nil)

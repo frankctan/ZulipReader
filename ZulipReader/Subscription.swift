@@ -9,7 +9,7 @@
 import RealmSwift
 
 class Subscription: Object {
-  dynamic var stream_id = 0.0
+  dynamic var stream_id:Int = 0
   dynamic var name = ""
   dynamic var color = ""
 }

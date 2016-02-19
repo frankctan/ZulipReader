@@ -34,8 +34,8 @@ class DataController {
     case Login(username: String, password: String)
     case Register
     case GetSubscriptions
-    case GetOldMessages(anchor: String, before: Int, after: Int)
-    case GetNarrowMessages(anchor: String, before: Int, after: Int, narrow: String)
+    case GetOldMessages(anchor: Int, before: Int, after: Int)
+    case GetNarrowMessages(anchor: Int, before: Int, after: Int, narrow: String)
     //    case PostMessage(type: String, content: String, to: [String], subject: String?)
     //    case longPoll(queueID: String, lastEventId: String)
     
