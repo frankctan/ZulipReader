@@ -37,6 +37,7 @@ class Message: Object {
       _backingDisplayRecipient.appendContentsOf(newValue.map({ RealmString(value: [$0]) }))
     }
   }
+  
   let _backingDisplayRecipient = List<RealmString>()
 
   dynamic var sender_id: Int = 0
@@ -48,7 +49,10 @@ class Message: Object {
   dynamic var subject = ""
   dynamic var sender_full_name = ""
   dynamic var sender_domain = ""
-  dynamic var timestamp: Int = 0
+  dynamic var timestamp: Double = 0
+  
+
+  
   dynamic var id: Int = 0
   dynamic var recipient_id: Int = 0
   dynamic var type = ""
@@ -56,6 +60,14 @@ class Message: Object {
   
   //MARK: Unused Properties
   //  dynamic var subject_links = ""
+  
+  dynamic var dateTime: NSDate {
+    get {
+      return NSDate(timeIntervalSince1970: timestamp)
+    }
+  }
+  
+  dynamic var streamColor: String = ""
 
   
   override static func ignoredProperties() -> [String] {

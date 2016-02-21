@@ -25,7 +25,7 @@ Int.min
 53551303
 
 let r = ["read","mentioned"]
-  //.filter {if $0 == "mentioned" {return true}; return false}
+//.filter {if $0 == "mentioned" {return true}; return false}
 r.contains("mentioned")
 
 var arr: [[Int]] = [[]]
@@ -36,3 +36,43 @@ arr.append([])
 arr[1].append(2)
 
 arr
+
+class Person: NSObject {
+  let firstName: String
+  let lastName: String
+  let age: Int
+  
+  init(firstName: String, lastName: String, age: Int) {
+    self.firstName = firstName
+    self.lastName = lastName
+    self.age = age
+  }
+  
+  override var description: String {
+    return "\(firstName) \(lastName)"
+  }
+}
+
+let alice = Person(firstName: "Alice", lastName: "Smith", age: 24)
+let bob = Person(firstName: "Bob", lastName: "Jones", age: 27)
+let charlie = Person(firstName: "Charlie", lastName: "Smith", age: 33)
+let quentin = Person(firstName: "Quentin", lastName: "Alberts", age: 31)
+let people = [alice, bob, charlie, quentin]
+
+let bobPredicate = NSPredicate(format: "firstName = %@", argumentArray: ["Bob", "Alice"])
+let agePredicate = NSPredicate(format: "age >= %D", 28)
+
+let filtered = (people as NSArray).filteredArrayUsingPredicate(bobPredicate)
+let filtered1 = (people as NSArray).filteredArrayUsingPredicate(agePredicate)
+
+filtered[0].lastName
+
+var q = ["tan"]
+
+if q is String {
+  print("haha")
+} else {
+  print("nope")
+}
+
+
