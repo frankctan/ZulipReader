@@ -6,7 +6,6 @@
 //  Copyright © 2016 Frank Tan. All rights reserved.
 //
 
-
 import RealmSwift
 
 class RealmString: Object {
@@ -68,6 +67,11 @@ class Message: Object {
   }
   
   dynamic var streamColor: String = ""
+  dynamic var mentioned: Bool {
+    get {
+      return flags.contains("mentioned")
+    }
+  }
 
   
   override static func ignoredProperties() -> [String] {

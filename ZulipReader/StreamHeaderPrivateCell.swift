@@ -30,7 +30,7 @@ class StreamHeaderPrivateCell: UITableViewCell {
         delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmailString, msgType: type, msgSubject: subject, msgEmails: recipients)
     }
     
-    func configureWithStream(message: Cell) {
+    override func configure(message: TableCell) {
         
         recipientID = message.recipientID
         recipientEmails = message.setRecipientEmail

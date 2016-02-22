@@ -14,8 +14,10 @@
 		676C98451BFD69360042CB26 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676C98441BFD69360042CB26 /* LoginController.swift */; };
 		677F6AEF1C752D04005EB84E /* Futures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677F6AEE1C752D04005EB84E /* Futures.swift */; };
 		6785E7A41C6D05CD008ED151 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6785E7A31C6D05CD008ED151 /* Message.swift */; };
+		6788F2AF1C7BCD5800AC1D71 /* UITableViewCellExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */; };
+		6788F2B11C7BD0EA00AC1D71 /* OldStreamTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */; };
 		678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */; };
-		678A6BB71C10EBA200AE091B /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB61C10EBA200AE091B /* Cell.swift */; };
+		678A6BB71C10EBA200AE091B /* TableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB61C10EBA200AE091B /* TableCell.swift */; };
 		678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */; };
 		678A6BDF1C12279700AE091B /* SourceSansPro-BlackIt-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD31C12279700AE091B /* SourceSansPro-BlackIt-webfont.ttf */; };
 		678A6BE01C12279700AE091B /* SourceSansPro-Bold-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD41C12279700AE091B /* SourceSansPro-Bold-webfont.ttf */; };
@@ -70,8 +72,10 @@
 		677F6AEE1C752D04005EB84E /* Futures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Futures.swift; sourceTree = "<group>"; };
 		6785E7A31C6D05CD008ED151 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		6785E7A51C6D0909008ED151 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
+		6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtension.swift; sourceTree = "<group>"; };
+		6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldStreamTableViewController.swift; sourceTree = "<group>"; };
 		678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamHeaderNavCell.swift; sourceTree = "<group>"; };
-		678A6BB61C10EBA200AE091B /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		678A6BB61C10EBA200AE091B /* TableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableCell.swift; sourceTree = "<group>"; };
 		678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Black-webfont.ttf"; sourceTree = "<group>"; };
 		678A6BD31C12279700AE091B /* SourceSansPro-BlackIt-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-BlackIt-webfont.ttf"; sourceTree = "<group>"; };
 		678A6BD41C12279700AE091B /* SourceSansPro-Bold-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Bold-webfont.ttf"; sourceTree = "<group>"; };
@@ -171,6 +175,7 @@
 				678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */,
 				67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */,
 				670295011C1B65E500314A04 /* StreamExtendedCell.swift */,
+				6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */,
 				67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */,
 				67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */,
 				67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */,
@@ -224,7 +229,7 @@
 				67BA7DAC1C6A8374004366BE /* ZulipReader.xcdatamodeld */,
 				673251741C0A5D85009A546C /* DataController.swift */,
 				677F6AEE1C752D04005EB84E /* Futures.swift */,
-				678A6BB61C10EBA200AE091B /* Cell.swift */,
+				678A6BB61C10EBA200AE091B /* TableCell.swift */,
 				6785E7A31C6D05CD008ED151 /* Message.swift */,
 				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
 				67A9DA8E1C1F546600AEEF1B /* Login */,
@@ -232,6 +237,7 @@
 				67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */,
 				67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
+				6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
@@ -449,9 +455,11 @@
 				67A9DA901C1F581800AEEF1B /* TableViewControllerDataSource.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
+				6788F2B11C7BD0EA00AC1D71 /* OldStreamTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
 				67BA7DAE1C6A8374004366BE /* ZulipReader.xcdatamodeld in Sources */,
-				678A6BB71C10EBA200AE091B /* Cell.swift in Sources */,
+				678A6BB71C10EBA200AE091B /* TableCell.swift in Sources */,
+				6788F2AF1C7BCD5800AC1D71 /* UITableViewCellExtension.swift in Sources */,
 				673251771C0A7154009A546C /* StreamController.swift in Sources */,
 				67A1A8AF1C03AC2F00CCA40D /* StreamCell.swift in Sources */,
 			);

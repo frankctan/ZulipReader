@@ -29,11 +29,13 @@ let r = ["read","mentioned"]
 r.contains("mentioned")
 
 var arr: [[Int]] = [[]]
+var arry = [[Int]()]
 
-//arr.append([])
+arry == arr
+
 arr[0].append(1)
-arr.append([])
-arr[1].append(2)
+arr[0].append(2)
+//arr.append([2])
 
 arr
 
@@ -74,5 +76,22 @@ if q is String {
 } else {
   print("nope")
 }
+
+struct TableCell {
+  let display_recipients: [String]
+  let subject: String
+  let type: String
+  let streamColor: String
+  
+  let sender_full_name: String
+  let content: String
+  let dateTime: NSDate
+  let avatar_url: String
+  let mentioned: Bool
+  
+}
+
+let dict = ["username": ""]
+
 
 

@@ -15,8 +15,7 @@ import RealmSwift
 
 protocol StreamControllerDelegate: class {
   func statusUpdate(flag: Bool)
-  //  func streamController(messagesForTable: [[Cell]])
-  //  func longPollDelegate(appendMessages: [[Cell]])
+  func didFetchMesssages(messages: [[TableCell]])
 }
 
 class StreamController : DataController {
@@ -154,6 +153,7 @@ class StreamController : DataController {
         case .Success(let boxedMessages):
           let messages = boxedMessages.unbox
           self.messagesToRealm(messages)
+          self.tableViewMessages()
         case .Error(let error):
           print(error.unbox.description)
         }
@@ -194,8 +194,36 @@ class StreamController : DataController {
     }
   }
   
-  func tableViewMessages() {
-    let messages = Realm.objects(Message)
+  func tableViewMessages() -> [[TableCell]] {
+    let messages = realm.objects(Message).sorted("timestamp", ascending: true)
+    var previous = TableCell()
+    var result = [[TableCell]()]
+    var sectionCounter = 0
+    for message in messages {
+      var cell = TableCell(message)
+      
+      if previous.isEmpty {
+        result[sectionCounter].append(cell)
+        previous = cell
+        continue
+      }
+      
+      if previous.display_recipient != cell.display_recipient ||
+        previous.subject != cell.subject ||
+        previous.type != cell.type {
+          if previous.sender_full_name == cell.sender_full_name {
+            cell.cellType = CellTypes.ExtendedCell
+          }
+          sectionCounter++
+          result.append([cell])
+      }
+      else {
+        result[sectionCounter].append(cell)
+      }
+      previous = cell
+    }
+    
+    return result
   }
 }
 

@@ -18,7 +18,7 @@ class StreamCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var contentTextView: AutoTextView!
     
-    func configureWithStream(message: Cell) {
+    override func configure(message: TableCell) {
         nameLabel.text = message.name
         badgeImageView.kf_setImageWithURL(NSURL(string: message.avatarURL)!, placeholderImage: nil)
         contentTextView.textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)

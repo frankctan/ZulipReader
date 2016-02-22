@@ -10,10 +10,10 @@ import Foundation
 import UIKit
 
 class TableViewDelegate: NSObject, UITableViewDelegate {
-    var messages = [[Cell]]()
+    var messages = [[TableCell]]()
     var sender: StreamTableViewController?
     
-    init(sender: StreamTableViewController?, messagesFromAPI: [[Cell]]) {
+    init(sender: StreamTableViewController?, messagesFromAPI: [[TableCell]]) {
         super.init()
         messages = messagesFromAPI
         if sender != nil {
@@ -22,6 +22,8 @@ class TableViewDelegate: NSObject, UITableViewDelegate {
     }
     
     internal func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+      let headerType = messages[section][0].type
+      
         if messages[section][0].type == "stream" {
             let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as? StreamHeaderNavCell
             cell!.configureWithStream(messages[section][0])
