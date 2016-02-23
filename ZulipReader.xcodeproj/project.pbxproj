@@ -37,8 +37,6 @@
 		67A9DA881C1E1C5100AEEF1B /* StreamExtendedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */; };
 		67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */; };
 		67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */; };
-		67A9DA901C1F581800AEEF1B /* TableViewControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */; };
-		67A9DA921C1F62C300AEEF1B /* TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */; };
 		67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */; };
 		67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */; };
 		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
@@ -96,8 +94,6 @@
 		67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StreamExtendedCell.xib; sourceTree = "<group>"; };
 		67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamHeaderPrivateCell.swift; sourceTree = "<group>"; };
 		67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StreamHeaderPrivateCell.xib; sourceTree = "<group>"; };
-		67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewControllerDataSource.swift; sourceTree = "<group>"; };
-		67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewDelegate.swift; path = ../TableViewDelegate.swift; sourceTree = "<group>"; };
 		67A9DA931C209D2300AEEF1B /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
@@ -234,8 +230,6 @@
 				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
 				67A9DA8E1C1F546600AEEF1B /* Login */,
 				673251761C0A7154009A546C /* StreamController.swift */,
-				67A9DA911C1F62C300AEEF1B /* TableViewDelegate.swift */,
-				67A9DA8F1C1F581800AEEF1B /* TableViewControllerDataSource.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
@@ -440,7 +434,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67A9DA921C1F62C300AEEF1B /* TableViewDelegate.swift in Sources */,
 				67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */,
 				677F6AEF1C752D04005EB84E /* Futures.swift in Sources */,
 				673251751C0A5D85009A546C /* DataController.swift in Sources */,
@@ -452,7 +445,6 @@
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
 				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,
 				67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */,
-				67A9DA901C1F581800AEEF1B /* TableViewControllerDataSource.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
 				6788F2B11C7BD0EA00AC1D71 /* OldStreamTableViewController.swift in Sources */,

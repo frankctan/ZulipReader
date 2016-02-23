@@ -15,7 +15,7 @@ protocol StreamHeaderNavCellDelegate: class {
   //    func narrowSubject(stream: String, subject: String)
 }
 
-class StreamHeaderNavCell: UITableViewCell {
+class StreamHeaderNavCell: ZulipTableViewCell {
   
   
   weak var delegate: StreamHeaderNavCellDelegate?

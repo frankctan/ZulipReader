@@ -14,11 +14,10 @@ protocol StreamHeaderPrivateCellDelegate: class {
     func narrowConversation(recipientID: String, cellTitle: String, emails: String, msgType: String, msgSubject: String, msgEmails: [String])
 }
 
-class StreamHeaderPrivateCell: UITableViewCell {
+class StreamHeaderPrivateCell: ZulipTableViewCell {
     
     weak var delegate: StreamHeaderPrivateCellDelegate?
     @IBOutlet weak var privateLabel: UIButton!
-    var recipientID:String!
     var title:String!
     var recipients:[String]!
     var recipientEmails = Set<String>()
@@ -26,36 +25,35 @@ class StreamHeaderPrivateCell: UITableViewCell {
     var type = ""
     var subject = ""
 
-    @IBAction func privateButtonDidTouch(sender: AnyObject) {
-        delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmailString, msgType: type, msgSubject: subject, msgEmails: recipients)
-    }
-    
+//    @IBAction func privateButtonDidTouch(sender: AnyObject) {
+//        delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmailString, msgType: type, msgSubject: subject, msgEmails: recipients)
+//    }
+  
     override func configure(message: TableCell) {
-        
-        recipientID = message.recipientID
-        recipientEmails = message.setRecipientEmail
-        recipients = message.recipientNames
-        type = message.type
-        subject = message.subject
-//        recipients = message.recipientEmail
-        
-        let recipientCount = message.setRecipientEmail.count
-        
-        guard message.setRecipientEmail.count > 0 else {return}
-        
-        for email in message.setRecipientEmail {
-            recipientEmailString += "\(email),"
-        }
-        
-        if recipientEmailString.length > 2 {
-            recipientEmailString.removeAtIndex(recipientEmailString.endIndex.predecessor())
-        }
-    
-        if recipientCount > 1 {
-            title = "You & \(recipientCount) others"
-        } else {
-            title = "You & \(recipients[0])"
-        }
-        privateLabel.setTitle(title, forState: UIControlState.Normal)
+//      
+//        recipientEmails = message.display_recipient
+//        recipients = message.recipientNames
+//        type = message.type
+//        subject = message.subject
+////        recipients = message.recipientEmail
+//        
+//        let recipientCount = message.setRecipientEmail.count
+//        
+//        guard message.setRecipientEmail.count > 0 else {return}
+//        
+//        for email in message.setRecipientEmail {
+//            recipientEmailString += "\(email),"
+//        }
+//        
+//        if recipientEmailString.length > 2 {
+//            recipientEmailString.removeAtIndex(recipientEmailString.endIndex.predecessor())
+//        }
+//    
+//        if recipientCount > 1 {
+//            title = "You & \(recipientCount) others"
+//        } else {
+//            title = "You & \(recipients[0])"
+//        }
+//        privateLabel.setTitle(title, forState: UIControlState.Normal)
     }
 }

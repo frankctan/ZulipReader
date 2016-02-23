@@ -52,15 +52,20 @@ class DataController {
       let result: (path: String, parameters: [String: AnyObject]?) = {
         switch self {
         case .Login(let username, let password):
-          return ("/fetch_api_key", ["username": username, "password": password])
+          let loginParams = ["username": username, "password": password]
+          return ("/fetch_api_key", loginParams)
         case .Register:
-          return("/register", ["event_types:": ["message","pointer"]])
+          let registerParams = ["event_types:": ["message","pointer"]]
+          return("/register", registerParams)
         case .GetSubscriptions:
           return("/users/me/subscriptions", nil)
         case .GetOldMessages(let anchor, let before, let after):
-          return("/messages", ["anchor": anchor, "num_before": before, "num_after": after])
-          case .GetNarrowMessages(let anchor, let before, let after, let narrow):
-          return("/messages", ["anchor": anchor, "num_before": before, "num_after": after, "narrow": narrow])
+          let messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
+          return("/messages", messageParams)
+        case .GetNarrowMessages(let anchor, let before, let after, let narrow):
+          let messageParams = ["anchor": anchor, "num_before": before,
+            "num_after": after, "narrow": narrow]
+          return("/messages", messageParams as! [String : AnyObject])
         }
       }()
       

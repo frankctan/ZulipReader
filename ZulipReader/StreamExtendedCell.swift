@@ -10,24 +10,24 @@ import UIKit
 import Spring
 import Kingfisher
 
-class StreamExtendedCell: UITableViewCell {
+class StreamExtendedCell: ZulipTableViewCell {
     
     @IBOutlet weak var contentTextView: AutoTextView!
     
-    override func configure(message: TableCell) {
+     override func configure(message: TableCell) {
         contentTextView.textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         layoutIfNeeded()
         let attributedContent = message.content
-        contentTextView.text = nil
-        contentTextView.attributedText = nil
-        contentTextView.attributedText = attributedContent
-        
+        contentTextView.text = attributedContent
+//        contentTextView.attributedText = nil
+//        contentTextView.attributedText = attributedContent
+      
         self.backgroundColor = UIColor(hex: "FFFFFF")
         
         if message.type == "private" {
             self.backgroundColor = UIColor(hex: "FEFFE0")
         }
-        if message.mention == true {
+        if message.mentioned == true {
             self.backgroundColor = UIColor(hex: "FFE4E0")
         }
     }

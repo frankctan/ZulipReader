@@ -61,20 +61,20 @@ class SideMenuTableViewController: UITableViewController {
         return sectionTitles[section]
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let nav = segue.destinationViewController as! ScrollingNavigationController
-        let toController = nav.viewControllers[0] as! StreamTableViewController
-        toController.narrowTitle = selection
-        State = "narrow"
-        switch selection {
-        case "Private":
-            toController.narrowParams = [["is","private"]]
-        case "Starred":
-            toController.narrowParams = [["is","starred"]]
-        case "@Mention":
-            toController.narrowParams = [["is","mentioned"]]
-        default:
-            toController.narrowParams = [["stream",selection]]
-        }
-    }
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        let nav = segue.destinationViewController as! ScrollingNavigationController
+//        let toController = nav.viewControllers[0] as! StreamTableViewController
+//        toController.narrowTitle = selection
+//        State = "narrow"
+//        switch selection {
+//        case "Private":
+//            toController.narrowParams = [["is","private"]]
+//        case "Starred":
+//            toController.narrowParams = [["is","starred"]]
+//        case "@Mention":
+//            toController.narrowParams = [["is","mentioned"]]
+//        default:
+//            toController.narrowParams = [["stream",selection]]
+//        }
+//    }
 }

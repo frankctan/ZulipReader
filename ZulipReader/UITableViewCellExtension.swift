@@ -8,10 +8,10 @@
 
 import Foundation
 
-protocol Configurable {
-  func configure(message: TableCell)
-}
+//protocol Configurable {
+//  func configure(message: TableCell)
+//}
 
-extension UITableViewCell: Configurable {
+class ZulipTableViewCell: UITableViewCell {
   func configure(message: TableCell) {}
 }

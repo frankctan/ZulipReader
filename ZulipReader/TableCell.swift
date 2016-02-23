@@ -36,8 +36,6 @@ struct TableCell {
   
   var cellType = CellTypes.StreamCell
   
-
-  
   //used for initialization of [[TableCell]]
   var isEmpty = true
   
@@ -56,6 +54,7 @@ struct TableCell {
     mentioned = message.mentioned
     
     isEmpty = false
+    
   }
 }
 

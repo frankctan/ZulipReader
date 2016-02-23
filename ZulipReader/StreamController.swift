@@ -9,7 +9,6 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
-import Spring
 import Locksmith
 import RealmSwift
 
@@ -153,7 +152,8 @@ class StreamController : DataController {
         case .Success(let boxedMessages):
           let messages = boxedMessages.unbox
           self.messagesToRealm(messages)
-          self.tableViewMessages()
+          let tableMessages = self.tableViewMessages()
+          self.delegate?.didFetchMesssages(tableMessages)
         case .Error(let error):
           print(error.unbox.description)
         }
