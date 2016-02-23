@@ -11,49 +11,31 @@ import Spring
 import Kingfisher
 
 protocol StreamHeaderPrivateCellDelegate: class {
-    func narrowConversation(recipientID: String, cellTitle: String, emails: String, msgType: String, msgSubject: String, msgEmails: [String])
+  func narrowConversation(emails: String)
 }
 
 class StreamHeaderPrivateCell: ZulipTableViewCell {
-    
-    weak var delegate: StreamHeaderPrivateCellDelegate?
-    @IBOutlet weak var privateLabel: UIButton!
-    var title:String!
-    var recipients:[String]!
-    var recipientEmails = Set<String>()
-    var recipientEmailString = ""
-    var type = ""
-    var subject = ""
-
-//    @IBAction func privateButtonDidTouch(sender: AnyObject) {
-//        delegate?.narrowConversation(recipientID, cellTitle: title, emails: recipientEmailString, msgType: type, msgSubject: subject, msgEmails: recipients)
-//    }
   
-    override func configure(message: TableCell) {
-//      
-//        recipientEmails = message.display_recipient
-//        recipients = message.recipientNames
-//        type = message.type
-//        subject = message.subject
-////        recipients = message.recipientEmail
-//        
-//        let recipientCount = message.setRecipientEmail.count
-//        
-//        guard message.setRecipientEmail.count > 0 else {return}
-//        
-//        for email in message.setRecipientEmail {
-//            recipientEmailString += "\(email),"
-//        }
-//        
-//        if recipientEmailString.length > 2 {
-//            recipientEmailString.removeAtIndex(recipientEmailString.endIndex.predecessor())
-//        }
-//    
-//        if recipientCount > 1 {
-//            title = "You & \(recipientCount) others"
-//        } else {
-//            title = "You & \(recipients[0])"
-//        }
-//        privateLabel.setTitle(title, forState: UIControlState.Normal)
+  weak var delegate: StreamHeaderPrivateCellDelegate?
+  @IBOutlet weak var privateLabel: UIButton!
+  var recipientEmails = [String]()
+  
+  @IBAction func privateButtonDidTouch(sender: AnyObject) {
+    let emailString = recipientEmails.joinWithSeparator(",")
+    delegate?.narrowConversation(emailString)
+  }
+  
+  override func configure(message: TableCell) {
+    recipientEmails = Array(message.display_recipient.sort())
+    let recipientNames = Array(message.privateFullName.sort())
+    let title: String
+    let recipientCount = recipientNames.count
+    
+    switch recipientCount {
+    case 0: title = "You"
+    case 1: title = "You & \(recipientNames[0])"
+    default: title = "You & \(recipientCount) others"
     }
+    privateLabel.setTitle(title, forState: UIControlState.Normal)
+  }
 }

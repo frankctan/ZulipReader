@@ -12,7 +12,7 @@ import SlackTextViewController
 
 var State = ""
 
-class StreamTableViewController: SLKTextViewController, StreamControllerDelegate {
+class StreamTableViewController: SLKTextViewController {
   
   //TODO: create a new view for navigation!
   @IBOutlet weak var menuButton: UIBarButtonItem!
@@ -61,27 +61,30 @@ class StreamTableViewController: SLKTextViewController, StreamControllerDelegate
       let storyBoard = UIStoryboard(name: "Main", bundle: nil)
       let controller = storyBoard.instantiateViewControllerWithIdentifier("LoginViewController")
       presentViewController(controller, animated: true, completion: nil)
-    } else {
-      data.loadMessages()
+    }
+    else {
+      data.loadStreamMessages()
     }
   }
 
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let headerType = messages[section][0].type
-    let cell:ZulipTableViewCell
     
+    //TODO: Is there anyway to refactor this?
     switch headerType {
     case "stream":
-      cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
+      let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
+      cell.configure(messages[section][0])
+      cell.delegate = self
+      return cell
     case "private":
-      cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
+      let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
+      cell.configure(messages[section][0])
+      cell.delegate = self
+      return cell
     default: fatalError()
     }
-    
-    cell.configure(messages[section][0])
-    //    cell.delegate = sender
-    return cell
   }
   
   override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -111,19 +114,6 @@ class StreamTableViewController: SLKTextViewController, StreamControllerDelegate
     return cell
   }
   
-  //MARK: StreamControllerDelegate
-  func statusUpdate(flag: Bool) {
-    if flag {
-      loadData()
-    }
-  }
-  
-  func didFetchMesssages(messages: [[TableCell]]) {
-    self.messages = messages
-    tableView.hideLoading()
-    tableView.reloadData()
-  }
-  
   func tableViewSettings() {
     tableView.estimatedRowHeight = 60
     tableView.rowHeight = UITableViewAutomaticDimension
@@ -144,7 +134,45 @@ class StreamTableViewController: SLKTextViewController, StreamControllerDelegate
     self.textInputbar.autoHideRightButton = true
     self.typingIndicatorView.canResignByTouch = true
     self.rightButton.setTitle("Send", forState: UIControlState.Normal)
-    
+  }
+}
+
+//MARK: StreamControllerDelegate
+extension StreamTableViewController: StreamControllerDelegate {
+  func statusUpdate(flag: Bool) {
+    if flag {
+      loadData()
+    }
+  }
+  
+  func didFetchMesssages(messages: [[TableCell]]) {
+    self.messages = messages
+    tableView.hideLoading()
+    tableView.reloadData()
+  }
+}
+
+//MARK: StreamHeaderNavCellDelegate
+extension StreamTableViewController: StreamHeaderNavCellDelegate {
+  func narrowStream(stream: String) {
+    let narrow = "[[\"stream\", \"\(stream)\"]]"
+    data.loadNarrowMessages(narrow)
+    tableView.showLoading()
+  }
+  
+  func narrowSubject(stream: String, subject: String) {
+    let narrow = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
+    data.loadNarrowMessages(narrow)
+    tableView.showLoading()
+  }
+}
+
+//MARK: StreamHeaderPrivateCellDelegate
+extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
+  func narrowConversation(emails: String) {
+    let narrow = "[[\"is\", \"private\"],[\"pm-with\",\"\(emails)\"]]"
+    data.loadNarrowMessages(narrow)
+    tableView.showLoading()
   }
 }
 

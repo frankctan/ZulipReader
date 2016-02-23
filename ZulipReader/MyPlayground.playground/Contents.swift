@@ -14,9 +14,12 @@ b.count
 
 
 
-let json = JSON(["name":"Jack", "age": 25])
+let json = JSON(["name":["Jack":"1","freda":"2"], "age": 25])
 
 String(json["age"].doubleValue)
+let jsonNames = json["name"].arrayValue
+let names = jsonNames.map {$0.stringValue}
+names
 
 
 Int.max
@@ -99,6 +102,22 @@ let style = ["<style>",
   "body{font-family:\"SourceSansPro-Regular\";font-size:15px;line-height:15px;}",
   "</style>"].reduce("",combine: +)
 
+let haha = [["a","b"]]
 
+print(haha)
+
+String(haha)
+
+let haha1 = ["b", "a"]
+
+haha == haha1
+
+var haha2: Set<String> = ["a"]
+
+Set(haha1) == haha2
+
+Array(haha2)[0]
+
+haha2.first
 
 

@@ -36,8 +36,18 @@ class Message: Object {
       _backingDisplayRecipient.appendContentsOf(newValue.map({ RealmString(value: [$0]) }))
     }
   }
-  
   let _backingDisplayRecipient = List<RealmString>()
+  
+  var privateFullName: [String] { //Collect the emails from this field.
+    get {
+      return _privateFullName.map {$0.stringValue}
+    }
+    set {
+      _privateFullName.removeAll()
+      _privateFullName.appendContentsOf(newValue.map({ RealmString(value: [$0]) }))
+    }
+  }
+    let _privateFullName = List<RealmString>()
 
   dynamic var sender_id: Int = 0
   dynamic var avatar_url = ""
@@ -72,6 +82,6 @@ class Message: Object {
   }
 
   override static func ignoredProperties() -> [String] {
-    return ["flags", "display_recipient"]
+    return ["flags", "display_recipient","privateFullName"]
   }
 }

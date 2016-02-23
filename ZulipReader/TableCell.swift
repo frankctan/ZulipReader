@@ -22,7 +22,8 @@ enum CellTypes {
 }
 
 struct TableCell {
-  var display_recipient = [String]()
+  var display_recipient = Set<String>()
+  var privateFullName = Set<String>()
   var subject = ""
   var type = ""
   var streamColor = ""
@@ -36,13 +37,15 @@ struct TableCell {
   var cellType = CellTypes.StreamCell
   var attributedContent = NSAttributedString()
   
+  
   //used for initialization of [[TableCell]]
   var isEmpty = true
   
   init() {}
   
   init(_ message: Message) {
-    display_recipient = message.display_recipient
+    display_recipient = Set(message.display_recipient)
+    privateFullName = Set(message.privateFullName)
     subject = message.subject
     type = message.type
     streamColor = message.streamColor

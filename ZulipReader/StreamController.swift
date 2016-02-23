@@ -25,6 +25,8 @@ class StreamController : DataController {
   
   var subscription: [String:String] = [:]
   
+  var registration = Registration()
+  
   struct Registration {
     var pointer = Int()
     var maxMessageID = Int()
@@ -34,6 +36,8 @@ class StreamController : DataController {
     
     let numBefore = 50
     let numAfter = 50
+    
+    init() {}
     
     init(_ pointer: Int, _ maxMessageID: Int, _ queueID: String, _ eventID: Int, _ subscription: [JSON]) {
       self.pointer = pointer
@@ -55,13 +59,14 @@ class StreamController : DataController {
   
   func clearDefaults() {
     Router.basicAuth = nil
-    realm.deleteAll()
+//    realm.deleteAll()
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }
     catch {fatalError("unable to clear Locksmith")}
   }
   
+  //MARK: Register
   func createRegistrationRequest() -> Future<URLRequestConvertible, ZulipErrorDomain> {
     let urlRequest = Router.Register
     return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
@@ -87,12 +92,13 @@ class StreamController : DataController {
     })
   }
   
-  //writes subscription dictionary and realm persistence
-  func recordSubscriptions(registration: Registration) -> Future<Registration, ZulipErrorDomain> {
+  //writes subscription dictionary, realm persistence, other registration info
+  func recordRegistration(registration: Registration) -> Future<Registration, ZulipErrorDomain> {
     for sub in registration.subscription {
       subscription[sub["name"].stringValue] = sub["color"].stringValue
     }
     subscriptionsToRealm(registration.subscription)
+    self.registration = registration
     return Future<Registration, ZulipErrorDomain>(value: registration)
   }
   
@@ -113,17 +119,73 @@ class StreamController : DataController {
     return createRegistrationRequest()
       .andThen(AlamofireRequest)
       .andThen(getStreamAndAchor)
-      .andThen(recordSubscriptions)
+      .andThen(recordRegistration)
   }
   
+  //MARK: Get Stream Messages
   func createMessageRequest(params: Registration) -> Future<URLRequestConvertible, ZulipErrorDomain> {
     let urlRequest = Router.GetOldMessages(anchor: params.maxMessageID, before: params.numBefore, after: params.numAfter)
     return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
   }
   
+  func createMessageRequest(params: Registration, narrow: String?) -> Future<URLRequestConvertible, ZulipErrorDomain> {
+    let urlRequest: URLRequestConvertible
+    if let narrowRequest = narrow {
+      urlRequest = Router.GetNarrowMessages(anchor: params.maxMessageID, before: params.numBefore, after: params.numAfter, narrow: narrowRequest)
+    }
+    else {
+      urlRequest = Router.GetOldMessages(anchor: params.maxMessageID, before: params.numBefore, after: params.numAfter)
+    }
+    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
+  }
+  
   typealias responseJSON = [JSON]
   
-  func parseResponse(response: JSON) -> Future<responseJSON, ZulipErrorDomain> {
+  func parseStreamMessages(params: Registration) -> Future<[Message], ZulipErrorDomain> {
+    return createMessageRequest(params)
+      .andThen(AlamofireRequest)
+      .andThen(parseMessageRequest)
+      .andThen(createMessageObject)
+  }
+  
+  func loadStreamMessages() {
+    register()
+      .andThen(parseStreamMessages)
+      .start {result in
+        switch result {
+        case .Success(let boxedMessages):
+          let messages = boxedMessages.unbox
+          self.messagesToRealm(messages)
+          let tableMessages = self.tableViewMessages(messages)
+          self.delegate?.didFetchMesssages(tableMessages)
+        case .Error(let error):
+          print(error.unbox.description)
+        }
+    }
+  }
+  
+  func parseNarrowMessages(params: Registration, narrow: String) -> Future<[Message], ZulipErrorDomain> {
+    return createMessageRequest(params, narrow: narrow)
+      .andThen(AlamofireRequest)
+      .andThen(parseMessageRequest)
+      .andThen(createMessageObject)
+  }
+  
+  func loadNarrowMessages(narrow: String) {
+    parseNarrowMessages(self.registration, narrow: narrow)
+      .start {result in
+        switch result {
+        case .Success(let boxedMessages):
+          let messages = boxedMessages.unbox
+          let tableMessages = self.tableViewMessages(messages)
+          self.delegate?.didFetchMesssages(tableMessages)
+        case .Error(let error):
+          print(error.unbox.description)
+        }
+    }
+  }
+  
+  func parseMessageRequest(response: JSON) -> Future<responseJSON, ZulipErrorDomain> {
     return Future<responseJSON, ZulipErrorDomain>(operation: {completion in
       let result: Result<responseJSON, ZulipErrorDomain>
       if let responseArray = response["messages"].array {
@@ -136,64 +198,62 @@ class StreamController : DataController {
     })
   }
   
-  func parseMessages(params: Registration) -> Future<responseJSON, ZulipErrorDomain> {
-    return createMessageRequest(params)
-      .andThen(AlamofireRequest)
-      .andThen(parseResponse)
-  }
-  
-  func loadMessages() {
-    register()
-      .andThen(parseMessages)
-      .start {result in
-        switch result {
-        case .Success(let boxedMessages):
-          let messages = boxedMessages.unbox
-          self.messagesToRealm(messages)
-          let tableMessages = self.tableViewMessages()
-          self.delegate?.didFetchMesssages(tableMessages)
-        case .Error(let error):
-          print(error.unbox.description)
+  func createMessageObject(messages: [JSON]) -> Future<[Message], ZulipErrorDomain> {
+    return Future<[Message], ZulipErrorDomain>(operation: {completion in
+      let result: Result<[Message], ZulipErrorDomain>
+      var results = [Message]()
+      guard let ownEmail = NSUserDefaults.standardUserDefaults().stringForKey("email") else {fatalError()}
+      
+      for message in messages {
+        var messageDict = message.dictionaryObject!
+
+        //assigns most of Message
+        let msg = Message(value: messageDict)
+        
+        //flag and display_recipient are [String]
+        //need special treatment
+        if let flags = messageDict["flags"] {
+          msg.flags = flags as! [String]
         }
-    }
+        
+        //assigns streamColor
+        if msg.type == "private", let privateRecipients = message["display_recipient"].array {
+          msg.display_recipient = privateRecipients.map {$0["email"].stringValue}
+          
+          msg.privateFullName =
+            privateRecipients
+              .filter {if $0["email"].stringValue == ownEmail {return false}; return true}
+              .map {$0["full_name"].stringValue}
+          
+          msg.streamColor = "none"
+        }
+        
+        if msg.type == "stream",let streamRecipient = message["display_recipient"].string {
+          msg.display_recipient = [streamRecipient]
+          msg.streamColor = self.subscription[streamRecipient]!
+        }
+        results.append(msg)
+      }
+      result = Result.Success(Box(results))
+      completion(result)
+    })
   }
   
-  func messagesToRealm(messages: [JSON]) {
+  func messagesToRealm(messages: [Message]) {
     print("writing messages")
     print("save path: \(realm.path)")
     for message in messages {
-      let messageDict = message.dictionaryObject!
-      
-      //assigns most of Message
-      let msg = Message(value: messageDict)
-      
-      //flag and display_recipient are [String]
-      //need special treatment
-      if let flags = messageDict["flags"] {
-        msg.flags = flags as! [String]
-      }
-      
-      //assigns streamColor
-      let recipient = messageDict["display_recipient"]!
-      if recipient is String {
-        let recipientString = recipient as! String
-        msg.streamColor = subscription[recipientString]!
-        msg.display_recipient = [recipientString]
-      } else {
-        msg.display_recipient = recipient as! [String]
-        msg.streamColor = "none"
-      }
-      
       do {
         try realm.write {
-          realm.add(msg)
+          realm.add(message)
         }
       } catch { fatalError("msgs: could not write to realm") }
     }
   }
   
-  func tableViewMessages() -> [[TableCell]] {
-    let messages = realm.objects(Message).sorted("timestamp", ascending: true)
+  //MARK: Prepare messages for table view
+  func tableViewMessages(messages: [Message]) -> [[TableCell]] {
+    //    let messages = realm.objects(Message).sorted("timestamp", ascending: true)
     var previous = TableCell()
     var result = [[TableCell]()]
     var sectionCounter = 0
@@ -222,7 +282,7 @@ class StreamController : DataController {
       }
       previous = cell
     }
-    
+    print(result.count)
     return result
   }
   
@@ -230,7 +290,7 @@ class StreamController : DataController {
     //Swift adds an extra "\n" to paragraph tags so we replace with span.
     var text = text.stringByReplacingOccurrencesOfString("<p>", withString: "<span>")
     text = text.stringByReplacingOccurrencesOfString("</p>", withString: "</span>")
-    //    text = text +
+    //Stolen from the original zulip-ios project
     let style = ["<style>",
       "body{font-family:\"SourceSansPro-Regular\";font-size:15px;line-height:15px;}",
       "span.user-mention {padding: 2px 4px; background-color: #F2F2F2; border: 1px solid #e1e1e8;}",

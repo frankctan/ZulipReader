@@ -39,7 +39,7 @@ class LoginController : DataController {
   private func fetchSecretKey(username: String, password: String) -> Future<String, ZulipErrorDomain> {
     return createLoginRequest(username, password: password)
       .andThen(AlamofireRequest)
-      .andThen(createHeader)
+      .andThen(createHeaderSaveDefaults)
   }
   
   private func createLoginRequest(username: String, password: String) -> Future<URLRequestConvertible, ZulipErrorDomain> {
@@ -47,8 +47,10 @@ class LoginController : DataController {
     return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
   }
   
-  private func createHeader(response: JSON) -> Future<String, ZulipErrorDomain> {
+  private func createHeaderSaveDefaults(response: JSON) -> Future<String, ZulipErrorDomain> {
     let email = response["email"].stringValue
+    saveDefaults(email)
+    
     let secretKey = response["api_key"].stringValue
     let header = "Basic " + "\(email):\(secretKey)".dataUsingEncoding(NSUTF8StringEncoding)!.base64EncodedStringWithOptions([])
     return Future<String, ZulipErrorDomain>(value: header)
@@ -60,6 +62,11 @@ class LoginController : DataController {
       print("auth header saved header to keychain!")
     }
     catch {fatalError("keychain can't be set")}
+  }
+  
+  private func saveDefaults(email: String) {
+    let defaults = NSUserDefaults.standardUserDefaults()
+    defaults.setValue(email, forKey: "email")
   }
   
   private func setRouterHeader(header: String) {
