@@ -15,7 +15,7 @@ var State = ""
 class StreamTableViewController: SLKTextViewController {
   
   //TODO: create a new view for navigation!
-  @IBOutlet weak var menuButton: UIBarButtonItem!
+//  @IBOutlet weak var menuButton: UIBarButtonItem!
   //
   //  @IBAction func homeButtonDidTouch(sender: AnyObject) {
   //    State = "stream"
@@ -37,11 +37,12 @@ class StreamTableViewController: SLKTextViewController {
     data.delegate = self
     tableViewSettings()
 
-    if self.revealViewController() != nil {
-      menuButton.target = self.revealViewController()
-      menuButton.action = "revealToggle:"
-      self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
-    }
+    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
+    navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
+
+    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
+    navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
+    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
   }
   
   override func viewDidAppear(animated: Bool) {
@@ -50,6 +51,7 @@ class StreamTableViewController: SLKTextViewController {
     if let navigationController = self.navigationController as? ScrollingNavigationController {
       navigationController.followScrollView(tableView, delay: 0.0)
     }
+    
     print("in streamTableViewController:viewDidAppear")
     tableView.showLoading()
     loadData()
@@ -65,6 +67,11 @@ class StreamTableViewController: SLKTextViewController {
     else {
       data.loadStreamMessages()
     }
+  }
+  
+  //MARK: HomeBarButtonItem Target
+  func homeButtonDidTouch(sender: AnyObject) {
+    data.loadStreamMessages()
   }
 
   //MARK: TableViewDelegate

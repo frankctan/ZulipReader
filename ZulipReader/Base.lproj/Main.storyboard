@@ -240,18 +240,8 @@
         <scene sceneID="kno-lS-Ej6">
             <objects>
                 <viewController storyboardIdentifier="stream" title="stream" id="aza-hl-kgP" customClass="StreamTableViewController" customModule="ZulipReader" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="Yiv-FB-6RM">
-                        <barButtonItem key="leftBarButtonItem" image="menu" id="DWV-8b-xFP"/>
-                        <barButtonItem key="rightBarButtonItem" image="house283-1" id="L3t-QM-R9m">
-                            <connections>
-                                <action selector="homeButtonDidTouch:" destination="aza-hl-kgP" id="OOG-zZ-wzO"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="Yiv-FB-6RM"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <outlet property="menuButton" destination="DWV-8b-xFP" id="dqu-7e-M9z"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EG0-k3-UfS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -277,10 +267,6 @@
             <point key="canvasLocation" x="612" y="380"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="house283-1" width="23" height="21"/>
-        <image name="menu" width="22" height="22"/>
-    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="zD2-Tr-MIe"/>
     </inferredMetricsTieBreakers>
