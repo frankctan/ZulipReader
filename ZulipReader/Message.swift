@@ -50,8 +50,6 @@ class Message: Object {
   dynamic var sender_domain = ""
   dynamic var timestamp: Double = 0
   
-
-  
   dynamic var id: Int = 0
   dynamic var recipient_id: Int = 0
   dynamic var type = ""
@@ -73,7 +71,6 @@ class Message: Object {
     }
   }
 
-  
   override static func ignoredProperties() -> [String] {
     return ["flags", "display_recipient"]
   }

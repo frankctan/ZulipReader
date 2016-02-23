@@ -37,7 +37,6 @@ class DataController {
     case GetOldMessages(anchor: Int, before: Int, after: Int)
     case GetNarrowMessages(anchor: Int, before: Int, after: Int, narrow: String)
     //    case PostMessage(type: String, content: String, to: [String], subject: String?)
-    //    case longPoll(queueID: String, lastEventId: String)
     
     var method: Alamofire.Method {
       switch self {
@@ -51,20 +50,26 @@ class DataController {
     var URLRequest: NSMutableURLRequest {
       let result: (path: String, parameters: [String: AnyObject]?) = {
         switch self {
+          
         case .Login(let username, let password):
           let loginParams = ["username": username, "password": password]
           return ("/fetch_api_key", loginParams)
+          
         case .Register:
           let registerParams = ["event_types:": ["message","pointer"]]
           return("/register", registerParams)
+          
         case .GetSubscriptions:
           return("/users/me/subscriptions", nil)
+          
         case .GetOldMessages(let anchor, let before, let after):
           let messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
           return("/messages", messageParams)
+          
         case .GetNarrowMessages(let anchor, let before, let after, let narrow):
           let messageParams = ["anchor": anchor, "num_before": before,
             "num_after": after, "narrow": narrow]
+          
           return("/messages", messageParams as! [String : AnyObject])
         }
       }()
@@ -81,17 +86,6 @@ class DataController {
       print(encoding.encode(URLRequest, parameters: result.parameters).0)
       return encoding.encode(URLRequest, parameters: result.parameters).0
     }
-    //      switch self {
-    //      case .Login(let username, let password):
-    //        return "/fetch_api_key?username=\(username)&password=\(password)"
-    //      case .Register:
-    //        return "/register?event_types=[\"message\"]"
-    //      case .GetStreamMessages(let anchor, let before, let after):
-    //        return "/messages?anchor=\(anchor)&num_before=\(before)&num_after=\(after)"
-    //      case .GetSubscriptions:
-    //        return "/users/me/subscriptions"
-    //      case .GetNarrowMessages(let anchor, let before, let after, let narrowParams):
-    //        return "/messages?anchor=\(anchor)&num_before=\(before)&num_after=\(after)&narrow=\(narrowParams)"
     //      case .PostMessage(let type, let content, let recipients, let subject):
     //        if subject == nil {
     //          //PM
@@ -100,9 +94,7 @@ class DataController {
     //          //Stream
     //          return "/messages?type=\(type)&content=\(content)&to=\(recipients[0])&subject=\(subject!)"
     //        }
-    //      case .longPoll(let queueID, let lastEventId):
-    //        return "/events?queue_id=\(queueID)&last_event_id=\(lastEventId)"
-    //      }
+
     //    }
   }
 }

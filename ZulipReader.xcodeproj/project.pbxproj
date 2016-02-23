@@ -16,6 +16,7 @@
 		6785E7A41C6D05CD008ED151 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6785E7A31C6D05CD008ED151 /* Message.swift */; };
 		6788F2AF1C7BCD5800AC1D71 /* UITableViewCellExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */; };
 		6788F2B11C7BD0EA00AC1D71 /* OldStreamTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */; };
+		6788F2B31C7C4C3D00AC1D71 /* oldStreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2B21C7C4C3D00AC1D71 /* oldStreamController.swift */; };
 		678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */; };
 		678A6BB71C10EBA200AE091B /* TableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB61C10EBA200AE091B /* TableCell.swift */; };
 		678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */; };
@@ -72,6 +73,7 @@
 		6785E7A51C6D0909008ED151 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtension.swift; sourceTree = "<group>"; };
 		6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldStreamTableViewController.swift; sourceTree = "<group>"; };
+		6788F2B21C7C4C3D00AC1D71 /* oldStreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = oldStreamController.swift; sourceTree = "<group>"; };
 		678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamHeaderNavCell.swift; sourceTree = "<group>"; };
 		678A6BB61C10EBA200AE091B /* TableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableCell.swift; sourceTree = "<group>"; };
 		678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Black-webfont.ttf"; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
 				67A9DA8E1C1F546600AEEF1B /* Login */,
 				673251761C0A7154009A546C /* StreamController.swift */,
+				6788F2B21C7C4C3D00AC1D71 /* oldStreamController.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */,
 				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
@@ -445,6 +448,7 @@
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
 				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,
 				67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */,
+				6788F2B31C7C4C3D00AC1D71 /* oldStreamController.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
 				6788F2B11C7BD0EA00AC1D71 /* OldStreamTableViewController.swift in Sources */,

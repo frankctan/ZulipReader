@@ -111,7 +111,7 @@ class StreamTableViewController: SLKTextViewController, StreamControllerDelegate
     return cell
   }
   
-  //MARK: -StreamControllerDelegate
+  //MARK: StreamControllerDelegate
   func statusUpdate(flag: Bool) {
     if flag {
       loadData()
@@ -133,7 +133,6 @@ class StreamTableViewController: SLKTextViewController, StreamControllerDelegate
     tableView.registerNib(UINib(nibName: "StreamHeaderPrivateCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderPrivateCell")
     tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
     tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
-    
     
     self.setTextInputbarHidden(true, animated: false)
     self.bounces = true

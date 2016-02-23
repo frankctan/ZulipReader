@@ -93,5 +93,12 @@ struct TableCell {
 
 let dict = ["username": ""]
 
+let stri = "afdsf\n"
+"haha"
+let style = ["<style>",
+  "body{font-family:\"SourceSansPro-Regular\";font-size:15px;line-height:15px;}",
+  "</style>"].reduce("",combine: +)
+
+
 
 
