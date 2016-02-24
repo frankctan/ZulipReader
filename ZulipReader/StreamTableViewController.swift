@@ -111,8 +111,9 @@ class StreamTableViewController: SLKTextViewController {
     return cell
   }
   
+  //MARK: UIScrollViewDelegate
   override func scrollViewDidScroll(scrollView: UIScrollView) {
-    // If within half a screen of the bottom, load more.
+    // If within half a screen of the top, load more.
     guard scrollView.contentOffset.y + scrollView.bounds.height < scrollView.contentSize.height - view.bounds.height / 2 else { return }
     
     data.loadStreamMessages(UserAction.ScrollUp)

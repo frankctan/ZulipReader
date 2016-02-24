@@ -222,7 +222,6 @@ class StreamController : DataController {
       .andThen(AlamofireRequest)
       .andThen(processResponse)
   }
-
   
   private func createRequestParameters(action: UserAction) -> MessageRequestParameters {
     var params = MessageRequestParameters()
