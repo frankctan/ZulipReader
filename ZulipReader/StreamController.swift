@@ -17,17 +17,22 @@ protocol StreamControllerDelegate: class {
   func didFetchMesssages(messages: [[TableCell]])
 }
 
+public enum UserAction {
+  case ScrollUp, ScrollDown, Refresh, Register
+  case Narrow(narrow: String)
+}
+
 class StreamController : DataController {
   
   weak var delegate: StreamControllerDelegate?
   
-  let realm = try! Realm()
+  private let realm: Realm
   
-  var subscription: [String:String] = [:]
+  private var subscription: [String:String] = [:]
   
-  var registration = Registration()
+  private var registration = Registration()
   
-  struct Registration {
+  private struct Registration {
     var pointer = Int()
     var maxMessageID = Int()
     var queueID = String()
@@ -48,6 +53,46 @@ class StreamController : DataController {
     }
   }
   
+  private struct MessageRequestParameters {
+    let numBefore: Int
+    let numAfter: Int
+    let numAnchor: Int
+    let narrows: String?
+    
+    init() {
+      self = MessageRequestParameters(anchor: 0)
+    }
+    
+    init(anchor: Int) {
+      numAnchor = anchor
+      numBefore = 50
+      numAfter = 50
+      narrows = nil
+    }
+    
+    init(anchor: Int, before: Int, after: Int) {
+      numAnchor = anchor
+      numBefore = before
+      numAfter = after
+      narrows = nil
+    }
+    
+    init(anchor: Int, before: Int, after: Int, narrow: String) {
+      numAnchor = anchor
+      numBefore = before
+      numAfter = after
+      narrows = narrow
+    }
+  }
+  
+  override init() {
+    do {
+      realm = try Realm()
+    } catch let error as NSError {
+      fatalError(String(error))
+    }
+  }
+  
   func isLoggedIn() -> Bool {
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
@@ -59,7 +104,7 @@ class StreamController : DataController {
   
   func clearDefaults() {
     Router.basicAuth = nil
-//    realm.deleteAll()
+    //    realm.deleteAll()
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }
@@ -67,12 +112,35 @@ class StreamController : DataController {
   }
   
   //MARK: Register
-  func createRegistrationRequest() -> Future<URLRequestConvertible, ZulipErrorDomain> {
+  func register() {
+    registrationPipeline()
+      .start { result in
+        switch result {
+          
+        case .Success(let boxedReg):
+          let reg = boxedReg.unbox
+          self.recordRegistration(reg)
+          self.loadStreamMessages(.Register)
+          
+        case .Error(let boxedError):
+          let error = boxedError.unbox
+          print("registration error: \(error)")
+        }
+    }
+  }
+
+  private func registrationPipeline() -> Future<Registration, ZulipErrorDomain> {
+    return createRegistrationRequest()
+      .andThen(AlamofireRequest)
+      .andThen(getStreamAndAchor)
+  }
+  
+  private func createRegistrationRequest() -> Future<URLRequestConvertible, ZulipErrorDomain> {
     let urlRequest = Router.Register
     return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
   }
   
-  func getStreamAndAchor(response: JSON) -> Future<Registration, ZulipErrorDomain> {
+  private func getStreamAndAchor(response: JSON) -> Future<Registration, ZulipErrorDomain> {
     return Future<Registration, ZulipErrorDomain>(operation: { completion in
       let result: Result<Registration, ZulipErrorDomain>
       
@@ -93,16 +161,15 @@ class StreamController : DataController {
   }
   
   //writes subscription dictionary, realm persistence, other registration info
-  func recordRegistration(registration: Registration) -> Future<Registration, ZulipErrorDomain> {
+  private func recordRegistration(registration: Registration) {
     for sub in registration.subscription {
       subscription[sub["name"].stringValue] = sub["color"].stringValue
     }
     subscriptionsToRealm(registration.subscription)
     self.registration = registration
-    return Future<Registration, ZulipErrorDomain>(value: registration)
   }
   
-  func subscriptionsToRealm(subscriptions: [JSON]) {
+  private func subscriptionsToRealm(subscriptions: [JSON]) {
     print("writing subscriptions")
     for subscription in subscriptions {
       let subDict = subscription.dictionaryObject
@@ -115,79 +182,88 @@ class StreamController : DataController {
     }
   }
   
-  func register() -> Future<Registration, ZulipErrorDomain> {
-    return createRegistrationRequest()
-      .andThen(AlamofireRequest)
-      .andThen(getStreamAndAchor)
-      .andThen(recordRegistration)
-  }
-  
   //MARK: Get Stream Messages
-  func createMessageRequest(params: Registration) -> Future<URLRequestConvertible, ZulipErrorDomain> {
-    let urlRequest = Router.GetOldMessages(anchor: params.maxMessageID, before: params.numBefore, after: params.numAfter)
-    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
+  func loadStreamMessages(action: UserAction) {
+    let params = createRequestParameters(action)
+    messagePipeline(params)
+      .start {result in
+        switch result {
+          
+        case .Success(let boxedMessages):
+          let messages = boxedMessages.unbox
+          
+          if params.narrows == nil {
+            self.messagesToRealm(messages)
+          }
+          
+          let tableMessages = self.tableViewMessages(messages)
+          self.delegate?.didFetchMesssages(tableMessages)
+          
+        case .Error(let error):
+          print(error.unbox.description)
+        }
+    }
   }
   
-  func createMessageRequest(params: Registration, narrow: String?) -> Future<URLRequestConvertible, ZulipErrorDomain> {
-    let urlRequest: URLRequestConvertible
-    if let narrowRequest = narrow {
-      urlRequest = Router.GetNarrowMessages(anchor: params.maxMessageID, before: params.numBefore, after: params.numAfter, narrow: narrowRequest)
-    }
-    else {
-      urlRequest = Router.GetOldMessages(anchor: params.maxMessageID, before: params.numBefore, after: params.numAfter)
-    }
-    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
-  }
-  
-  typealias responseJSON = [JSON]
-  
-  func parseStreamMessages(params: Registration) -> Future<[Message], ZulipErrorDomain> {
+  private func messagePipeline(params: MessageRequestParameters) -> Future<[Message], ZulipErrorDomain> {
     return createMessageRequest(params)
       .andThen(AlamofireRequest)
-      .andThen(parseMessageRequest)
+      .andThen(processResponse)
+  }
+
+  
+  private func createRequestParameters(action: UserAction) -> MessageRequestParameters {
+    var params = MessageRequestParameters()
+    let (minAnchor, maxAnchor) = getAnchor()
+    
+    switch action {
+    case .ScrollDown, .Refresh:
+      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 100)
+    case .ScrollUp:
+      params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0)
+    case .Narrow(let narrow):
+      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50, narrow: narrow)
+    case .Register:
+      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50)
+    }
+    return params
+  }
+  
+  private func getAnchor() -> (min: Int, max: Int) {
+    let messages = realm.objects(Message).sorted("timestamp", ascending: false)
+    
+    var realmMaxID = 0
+    if let first = messages.first {
+      realmMaxID = first.id
+    }
+    
+    let registrationID = registration.maxMessageID
+    var realmMinID = 0
+    if let last = messages.last {
+      realmMinID = last.id
+    }
+    return (realmMinID, max(realmMaxID, registrationID))
+  }
+  
+  private func createMessageRequest(params: MessageRequestParameters) -> Future<URLRequestConvertible, ZulipErrorDomain> {
+    let urlRequest: URLRequestConvertible
+    if let narrowRequest = params.narrows {
+      urlRequest = Router.GetNarrowMessages(anchor: params.numAnchor, before: params.numBefore, after: params.numAfter, narrow: narrowRequest)
+    }
+    else {
+      urlRequest = Router.GetOldMessages(anchor: params.numAnchor, before: params.numBefore, after: params.numAfter)
+    }
+    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
+  }
+  
+  private func processResponse(response: JSON) -> Future<[Message], ZulipErrorDomain> {
+    return parseMessageRequest(response)
       .andThen(createMessageObject)
   }
   
-  func loadStreamMessages() {
-    register()
-      .andThen(parseStreamMessages)
-      .start {result in
-        switch result {
-        case .Success(let boxedMessages):
-          let messages = boxedMessages.unbox
-          self.messagesToRealm(messages)
-          let tableMessages = self.tableViewMessages(messages)
-          self.delegate?.didFetchMesssages(tableMessages)
-        case .Error(let error):
-          print(error.unbox.description)
-        }
-    }
-  }
-  
-  func parseNarrowMessages(params: Registration, narrow: String) -> Future<[Message], ZulipErrorDomain> {
-    return createMessageRequest(params, narrow: narrow)
-      .andThen(AlamofireRequest)
-      .andThen(parseMessageRequest)
-      .andThen(createMessageObject)
-  }
-  
-  func loadNarrowMessages(narrow: String) {
-    parseNarrowMessages(self.registration, narrow: narrow)
-      .start {result in
-        switch result {
-        case .Success(let boxedMessages):
-          let messages = boxedMessages.unbox
-          let tableMessages = self.tableViewMessages(messages)
-          self.delegate?.didFetchMesssages(tableMessages)
-        case .Error(let error):
-          print(error.unbox.description)
-        }
-    }
-  }
-  
-  func parseMessageRequest(response: JSON) -> Future<responseJSON, ZulipErrorDomain> {
-    return Future<responseJSON, ZulipErrorDomain>(operation: {completion in
-      let result: Result<responseJSON, ZulipErrorDomain>
+  private func parseMessageRequest(response: JSON) -> Future<[JSON], ZulipErrorDomain> {
+    return Future<[JSON], ZulipErrorDomain>(operation: {completion in
+      let result: Result<[JSON], ZulipErrorDomain>
       if let responseArray = response["messages"].array {
         result = Result.Success(Box(responseArray))
       }
@@ -198,7 +274,7 @@ class StreamController : DataController {
     })
   }
   
-  func createMessageObject(messages: [JSON]) -> Future<[Message], ZulipErrorDomain> {
+  private func createMessageObject(messages: [JSON]) -> Future<[Message], ZulipErrorDomain> {
     return Future<[Message], ZulipErrorDomain>(operation: {completion in
       let result: Result<[Message], ZulipErrorDomain>
       var results = [Message]()
@@ -206,7 +282,7 @@ class StreamController : DataController {
       
       for message in messages {
         var messageDict = message.dictionaryObject!
-
+        
         //assigns most of Message
         let msg = Message(value: messageDict)
         
@@ -239,8 +315,8 @@ class StreamController : DataController {
     })
   }
   
-  func messagesToRealm(messages: [Message]) {
-    print("writing messages")
+  private func messagesToRealm(messages: [Message]) {
+    print("writing messages...")
     print("save path: \(realm.path)")
     for message in messages {
       do {
@@ -249,11 +325,12 @@ class StreamController : DataController {
         }
       } catch { fatalError("msgs: could not write to realm") }
     }
+    print("finished writing")
   }
   
   //MARK: Prepare messages for table view
-  func tableViewMessages(messages: [Message]) -> [[TableCell]] {
-    //    let messages = realm.objects(Message).sorted("timestamp", ascending: true)
+  private func tableViewMessages(messages: [Message]) -> [[TableCell]] {
+//    let messages = realm.objects(Message).sorted("timestamp", ascending: true)
     var previous = TableCell()
     var result = [[TableCell]()]
     var sectionCounter = 0
@@ -286,7 +363,7 @@ class StreamController : DataController {
     return result
   }
   
-  func processMarkdown(text: String) -> NSAttributedString! {
+  private func processMarkdown(text: String) -> NSAttributedString! {
     //Swift adds an extra "\n" to paragraph tags so we replace with span.
     var text = text.stringByReplacingOccurrencesOfString("<p>", withString: "<span>")
     text = text.stringByReplacingOccurrencesOfString("</p>", withString: "</span>")
@@ -311,5 +388,3 @@ class StreamController : DataController {
     return htmlString
   }
 }
-
-

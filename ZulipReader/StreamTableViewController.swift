@@ -13,17 +13,6 @@ import SlackTextViewController
 var State = ""
 
 class StreamTableViewController: SLKTextViewController {
-  
-  //TODO: create a new view for navigation!
-//  @IBOutlet weak var menuButton: UIBarButtonItem!
-  //
-  //  @IBAction func homeButtonDidTouch(sender: AnyObject) {
-  //    State = "stream"
-  //    narrowTitle = "Stream"
-  //    narrowParams = nil
-  //    self.data.getStreamMessages(narrowParams)
-  //    self.setTextInputbarHidden(true, animated: true)
-  //  }
 
   let data = StreamController()
   var messages: [[TableCell]] = []
@@ -65,13 +54,14 @@ class StreamTableViewController: SLKTextViewController {
       presentViewController(controller, animated: true, completion: nil)
     }
     else {
-      data.loadStreamMessages()
+      data.register()
     }
   }
   
   //MARK: HomeBarButtonItem Target
   func homeButtonDidTouch(sender: AnyObject) {
-    data.loadStreamMessages()
+    data.loadStreamMessages(UserAction.Refresh)
+    tableView.showLoading()
   }
 
   //MARK: TableViewDelegate
@@ -163,13 +153,13 @@ extension StreamTableViewController: StreamControllerDelegate {
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {
     let narrow = "[[\"stream\", \"\(stream)\"]]"
-    data.loadNarrowMessages(narrow)
+    data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
     tableView.showLoading()
   }
   
   func narrowSubject(stream: String, subject: String) {
     let narrow = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
-    data.loadNarrowMessages(narrow)
+    data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
     tableView.showLoading()
   }
 }
@@ -178,7 +168,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
 extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
   func narrowConversation(emails: String) {
     let narrow = "[[\"is\", \"private\"],[\"pm-with\",\"\(emails)\"]]"
-    data.loadNarrowMessages(narrow)
+    data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
     tableView.showLoading()
   }
 }
