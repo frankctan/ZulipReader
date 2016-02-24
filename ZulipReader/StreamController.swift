@@ -183,20 +183,32 @@ class StreamController : DataController {
   }
   
   //MARK: Get Stream Messages
+  var loading = false
+  
   func loadStreamMessages(action: UserAction) {
+    if loading {
+      return
+    }
+    loading = true
+    
     let params = createRequestParameters(action)
     messagePipeline(params)
       .start {result in
+        
+        self.loading = false
+        
         switch result {
           
         case .Success(let boxedMessages):
           let messages = boxedMessages.unbox
+          var messagesToBeLoaded = messages
           
           if params.narrows == nil {
             self.messagesToRealm(messages)
+            messagesToBeLoaded = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
           }
           
-          let tableMessages = self.tableViewMessages(messages)
+          let tableMessages = self.tableViewMessages(messagesToBeLoaded)
           self.delegate?.didFetchMesssages(tableMessages)
           
         case .Error(let error):
@@ -330,7 +342,6 @@ class StreamController : DataController {
   
   //MARK: Prepare messages for table view
   private func tableViewMessages(messages: [Message]) -> [[TableCell]] {
-//    let messages = realm.objects(Message).sorted("timestamp", ascending: true)
     var previous = TableCell()
     var result = [[TableCell]()]
     var sectionCounter = 0

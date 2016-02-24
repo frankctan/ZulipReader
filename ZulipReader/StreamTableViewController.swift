@@ -111,6 +111,14 @@ class StreamTableViewController: SLKTextViewController {
     return cell
   }
   
+  override func scrollViewDidScroll(scrollView: UIScrollView) {
+    // If within half a screen of the bottom, load more.
+    guard scrollView.contentOffset.y + scrollView.bounds.height < scrollView.contentSize.height - view.bounds.height / 2 else { return }
+    
+    data.loadStreamMessages(UserAction.ScrollUp)
+  }
+
+  
   func tableViewSettings() {
     tableView.estimatedRowHeight = 60
     tableView.rowHeight = UITableViewAutomaticDimension
