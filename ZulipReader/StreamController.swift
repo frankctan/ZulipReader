@@ -13,12 +13,11 @@ import Locksmith
 import RealmSwift
 
 protocol StreamControllerDelegate: class {
-  func statusUpdate(flag: Bool)
-  func didFetchMesssages(messages: [[TableCell]])
+  func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath]))
 }
 
 public enum UserAction {
-  case ScrollUp, ScrollDown, Refresh, Register
+  case ScrollUp, ScrollDown, Refresh, Register, Home
   case Narrow(narrow: String)
 }
 
@@ -27,10 +26,9 @@ class StreamController : DataController {
   weak var delegate: StreamControllerDelegate?
   
   private let realm: Realm
-  
   private var subscription: [String:String] = [:]
-  
   private var registration = Registration()
+  private var oldTableCells = [[TableCell]]()
   
   private struct Registration {
     var pointer = Int()
@@ -111,77 +109,6 @@ class StreamController : DataController {
     catch {fatalError("unable to clear Locksmith")}
   }
   
-  //MARK: Register
-  func register() {
-    registrationPipeline()
-      .start { result in
-        switch result {
-          
-        case .Success(let boxedReg):
-          let reg = boxedReg.unbox
-          self.recordRegistration(reg)
-          self.loadStreamMessages(.Register)
-          
-        case .Error(let boxedError):
-          let error = boxedError.unbox
-          print("registration error: \(error)")
-        }
-    }
-  }
-
-  private func registrationPipeline() -> Future<Registration, ZulipErrorDomain> {
-    return createRegistrationRequest()
-      .andThen(AlamofireRequest)
-      .andThen(getStreamAndAchor)
-  }
-  
-  private func createRegistrationRequest() -> Future<URLRequestConvertible, ZulipErrorDomain> {
-    let urlRequest = Router.Register
-    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
-  }
-  
-  private func getStreamAndAchor(response: JSON) -> Future<Registration, ZulipErrorDomain> {
-    return Future<Registration, ZulipErrorDomain>(operation: { completion in
-      let result: Result<Registration, ZulipErrorDomain>
-      
-      if let pointer = response["pointer"].int,
-        let maxID = response["max_message_id"].int,
-        let queueID = response["queue_id"].string,
-        let eventID = response["last_event_id"].int,
-        let subs = response["subscriptions"].array {
-          
-          let registration = Registration(pointer, maxID, queueID, eventID, subs)
-          result = Result.Success(Box(registration))
-      }
-      else {
-        result = Result.Error(Box(ZulipErrorDomain.ZulipRequestFailure(message: "unable to assign registration")))
-      }
-      completion(result)
-    })
-  }
-  
-  //writes subscription dictionary, realm persistence, other registration info
-  private func recordRegistration(registration: Registration) {
-    for sub in registration.subscription {
-      subscription[sub["name"].stringValue] = sub["color"].stringValue
-    }
-    subscriptionsToRealm(registration.subscription)
-    self.registration = registration
-  }
-  
-  private func subscriptionsToRealm(subscriptions: [JSON]) {
-    print("writing subscriptions")
-    for subscription in subscriptions {
-      let subDict = subscription.dictionaryObject
-      let sub = Subscription(value: subDict!)
-      do {
-        try realm.write {
-          realm.add(sub)
-        }
-      } catch { fatalError("subs: could not write to realm") }
-    }
-  }
-  
   //MARK: Get Stream Messages
   var loading = false
   
@@ -191,30 +118,72 @@ class StreamController : DataController {
     }
     loading = true
     
-    let params = createRequestParameters(action)
+    var userAction = action
+    
+    switch action {
+    case .Refresh, .Home:
+      let messagesToBeLoaded = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+      tableCellsToController(action, messages: messagesToBeLoaded)
+      userAction = .Refresh
+    default: break
+    }
+    
+    let params = createRequestParameters(userAction)
     messagePipeline(params)
       .start {result in
-        
-        self.loading = false
-        
         switch result {
-          
         case .Success(let boxedMessages):
-          let messages = boxedMessages.unbox
-          var messagesToBeLoaded = messages
-          
+          var newMessages = boxedMessages.unbox
           if params.narrows == nil {
-            self.messagesToRealm(messages)
-            messagesToBeLoaded = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+            self.messagesToRealm(newMessages)
+            newMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
           }
           
-          let tableMessages = self.tableViewMessages(messagesToBeLoaded)
-          self.delegate?.didFetchMesssages(tableMessages)
+          self.tableCellsToController(userAction, messages: newMessages)
           
         case .Error(let error):
           print(error.unbox.description)
         }
+        self.loading = false
     }
+  }
+  
+  private func tableCellsToController(action: UserAction, messages: [Message]) {
+    let tableCells = self.convertToCell(messages)
+
+    if (self.oldTableCells.flatMap{$0}.map{$0.dateTime}) != (tableCells.flatMap{$0}.map {$0.dateTime}) {
+      print("old table cells do not match new table cells")
+      let (inserted, deleted) = self.findNewMessages(tableCells, action: action)
+      self.delegate?.didFetchMesssages(tableCells, newMessages: (inserted: inserted, deleted: deleted))
+      self.oldTableCells = tableCells
+    }
+    return
+  }
+  
+  private func findNewMessages(tableCells: [[TableCell]], action: UserAction) -> (inserted: [NSIndexPath], deleted: [NSIndexPath]) {
+    var insert = [NSIndexPath]()
+    var delete = [NSIndexPath]()
+    
+    let flatTableCells = tableCells.flatMap {$0}
+    let flatOldTableCells = oldTableCells.flatMap {$0}
+    
+    switch action {
+    case .Narrow(_), .Home:
+      for tableCell in flatOldTableCells {
+        delete.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+      }
+      for tableCell in flatTableCells {
+        insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+      }
+    default:
+      let oldTableCellTimeStamp = flatOldTableCells.map {$0.dateTime}
+      for tableCell in flatTableCells {
+        if !oldTableCellTimeStamp.contains(tableCell.dateTime) {
+          insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+        }
+      }
+    }
+    return (insert, delete)
   }
   
   private func messagePipeline(params: MessageRequestParameters) -> Future<[Message], ZulipErrorDomain> {
@@ -228,12 +197,12 @@ class StreamController : DataController {
     let (minAnchor, maxAnchor) = getAnchor()
     
     switch action {
-    case .ScrollDown, .Refresh:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 100)
+    case .ScrollDown, .Refresh, .Home:
+      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 5)
     case .ScrollUp:
       params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0)
     case .Narrow(let narrow):
-      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50, narrow: narrow)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 5, after: 5, narrow: narrow)
     case .Register:
       params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50)
     }
@@ -326,27 +295,32 @@ class StreamController : DataController {
     })
   }
   
+  //checks for uniqueness based on dateTime
   private func messagesToRealm(messages: [Message]) {
     print("writing messages...")
     print("save path: \(realm.path)")
+    let currentMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+    let currentMessageTimeStamp = currentMessages.map {$0.dateTime}
     for message in messages {
-      do {
-        try realm.write {
-          realm.add(message)
-        }
-      } catch { fatalError("msgs: could not write to realm") }
+      if !currentMessageTimeStamp.contains(message.dateTime) {
+        do {
+          try realm.write {
+            realm.add(message)
+          }
+        } catch { fatalError("msgs: could not write to realm") }
+      }
     }
     print("finished writing")
   }
   
   //MARK: Prepare messages for table view
-  private func tableViewMessages(messages: [Message]) -> [[TableCell]] {
+  private func convertToCell(messages: [Message]) -> [[TableCell]] {
     var previous = TableCell()
     var result = [[TableCell]()]
     var sectionCounter = 0
+    var rowCounter = 0
     for message in messages {
       var cell = TableCell(message)
-      
       cell.attributedContent = processMarkdown(message.content)
       
       if previous.isEmpty {
@@ -358,13 +332,21 @@ class StreamController : DataController {
       if previous.display_recipient != cell.display_recipient ||
         previous.subject != cell.subject ||
         previous.type != cell.type {
+          
           sectionCounter++
+          rowCounter = 0
+          cell.section = sectionCounter
+          cell.row = rowCounter
           result.append([cell])
       }
       else {
         if previous.sender_full_name == cell.sender_full_name {
           cell.cellType = CellTypes.ExtendedCell
         }
+        
+        rowCounter++
+        cell.section = sectionCounter
+        cell.row = rowCounter
         result[sectionCounter].append(cell)
       }
       previous = cell
@@ -397,4 +379,76 @@ class StreamController : DataController {
     }
     return htmlString
   }
+  
+  //MARK: Register
+  func register() {
+    registrationPipeline()
+      .start { result in
+        switch result {
+          
+        case .Success(let boxedReg):
+          let reg = boxedReg.unbox
+          self.recordRegistration(reg)
+          self.loadStreamMessages(.Register)
+          
+        case .Error(let boxedError):
+          let error = boxedError.unbox
+          print("registration error: \(error)")
+        }
+    }
+  }
+  
+  private func registrationPipeline() -> Future<Registration, ZulipErrorDomain> {
+    return createRegistrationRequest()
+      .andThen(AlamofireRequest)
+      .andThen(getStreamAndAchor)
+  }
+  
+  private func createRegistrationRequest() -> Future<URLRequestConvertible, ZulipErrorDomain> {
+    let urlRequest = Router.Register
+    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
+  }
+  
+  private func getStreamAndAchor(response: JSON) -> Future<Registration, ZulipErrorDomain> {
+    return Future<Registration, ZulipErrorDomain>(operation: { completion in
+      let result: Result<Registration, ZulipErrorDomain>
+      
+      if let pointer = response["pointer"].int,
+        let maxID = response["max_message_id"].int,
+        let queueID = response["queue_id"].string,
+        let eventID = response["last_event_id"].int,
+        let subs = response["subscriptions"].array {
+          
+          let registration = Registration(pointer, maxID, queueID, eventID, subs)
+          result = Result.Success(Box(registration))
+      }
+      else {
+        result = Result.Error(Box(ZulipErrorDomain.ZulipRequestFailure(message: "unable to assign registration")))
+      }
+      completion(result)
+    })
+  }
+  
+  //writes subscription dictionary, realm persistence, other registration info
+  private func recordRegistration(registration: Registration) {
+    for sub in registration.subscription {
+      subscription[sub["name"].stringValue] = sub["color"].stringValue
+    }
+    subscriptionsToRealm(registration.subscription)
+    self.registration = registration
+  }
+  
+  private func subscriptionsToRealm(subscriptions: [JSON]) {
+    print("writing subscriptions")
+    for subscription in subscriptions {
+      let subDict = subscription.dictionaryObject
+      let sub = Subscription(value: subDict!)
+      do {
+        try realm.write {
+          realm.add(sub)
+        }
+      } catch { fatalError("subs: could not write to realm") }
+    }
+  }
+  
 }

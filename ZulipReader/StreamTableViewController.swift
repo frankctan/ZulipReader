@@ -13,9 +13,9 @@ import SlackTextViewController
 var State = ""
 
 class StreamTableViewController: SLKTextViewController {
-
+  
   let data = StreamController()
-  var messages: [[TableCell]] = []
+  var messages = [[TableCell]]()
   
   required init!(coder decoder: NSCoder!) {
     super.init(coder: decoder)
@@ -25,10 +25,10 @@ class StreamTableViewController: SLKTextViewController {
     super.viewDidLoad()
     data.delegate = self
     tableViewSettings()
-
+    
     let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
-
+    
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
     navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
@@ -60,10 +60,9 @@ class StreamTableViewController: SLKTextViewController {
   
   //MARK: HomeBarButtonItem Target
   func homeButtonDidTouch(sender: AnyObject) {
-    data.loadStreamMessages(UserAction.Refresh)
-    tableView.showLoading()
+    data.loadStreamMessages(UserAction.Home)
   }
-
+  
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let headerType = messages[section][0].type
@@ -74,12 +73,16 @@ class StreamTableViewController: SLKTextViewController {
       let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
       cell.configure(messages[section][0])
       cell.delegate = self
-      return cell
+      let view = UIView(frame: cell.frame)
+      view.addSubview(cell)
+      return view
     case "private":
       let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
       cell.configure(messages[section][0])
       cell.delegate = self
-      return cell
+      let view = UIView(frame: cell.frame)
+      view.addSubview(cell)
+      return view
     default: fatalError()
     }
   }
@@ -112,13 +115,12 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   //MARK: UIScrollViewDelegate
-  override func scrollViewDidScroll(scrollView: UIScrollView) {
-    // If within half a screen of the top, load more.
-    guard scrollView.contentOffset.y + scrollView.bounds.height < scrollView.contentSize.height - view.bounds.height / 2 else { return }
-    
-    data.loadStreamMessages(UserAction.ScrollUp)
-  }
-
+  //  override func scrollViewDidScroll(scrollView: UIScrollView) {
+  //    // If within half a screen of the top, load more.
+  //    guard scrollView.contentOffset.y + scrollView.bounds.height < scrollView.contentSize.height - view.bounds.height / 2 else { return }
+  //
+  //    data.loadStreamMessages(UserAction.ScrollUp)
+  //  }
   
   func tableViewSettings() {
     tableView.estimatedRowHeight = 60
@@ -145,22 +147,41 @@ class StreamTableViewController: SLKTextViewController {
 
 //MARK: StreamControllerDelegate
 extension StreamTableViewController: StreamControllerDelegate {
-  func statusUpdate(flag: Bool) {
-    if flag {
-      loadData()
-    }
-  }
-  
-  func didFetchMesssages(messages: [[TableCell]]) {
-    self.messages = messages
+  func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath])) {
     tableView.hideLoading()
-    tableView.reloadData()
+    self.messages = messages
+//    print("new messages: \(messages.count)")
+    let inserted = indexPaths.inserted
+//    print("inserted: \(inserted.map {$0.row})")
+    let insertedSections = NSMutableIndexSet()
+    let sectionsToBeInserted = Set(inserted.map {$0.section})
+    for section in sectionsToBeInserted {
+      insertedSections.addIndex(section)
+    }
+    
+    let deleted = indexPaths.deleted
+//    print("deleted: \(inserted.map {$0.row})")
+    let deletedSections = NSMutableIndexSet()
+    if deleted.count > 0 {
+      let sectionsToBeDeleted = Set(deleted.map {$0.section})
+      for section in sectionsToBeDeleted {
+        deletedSections.addIndex(section)
+      }
+    }
+
+    tableView.beginUpdates()
+    tableView.deleteSections(deletedSections, withRowAnimation: .Bottom)
+    tableView.deleteRowsAtIndexPaths(deleted, withRowAnimation: .Right)
+    tableView.insertSections(insertedSections, withRowAnimation: .Top)
+    tableView.insertRowsAtIndexPaths(inserted, withRowAnimation: .Right)
+    tableView.endUpdates()
   }
 }
 
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {
+    print("narrowing stream")
     let narrow = "[[\"stream\", \"\(stream)\"]]"
     data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
     tableView.showLoading()

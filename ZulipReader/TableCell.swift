@@ -29,13 +29,16 @@ struct TableCell {
   var streamColor = ""
   
   var sender_full_name = ""
-  var content = ""
+
   var dateTime = NSDate()
   var avatar_url = ""
   var mentioned = false
   
   var cellType = CellTypes.StreamCell
   var attributedContent = NSAttributedString()
+  
+  var section = 0
+  var row = 0
   
   
   //used for initialization of [[TableCell]]
@@ -51,7 +54,6 @@ struct TableCell {
     streamColor = message.streamColor
     
     sender_full_name = message.sender_full_name
-    content = message.content
     dateTime = message.dateTime
     avatar_url = message.avatar_url
     mentioned = message.mentioned
