@@ -13,7 +13,7 @@ import Locksmith
 import RealmSwift
 
 protocol StreamControllerDelegate: class {
-  func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath]))
+  func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath]), action: UserAction)
 }
 
 public enum UserAction {
@@ -154,7 +154,7 @@ class StreamController : DataController {
     if (self.oldTableCells.flatMap{$0}.map{$0.dateTime}) != (tableCells.flatMap{$0}.map {$0.dateTime}) {
       print("old table cells do not match new table cells")
       let (inserted, deleted) = self.findNewMessages(tableCells, action: action)
-      self.delegate?.didFetchMesssages(tableCells, newMessages: (inserted: inserted, deleted: deleted))
+      self.delegate?.didFetchMesssages(tableCells, newMessages: (inserted: inserted, deleted: deleted), action: action)
       self.oldTableCells = tableCells
     }
     return

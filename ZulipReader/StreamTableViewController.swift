@@ -147,7 +147,7 @@ class StreamTableViewController: SLKTextViewController {
 
 //MARK: StreamControllerDelegate
 extension StreamTableViewController: StreamControllerDelegate {
-  func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath])) {
+  func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath]), action: UserAction) {
     tableView.hideLoading()
     self.messages = messages
 //    print("new messages: \(messages.count)")
@@ -175,6 +175,14 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.insertSections(insertedSections, withRowAnimation: .Top)
     tableView.insertRowsAtIndexPaths(inserted, withRowAnimation: .Right)
     tableView.endUpdates()
+    
+    switch action {
+    case .Narrow(_), .Register:
+      let sectionMax = messages.count - 1
+      let rowMax = messages[sectionMax].count - 1
+      tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: rowMax, inSection: sectionMax), atScrollPosition: .Bottom, animated: false)
+    default: break
+    }
   }
 }
 
