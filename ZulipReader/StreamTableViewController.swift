@@ -23,9 +23,16 @@ class StreamTableViewController: SLKTextViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     data.delegate = self
     tableViewSettings()
-  
+    
+    let tableViewController = UITableViewController()
+    tableViewController.tableView = self.tableView
+    let refresh = UIRefreshControl()
+    refresh.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    tableViewController.refreshControl = refresh
+
     let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
@@ -62,6 +69,7 @@ class StreamTableViewController: SLKTextViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     data.loadStreamMessages(UserAction.Home)
   }
+  
   
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -118,11 +126,15 @@ class StreamTableViewController: SLKTextViewController {
     return cell
   }
   
+  func refresh(sender: AnyObject) {
+    print("refreshing!")
+  }
+  
   //MARK: UIScrollViewDelegate
     override func scrollViewDidScroll(scrollView: UIScrollView) {
       // If scroll to top, load new messages
       guard scrollView.contentOffset.y < 0 else { return }
-      data.loadStreamMessages(UserAction.ScrollUp)
+//      data.loadStreamMessages(UserAction.ScrollUp)
     }
   
   func tableViewSettings() {
@@ -160,7 +172,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
     tableView.endUpdates()
     
-    tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+//    tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
   }
 }
 
