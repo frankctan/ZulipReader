@@ -17,8 +17,7 @@ protocol StreamControllerDelegate: class {
 }
 
 public enum UserAction {
-  case ScrollUp, ScrollDown, Refresh, Register, Home
-  case Narrow(narrow: String)
+  case ScrollUp, Refresh, Register, Home, Narrow(narrow: String), ScrollUpNarrow(narrow: String), RefreshNarrow(narrow: String)
 }
 
 class StreamController : DataController {
@@ -81,11 +80,12 @@ class StreamController : DataController {
   
   func clearDefaults() {
     Router.basicAuth = nil
+    NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
     //    realm.deleteAll()
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }
-    catch {fatalError("unable to clear Locksmith")}
+    catch {print("locksmith already cleared")}
   }
   
   //MARK: Get Stream Messages
@@ -118,6 +118,7 @@ class StreamController : DataController {
         case .Success(let boxedMessages):
           let newMessages = boxedMessages.unbox
           if !newMessages.isEmpty {
+            
             if params.narrows == nil { //or, if action = narrow
               
               //self.messagesToRealm does not write duplicates
@@ -164,7 +165,7 @@ class StreamController : DataController {
       insertedSections = NSMakeRange(0, newTableCells.count)
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
-    case .ScrollUp:
+    case .ScrollUp, .ScrollUpNarrow(_):
       if self.compareTableCells(flatNewMessageTableCells.last!, flatOldTableCells.first!) {
         insertedSections = NSMakeRange(0, newMessageTableCells.count - 1)
       }
@@ -173,7 +174,7 @@ class StreamController : DataController {
       }
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
-    case .ScrollDown, .Refresh:
+    case .Refresh, .RefreshNarrow(_):
       let lastOldTableCell = flatOldTableCells.last!
       if self.compareTableCells(lastOldTableCell, flatNewMessageTableCells.first!) {
         insertedSections = NSMakeRange(lastOldTableCell.section + 1, newTableCells.count)
@@ -210,30 +211,34 @@ class StreamController : DataController {
     let (minAnchor, maxAnchor) = getAnchor()
     
     switch action {
-    case .ScrollDown, .Refresh, .Home:
+    case .Register:
+      params = MessageRequestParameters(anchor: maxAnchor, before: 10, after: 50)
+    case .Refresh, .Home:
       params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50)
     case .ScrollUp:
-      params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0)
+      params = MessageRequestParameters(anchor: minAnchor, before: 10, after: 0)
     case .Narrow(let narrow):
-      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50, narrow: narrow)
-    case .Register:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 10, after: 10, narrow: narrow)
+    case .ScrollUpNarrow(let narrow):
+      params = MessageRequestParameters(anchor: minAnchor, before: 10, after: 0, narrow: narrow)
+    case .RefreshNarrow(let narrow):
+      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: narrow)
     }
     return params
   }
   
   private func getAnchor() -> (min: Int, max: Int) {
-    let messages = realm.objects(Message).sorted("timestamp", ascending: false)
+    let messages = oldTableCells.flatMap {$0}
     
     var realmMaxID = 0
-    if let first = messages.first {
-      realmMaxID = first.id
+    if let last = messages.last {
+      realmMaxID = last.id
     }
     
     let registrationID = registration.maxMessageID
     var realmMinID = 0
-    if let last = messages.last {
-      realmMinID = last.id
+    if let first = messages.first {
+      realmMinID = first.id
     }
     //offset by 1 to reduce duplicates
     return (realmMinID-1, max(realmMaxID, registrationID)+1)

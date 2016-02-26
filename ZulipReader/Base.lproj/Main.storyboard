@@ -82,10 +82,8 @@
                                 <constraints>
                                     <constraint firstItem="Qwg-6e-XYB" firstAttribute="centerX" secondItem="uhO-2s-Tii" secondAttribute="centerX" id="2jx-nL-lrN"/>
                                     <constraint firstItem="kvf-C2-51d" firstAttribute="top" secondItem="AOI-qb-zLI" secondAttribute="bottom" constant="10" id="6MC-jQ-RRW"/>
-                                    <constraint firstAttribute="width" constant="240" id="Ept-Vt-fz8"/>
                                     <constraint firstItem="kvf-C2-51d" firstAttribute="leading" secondItem="0NL-fA-Rjv" secondAttribute="leading" constant="15" id="OEd-WQ-yG4"/>
                                     <constraint firstItem="AOI-qb-zLI" firstAttribute="top" secondItem="Qwg-6e-XYB" secondAttribute="bottom" constant="10" id="Pi0-hL-r9R"/>
-                                    <constraint firstAttribute="height" constant="206" id="T2U-ke-9Il"/>
                                     <constraint firstAttribute="trailing" secondItem="kvf-C2-51d" secondAttribute="trailing" constant="15" id="TGQ-s6-lO5"/>
                                     <constraint firstAttribute="trailing" secondItem="QNE-uF-cOI" secondAttribute="trailing" constant="15" id="WEl-sH-nCh"/>
                                     <constraint firstItem="AOI-qb-zLI" firstAttribute="leading" secondItem="0NL-fA-Rjv" secondAttribute="leading" constant="15" id="ZRX-sH-owM"/>
@@ -112,30 +110,13 @@
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="autostart" value="YES"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="animation" value="pop"/>
                                 </userDefinedRuntimeAttributes>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="Ept-Vt-fz8"/>
-                                        <exclude reference="T2U-ke-9Il"/>
-                                    </mask>
-                                </variation>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="0NL-fA-Rjv" secondAttribute="trailing" constant="20" id="D0q-t2-fNp"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Ppn-wR-djV"/>
-                            <constraint firstItem="0NL-fA-Rjv" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="124" id="QfA-35-jq0"/>
-                            <constraint firstItem="0NL-fA-Rjv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="WRY-5m-gzb"/>
-                            <constraint firstItem="0NL-fA-Rjv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="4" id="gld-MS-fUm"/>
                             <constraint firstItem="0NL-fA-Rjv" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="mVZ-UA-jom"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="D0q-t2-fNp"/>
-                                <exclude reference="WRY-5m-gzb"/>
-                                <exclude reference="gld-MS-fUm"/>
-                            </mask>
-                        </variation>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>

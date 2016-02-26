@@ -70,7 +70,7 @@ class DataController {
           let messageParams = ["anchor": anchor, "num_before": before,
             "num_after": after, "narrow": narrow]
           
-          return("/messages", messageParams as! [String : AnyObject])
+          return("/messages", (messageParams as! [String : AnyObject]))
         }
       }()
       

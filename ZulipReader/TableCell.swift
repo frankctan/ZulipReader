@@ -40,6 +40,8 @@ struct TableCell {
   var section = 0
   var row = 0
   
+  var id = 0
+  
   
   //used for initialization of [[TableCell]]
   var isEmpty = true
@@ -57,6 +59,8 @@ struct TableCell {
     dateTime = message.dateTime
     avatar_url = message.avatar_url
     mentioned = message.mentioned
+    
+    id = message.id
     
     isEmpty = false
     

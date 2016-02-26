@@ -10,12 +10,17 @@ import UIKit
 import AMScrollingNavbar
 import SlackTextViewController
 
-var State = ""
-
 class StreamTableViewController: SLKTextViewController {
   
   let data = StreamController()
   var messages = [[TableCell]]()
+  
+  enum State {
+    case Home, Narrow
+  }
+  
+  var state: State = .Home
+  var narrow = String()
   
   required init!(coder decoder: NSCoder!) {
     super.init(coder: decoder)
@@ -26,6 +31,8 @@ class StreamTableViewController: SLKTextViewController {
     
     data.delegate = self
     tableViewSettings()
+    
+    state = .Home
     
     let tableViewController = UITableViewController()
     tableViewController.tableView = self.tableView
@@ -49,8 +56,8 @@ class StreamTableViewController: SLKTextViewController {
     }
     
     print("in streamTableViewController:viewDidAppear")
-    tableView.showLoading()
     loadData()
+    tableView.showLoading()
   }
   
   func loadData() {
@@ -67,6 +74,7 @@ class StreamTableViewController: SLKTextViewController {
   
   //MARK: HomeBarButtonItem Target
   func homeButtonDidTouch(sender: AnyObject) {
+    state = .Home
     data.loadStreamMessages(UserAction.Home)
   }
   
@@ -81,16 +89,20 @@ class StreamTableViewController: SLKTextViewController {
       let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
       cell.configure(messages[section][0])
       cell.delegate = self
-      let view = UIView(frame: cell.frame)
-      view.addSubview(cell)
-      return view
+      let originalFrame = cell.frame
+      cell.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: tableView.frame.width, height: originalFrame.height))
+      let headerView = UIView(frame: cell.frame)
+      headerView.addSubview(cell)
+      return headerView
     case "private":
       let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
       cell.configure(messages[section][0])
       cell.delegate = self
-      let view = UIView(frame: cell.frame)
-      view.addSubview(cell)
-      return view
+      let originalFrame = cell.frame
+      cell.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: tableView.frame.width, height: originalFrame.height))
+      let headerView = UIView(frame: cell.frame)
+      headerView.addSubview(cell)
+      return headerView
     default: fatalError()
     }
   }
@@ -100,7 +112,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 1000.0
+    return UITableViewAutomaticDimension
   }
   
   //MARK: TableViewDataSource
@@ -126,16 +138,15 @@ class StreamTableViewController: SLKTextViewController {
     return cell
   }
   
-  func refresh(sender: AnyObject) {
+  func refresh(refreshControl: UIRefreshControl) {
     print("refreshing!")
-  }
-  
-  //MARK: UIScrollViewDelegate
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
-      // If scroll to top, load new messages
-      guard scrollView.contentOffset.y < 0 else { return }
-//      data.loadStreamMessages(UserAction.ScrollUp)
+    
+    switch state {
+    case .Home: data.loadStreamMessages(UserAction.ScrollUp)
+    case .Narrow: data.loadStreamMessages(UserAction.ScrollUpNarrow(narrow: narrow))
     }
+    refreshControl.endRefreshing()
+  }
   
   func tableViewSettings() {
     tableView.estimatedRowHeight = 60
@@ -165,6 +176,7 @@ extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMesssages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     tableView.hideLoading()
     self.messages = messages
+    print("inserted sections: \(insertedSections)")
     print("message sections: \(messages.count)")
     tableView.beginUpdates()
     tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
@@ -172,21 +184,22 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
     tableView.endUpdates()
     
-//    tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+    tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
   }
 }
 
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {
-    print("narrowing stream")
-    let narrow = "[[\"stream\", \"\(stream)\"]]"
+    state = .Narrow
+    narrow = "[[\"stream\", \"\(stream)\"]]"
     data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
     tableView.showLoading()
   }
   
   func narrowSubject(stream: String, subject: String) {
-    let narrow = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
+    state = .Narrow
+    narrow = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
     data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
     tableView.showLoading()
   }
@@ -195,7 +208,8 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
 //MARK: StreamHeaderPrivateCellDelegate
 extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
   func narrowConversation(emails: String) {
-    let narrow = "[[\"is\", \"private\"],[\"pm-with\",\"\(emails)\"]]"
+    state = .Narrow
+    narrow = "[[\"is\", \"private\"],[\"pm-with\",\"\(emails)\"]]"
     data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
     tableView.showLoading()
   }

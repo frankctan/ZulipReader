@@ -14,14 +14,14 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamHeaderNavCell" rowHeight="24" id="iue-8K-Afo" customClass="StreamHeaderNavCell" customModule="ZulipReader" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="24"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="center" tableViewCell="iue-8K-Afo" id="dzv-o3-AYx">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="23.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="23.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qCT-yF-TVW" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
-                        <rect key="frame" x="45" y="-1" width="275" height="26"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qCT-yF-TVW" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
+                        <rect key="frame" x="45" y="-0.5" width="330" height="25"/>
                         <color key="backgroundColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="25" id="LOT-9X-Vtr"/>

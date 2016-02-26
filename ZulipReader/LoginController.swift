@@ -49,7 +49,7 @@ class LoginController : DataController {
   
   private func createHeaderSaveDefaults(response: JSON) -> Future<String, ZulipErrorDomain> {
     let email = response["email"].stringValue
-    saveDefaults(email)
+    self.saveDefaults(email)
     
     let secretKey = response["api_key"].stringValue
     let header = "Basic " + "\(email):\(secretKey)".dataUsingEncoding(NSUTF8StringEncoding)!.base64EncodedStringWithOptions([])
@@ -65,6 +65,7 @@ class LoginController : DataController {
   }
   
   private func saveDefaults(email: String) {
+    print("saving email to defaults")
     let defaults = NSUserDefaults.standardUserDefaults()
     defaults.setValue(email, forKey: "email")
   }
