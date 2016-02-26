@@ -13,7 +13,7 @@ import Locksmith
 import RealmSwift
 
 protocol StreamControllerDelegate: class {
-  func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath]), action: UserAction)
+  func didFetchMesssages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
 }
 
 public enum UserAction {
@@ -113,78 +113,120 @@ class StreamController : DataController {
   var loading = false
   
   func loadStreamMessages(action: UserAction) {
+    //no double loading
     if loading {
       return
     }
     loading = true
-    
-    var userAction = action
-    
+    print("loading Stream Messages")
+    print("action: \(action)")
+    var action = action
+    //load messages from dB if we're going home/staying there
     switch action {
     case .Refresh, .Home:
-      let messagesToBeLoaded = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
-      tableCellsToController(action, messages: messagesToBeLoaded)
-      userAction = .Refresh
+      let realmMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+      self.messagesToController(realmMessages, newMessages: realmMessages, action: .Home)
+      action = .Refresh
     default: break
     }
+    print("action: \(action)")
     
-    let params = createRequestParameters(userAction)
+    let params = createRequestParameters(action)
     messagePipeline(params)
       .start {result in
+        print("results from message pipeline!")
         switch result {
-        case .Success(let boxedMessages):
-          var newMessages = boxedMessages.unbox
-          if params.narrows == nil {
-            //self.messagesToRealm does not write duplicates
-            self.messagesToRealm(newMessages)
-            newMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
-          }
           
-          self.tableCellsToController(userAction, messages: newMessages)
+        case .Success(let boxedMessages):
+          let newMessages = boxedMessages.unbox
+          if !newMessages.isEmpty {
+            if params.narrows == nil { //or, if action = narrow
+              //self.messagesToRealm does not write duplicates
+              self.messagesToRealm(newMessages)
+              let realmMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+              self.messagesToController(realmMessages, newMessages: newMessages, action: action)
+            }
+            else {
+              self.messagesToController(newMessages, newMessages: newMessages, action: action)
+            }
+          }
           
         case .Error(let error):
           print(error.unbox.description)
         }
+        
         self.loading = false
     }
   }
   
-  private func tableCellsToController(action: UserAction, messages: [Message]) {
-    let tableCells = self.convertToCell(messages)
-
-    if (self.oldTableCells.flatMap{$0}.map{$0.dateTime}) != (tableCells.flatMap{$0}.map {$0.dateTime}) {
-      print("old table cells do not match new table cells")
-      let (inserted, deleted) = self.findNewMessages(tableCells, action: action)
-      self.delegate?.didFetchMesssages(tableCells, newMessages: (inserted: inserted, deleted: deleted), action: action)
-      self.oldTableCells = tableCells
-    }
-    return
+  private func messagesToController(allMessages: [Message], newMessages: [Message], action: UserAction) {
+    let newTableCells = self.messageToTableCell(allMessages)
+    let (deletedSections, insertedSections, insertedRows) = self.findTableUpdates(newTableCells, newMessages: newMessages, action: action)
+    self.delegate?.didFetchMesssages(newTableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
+    self.oldTableCells = newTableCells
   }
   
-  private func findNewMessages(tableCells: [[TableCell]], action: UserAction) -> (inserted: [NSIndexPath], deleted: [NSIndexPath]) {
-    var insert = [NSIndexPath]()
-    var delete = [NSIndexPath]()
+  private func findTableUpdates(newTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     
-    let flatTableCells = tableCells.flatMap {$0}
+    let newMessageTableCells = self.messageToTableCell(newMessages)
+    let flatNewMessageTableCells = newMessageTableCells.flatMap {$0}
     let flatOldTableCells = oldTableCells.flatMap {$0}
     
+    var deletedSections = NSRange()
+    var insertedSections = NSRange()
+    var insertedRows = [NSIndexPath]()
+    
     switch action {
-    case .Narrow(_), .Home:
-      for tableCell in flatOldTableCells {
-        delete.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+    case .Narrow(_), .Home, .Register:
+      deletedSections = NSMakeRange(0, oldTableCells.count)
+      insertedSections = NSMakeRange(0, newTableCells.count)
+      insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
+      
+    case .ScrollUp:
+      if self.compareTableCells(flatNewMessageTableCells.last!, flatOldTableCells.first!) {
+        insertedSections = NSMakeRange(0, newTableCells.count - 1)
       }
-      for tableCell in flatTableCells {
-        insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+      else {
+        insertedSections = NSMakeRange(0, newTableCells.count)
       }
-    default:
-      let oldTableCellTimeStamp = flatOldTableCells.map {$0.dateTime}
-      for tableCell in flatTableCells {
-        if !oldTableCellTimeStamp.contains(tableCell.dateTime) {
-          insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+      insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
+      
+    case .ScrollDown, .Refresh:
+      let lastOldTableCell = flatOldTableCells.last!
+      if self.compareTableCells(lastOldTableCell, flatNewMessageTableCells.first!) {
+        insertedSections = NSMakeRange(lastOldTableCell.section + 1, newTableCells.count)
+      }
+      else {
+        insertedSections = NSMakeRange(lastOldTableCell.section, newTableCells.count)
+      }
+      let flatNewMessageTableCellsDateTime = flatNewMessageTableCells.map {$0.dateTime}
+      for tableCell in (newTableCells.flatMap {$0}) {
+        if flatNewMessageTableCellsDateTime.contains(tableCell.dateTime) {
+          insertedRows.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
         }
       }
     }
-    return (insert, delete)
+    
+    return (deletedSections, insertedSections, insertedRows)
+//      for tableCell in flatTableCells {
+//        insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+//      }
+//    default:
+//      let oldTableCellTimeStamp = flatOldTableCells.map {$0.dateTime}
+//      for tableCell in flatTableCells {
+//        if !oldTableCellTimeStamp.contains(tableCell.dateTime) {
+//          insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
+//        }
+//      }
+//    }
+//    return (insert, delete)
+  }
+  
+  private func compareTableCells(tc1: TableCell, _ tc2: TableCell) -> Bool {
+    if tc1.display_recipient == tc2.display_recipient && tc1.subject == tc2.subject {
+      return true
+    }
+    return false
   }
   
   private func messagePipeline(params: MessageRequestParameters) -> Future<[Message], ZulipErrorDomain> {
@@ -199,7 +241,7 @@ class StreamController : DataController {
     
     switch action {
     case .ScrollDown, .Refresh, .Home:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 5)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50)
     case .ScrollUp:
       params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0)
     case .Narrow(let narrow):
@@ -317,7 +359,7 @@ class StreamController : DataController {
   }
   
   //MARK: Prepare messages for table view
-  private func convertToCell(messages: [Message]) -> [[TableCell]] {
+  private func messageToTableCell(messages: [Message]) -> [[TableCell]] {
     var previous = TableCell()
     var result = [[TableCell]()]
     var sectionCounter = 0
@@ -354,7 +396,6 @@ class StreamController : DataController {
       }
       previous = cell
     }
-    print(result.count)
     return result
   }
   
@@ -443,6 +484,7 @@ class StreamController : DataController {
   
   private func subscriptionsToRealm(subscriptions: [JSON]) {
     print("writing subscriptions")
+    print("save path: \(realm.path)")
     for subscription in subscriptions {
       let subDict = subscription.dictionaryObject
       let sub = Subscription(value: subDict!)
