@@ -135,6 +135,7 @@ class StreamController : DataController {
         case .Success(let boxedMessages):
           var newMessages = boxedMessages.unbox
           if params.narrows == nil {
+            //self.messagesToRealm does not write duplicates
             self.messagesToRealm(newMessages)
             newMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
           }
@@ -202,7 +203,7 @@ class StreamController : DataController {
     case .ScrollUp:
       params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0)
     case .Narrow(let narrow):
-      params = MessageRequestParameters(anchor: maxAnchor, before: 5, after: 5, narrow: narrow)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50, narrow: narrow)
     case .Register:
       params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50)
     }
@@ -222,7 +223,8 @@ class StreamController : DataController {
     if let last = messages.last {
       realmMinID = last.id
     }
-    return (realmMinID, max(realmMaxID, registrationID))
+    //offset by 1 to reduce duplicates
+    return (realmMinID-1, max(realmMaxID, registrationID)+1)
   }
   
   private func createMessageRequest(params: MessageRequestParameters) -> Future<URLRequestConvertible, ZulipErrorDomain> {
@@ -270,6 +272,7 @@ class StreamController : DataController {
         //need special treatment
         if let flags = messageDict["flags"] {
           msg.flags = flags as! [String]
+          msg.mentioned = msg.flags.contains("mentioned") || msg.flags.contains("wildcard_mentioned")
         }
         
         //assigns streamColor

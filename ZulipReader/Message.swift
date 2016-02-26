@@ -75,11 +75,7 @@ class Message: Object {
   }
   
   dynamic var streamColor: String = ""
-  dynamic var mentioned: Bool {
-    get {
-      return flags.contains("mentioned")
-    }
-  }
+  dynamic var mentioned: Bool = false
 
   override static func ignoredProperties() -> [String] {
     return ["flags", "display_recipient","privateFullName"]

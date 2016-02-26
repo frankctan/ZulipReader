@@ -5,4 +5,14 @@ let newmessages =  ["Noah Ennis (W2\'15)", "Ben Anderman (SP1\'16)", "Noah Ennis
 oldmessages == newmessages
 
 
-oldmessages.c
+var set = Set([1,2,3,4,5,6,7])
+
+set.remove(set.maxElement()!)
+
+set
+
+var arr = [[1,2,3],[4,5,6]]
+
+arr.last?.last
+arr.first?.first
+

@@ -115,12 +115,12 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   //MARK: UIScrollViewDelegate
-  //  override func scrollViewDidScroll(scrollView: UIScrollView) {
-  //    // If within half a screen of the top, load more.
-  //    guard scrollView.contentOffset.y + scrollView.bounds.height < scrollView.contentSize.height - view.bounds.height / 2 else { return }
-  //
-  //    data.loadStreamMessages(UserAction.ScrollUp)
-  //  }
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+      // If within half a screen of the top, load more.
+      guard scrollView.contentOffset.y + scrollView.bounds.height < scrollView.contentSize.height - view.bounds.height / 2 else { return }
+  
+      data.loadStreamMessages(UserAction.ScrollUp)
+    }
   
   func tableViewSettings() {
     tableView.estimatedRowHeight = 60
@@ -149,18 +149,27 @@ class StreamTableViewController: SLKTextViewController {
 extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMesssages(messages: [[TableCell]], newMessages indexPaths: (inserted: [NSIndexPath], deleted: [NSIndexPath]), action: UserAction) {
     tableView.hideLoading()
+    let oldMessageCount = self.messages.count
+    
     self.messages = messages
-//    print("new messages: \(messages.count)")
+    print("new messages: \(messages.count)")
     let inserted = indexPaths.inserted
-//    print("inserted: \(inserted.map {$0.row})")
+    print("inserted: \n \(inserted.map {$0.section}) \n \(inserted.map {$0.row})")
     let insertedSections = NSMutableIndexSet()
-    let sectionsToBeInserted = Set(inserted.map {$0.section})
+    
+    var sectionsToBeInserted = Set(inserted.map {$0.section})
+    
+    //delete unnecessary section insertions
+    if sectionsToBeInserted.count + oldMessageCount > messages.count {
+      sectionsToBeInserted.remove(sectionsToBeInserted.maxElement()!)
+    }
+    
     for section in sectionsToBeInserted {
       insertedSections.addIndex(section)
     }
     
+    //deletions occur on UserAction - Home and Narrow
     let deleted = indexPaths.deleted
-//    print("deleted: \(inserted.map {$0.row})")
     let deletedSections = NSMutableIndexSet()
     if deleted.count > 0 {
       let sectionsToBeDeleted = Set(deleted.map {$0.section})
@@ -170,10 +179,10 @@ extension StreamTableViewController: StreamControllerDelegate {
     }
 
     tableView.beginUpdates()
-    tableView.deleteSections(deletedSections, withRowAnimation: .Bottom)
-    tableView.deleteRowsAtIndexPaths(deleted, withRowAnimation: .Right)
-    tableView.insertSections(insertedSections, withRowAnimation: .Top)
-    tableView.insertRowsAtIndexPaths(inserted, withRowAnimation: .Right)
+    tableView.deleteSections(deletedSections, withRowAnimation: .None)
+//    tableView.deleteRowsAtIndexPaths(deleted, withRowAnimation: .None)
+    tableView.insertSections(insertedSections, withRowAnimation: .None)
+    tableView.insertRowsAtIndexPaths(inserted, withRowAnimation: .None)
     tableView.endUpdates()
     
     switch action {
@@ -210,4 +219,3 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
     tableView.showLoading()
   }
 }
-
