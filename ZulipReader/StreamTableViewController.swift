@@ -25,7 +25,7 @@ class StreamTableViewController: SLKTextViewController {
     super.viewDidLoad()
     data.delegate = self
     tableViewSettings()
-    
+  
     let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
@@ -91,6 +91,10 @@ class StreamTableViewController: SLKTextViewController {
     return 27.0
   }
   
+  override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return 1000.0
+  }
+  
   //MARK: TableViewDataSource
   override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
     return messages.count
@@ -115,12 +119,11 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   //MARK: UIScrollViewDelegate
-//    override func scrollViewDidScroll(scrollView: UIScrollView) {
-//      // If within half a screen of the top, load more.
-//      guard scrollView.contentOffset.y + scrollView.bounds.height < scrollView.contentSize.height - view.bounds.height / 2 else { return }
-//  
-//      data.loadStreamMessages(UserAction.ScrollUp)
-//    }
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+      // If scroll to top, load new messages
+      guard scrollView.contentOffset.y < 0 else { return }
+      data.loadStreamMessages(UserAction.ScrollUp)
+    }
   
   func tableViewSettings() {
     tableView.estimatedRowHeight = 60
@@ -150,12 +153,14 @@ extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMesssages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     tableView.hideLoading()
     self.messages = messages
-
+    print("message sections: \(messages.count)")
     tableView.beginUpdates()
-    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
-    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
-    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
+    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
+    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
+    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
     tableView.endUpdates()
+    
+    tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
   }
 }
 

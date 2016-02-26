@@ -30,27 +30,6 @@ class StreamController : DataController {
   private var registration = Registration()
   private var oldTableCells = [[TableCell]]()
   
-  private struct Registration {
-    var pointer = Int()
-    var maxMessageID = Int()
-    var queueID = String()
-    var eventID = Int()
-    var subscription = [JSON]()
-    
-    let numBefore = 50
-    let numAfter = 50
-    
-    init() {}
-    
-    init(_ pointer: Int, _ maxMessageID: Int, _ queueID: String, _ eventID: Int, _ subscription: [JSON]) {
-      self.pointer = pointer
-      self.maxMessageID = maxMessageID
-      self.queueID = queueID
-      self.eventID = eventID
-      self.subscription = subscription
-    }
-  }
-  
   private struct MessageRequestParameters {
     let numBefore: Int
     let numAfter: Int
@@ -130,9 +109,8 @@ class StreamController : DataController {
     default: break
     }
     print("action: \(action)")
-    
-    let params = createRequestParameters(action)
-    messagePipeline(params)
+    let params = self.createRequestParameters(action)
+    self.messagePipeline(params)
       .start {result in
         print("results from message pipeline!")
         switch result {
@@ -141,10 +119,12 @@ class StreamController : DataController {
           let newMessages = boxedMessages.unbox
           if !newMessages.isEmpty {
             if params.narrows == nil { //or, if action = narrow
+              
               //self.messagesToRealm does not write duplicates
               self.messagesToRealm(newMessages)
               let realmMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
               self.messagesToController(realmMessages, newMessages: newMessages, action: action)
+              
             }
             else {
               self.messagesToController(newMessages, newMessages: newMessages, action: action)
@@ -159,7 +139,9 @@ class StreamController : DataController {
     }
   }
   
+  
   private func messagesToController(allMessages: [Message], newMessages: [Message], action: UserAction) {
+    print("in messagesToController")
     let newTableCells = self.messageToTableCell(allMessages)
     let (deletedSections, insertedSections, insertedRows) = self.findTableUpdates(newTableCells, newMessages: newMessages, action: action)
     self.delegate?.didFetchMesssages(newTableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
@@ -184,10 +166,10 @@ class StreamController : DataController {
       
     case .ScrollUp:
       if self.compareTableCells(flatNewMessageTableCells.last!, flatOldTableCells.first!) {
-        insertedSections = NSMakeRange(0, newTableCells.count - 1)
+        insertedSections = NSMakeRange(0, newMessageTableCells.count - 1)
       }
       else {
-        insertedSections = NSMakeRange(0, newTableCells.count)
+        insertedSections = NSMakeRange(0, newMessageTableCells.count)
       }
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
@@ -208,18 +190,6 @@ class StreamController : DataController {
     }
     
     return (deletedSections, insertedSections, insertedRows)
-//      for tableCell in flatTableCells {
-//        insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
-//      }
-//    default:
-//      let oldTableCellTimeStamp = flatOldTableCells.map {$0.dateTime}
-//      for tableCell in flatTableCells {
-//        if !oldTableCellTimeStamp.contains(tableCell.dateTime) {
-//          insert.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
-//        }
-//      }
-//    }
-//    return (insert, delete)
   }
   
   private func compareTableCells(tc1: TableCell, _ tc2: TableCell) -> Bool {
@@ -364,9 +334,12 @@ class StreamController : DataController {
     var result = [[TableCell]()]
     var sectionCounter = 0
     var rowCounter = 0
+    
     for message in messages {
       var cell = TableCell(message)
-      cell.attributedContent = processMarkdown(message.content)
+      let messageContent = message.content
+      let attributedContent = processMarkdown(messageContent)
+      cell.attributedContent = attributedContent
       
       if previous.isEmpty {
         result[sectionCounter].append(cell)
@@ -396,6 +369,7 @@ class StreamController : DataController {
       }
       previous = cell
     }
+    
     return result
   }
   
@@ -414,8 +388,9 @@ class StreamController : DataController {
       "img {max-height: 200px}",
       "</style>"].reduce("",combine: +)
     text += style
-    let htmlData = text.dataUsingEncoding(NSUTF16StringEncoding, allowLossyConversion: false)
     let htmlString: NSAttributedString?
+    let htmlData = text.dataUsingEncoding(NSUTF16StringEncoding, allowLossyConversion: false)
+    
     do {
       htmlString = try NSAttributedString(data: htmlData!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
     } catch _ {
@@ -425,6 +400,28 @@ class StreamController : DataController {
   }
   
   //MARK: Register
+  
+  private struct Registration {
+    var pointer = Int()
+    var maxMessageID = Int()
+    var queueID = String()
+    var eventID = Int()
+    var subscription = [JSON]()
+    
+    let numBefore = 50
+    let numAfter = 50
+    
+    init() {}
+    
+    init(_ pointer: Int, _ maxMessageID: Int, _ queueID: String, _ eventID: Int, _ subscription: [JSON]) {
+      self.pointer = pointer
+      self.maxMessageID = maxMessageID
+      self.queueID = queueID
+      self.eventID = eventID
+      self.subscription = subscription
+    }
+  }
+  
   func register() {
     registrationPipeline()
       .start { result in
