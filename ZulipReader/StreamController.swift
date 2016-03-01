@@ -17,7 +17,27 @@ protocol StreamControllerDelegate: class {
 }
 
 public enum UserAction {
-  case ScrollUp, Refresh, Register, Home, Narrow(narrow: String), ScrollUpNarrow(narrow: String), RefreshNarrow(narrow: String)
+  case ScrollUp, Refresh, Focus
+}
+
+public struct Action {
+  let narrow: String?
+  let userAction:UserAction
+  
+  init(narrow: String) {
+    self.narrow = narrow
+    userAction = .Refresh
+  }
+  
+  init(action: UserAction) {
+    self.narrow = nil
+    userAction = action
+  }
+  
+  init(narrow: String, action: UserAction) {
+    self.narrow = narrow
+    userAction = action
+  }
 }
 
 class StreamController : DataController {
@@ -108,6 +128,7 @@ class StreamController : DataController {
       action = .Refresh
     default: break
     }
+    
     print("action: \(action)")
     let params = self.createRequestParameters(action)
     self.messagePipeline(params)
@@ -116,8 +137,19 @@ class StreamController : DataController {
         switch result {
           
         case .Success(let boxedMessages):
-          let newMessages = boxedMessages.unbox
-          if !newMessages.isEmpty {
+          let messages = boxedMessages.unbox
+          if !messages.isEmpty {
+            //Assign narrow to newMessages
+            let newMessages: [Message] = messages
+            
+//            if case .Narrow(let narrowParam), .ScrollUpNarrow(let narrowParam), .RefreshNarrow(let narrowParam):
+//              var results = [Message]()
+//              for message in messages {
+//                message.narrow = narrowParam
+//                results.append(message)
+//              }
+//              newMessages = results
+//            if case .action(let narrowParams) =
             
             if params.narrows == nil { //or, if action = narrow
               

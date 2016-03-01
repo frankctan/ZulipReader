@@ -16,3 +16,25 @@ var arr = [[1,2,3],[4,5,6]]
 arr.last?.last
 arr.first?.first
 
+struct A {
+  enum Home {
+    case W, E, R
+  }
+  enum Narrow(let ) {
+    case T(narrow: String), Y(narrow: String), U(narrow: String)
+  }
+}
+
+let variable = A.Home.self
+
+variable.W
+
+//This will help with narrowing... 
+
+let var1 = A.Home.W
+
+let str = ""
+
+
+
+
