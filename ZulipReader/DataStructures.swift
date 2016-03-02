@@ -17,8 +17,8 @@ public enum Type {
   
   var description: String {
     switch self {
-    case .Stream: return "Stream"
-    case .Private: return "Private"
+    case .Stream: return "stream"
+    case .Private: return "private"
     }
   }
 }
@@ -107,7 +107,7 @@ public struct Narrow {
 
 public struct Action {
   var narrow: Narrow
-  var userAction:UserAction
+  var userAction: UserAction
   
   init(narrow: Narrow) {
     self.narrow = narrow

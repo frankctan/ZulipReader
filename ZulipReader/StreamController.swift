@@ -134,7 +134,6 @@ class StreamController : DataController {
         case .Error(let error):
           print(error.unbox.description)
         }
-        
         self.loading = false
     }
   }
