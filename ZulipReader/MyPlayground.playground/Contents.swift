@@ -1,39 +1,111 @@
-let oldmessages = ["Noah Ennis (W2\'15)", "Ben Anderman (SP1\'16)", "Noah Ennis (W2\'15)", "Todd Kekoa Olsen (SP1\'16)", "Noah Ennis (W2\'15)", "Chris Ball (SP2\'15)", "David Nolen", "Kamal Marhubi (S1\'15)", "Aliza Aufrichtig (W2\'16)", "Mikey Muhanna (SP1\'16)", "Oğuz Kayral (SP1\'16)", "gif bot", "Katerina Barone-Adesi (F\'13)", "David Nolen", "Katerina Barone-Adesi (F\'13)", "Katerina Barone-Adesi (F\'13)", "Katerina Barone-Adesi (F\'13)", "Diwank Singh Tomer (W2\'16)", "Noah Ennis (W2\'15)", "Joe Ardent (SP1\'16)", "James J. Porter (S\'13)", "Maggie Zhou (S\'13)", "Diwank Singh Tomer (W2\'16)", "Kamal Marhubi (S1\'15)", "Noam Finkelstein (S\'14)", "Lais Varejão Vital (S2\'15)", "Kamal Marhubi (S1\'15)", "Katerina Barone-Adesi (F\'13)", "Lais Varejão Vital (S2\'15)", "Chris Ball (SP2\'15)", "Noah Ennis (W2\'15)", "Oğuz Kayral (SP1\'16)", "Carlos Flores (SP2\'15)", "Alan Dutch", "Luna Lunapiena (SP2\'15)", "Duncan Regan (F2\'15)", "Nancy Thomas", "Kaley Sullivan (SP1\'16)", "Kaley Sullivan (SP1\'16)", "Ben Anderman (SP1\'16)", "Ben Anderman (SP1\'16)", "John Hergenroeder (SP2\'15)", "James J. Porter (S\'13)", "James J. Porter (S\'13)", "James J. Porter (S\'13)", "Catherine Elder (W1\'15)", "Khalid Omar Ali (F2\'15)", "Decky Coss (W\'14)", "James J. Porter (S\'13)", "Ezekiel Benjamin Smithburg (F2\'15)", "Ezekiel Benjamin Smithburg (F2\'15)", "Ezekiel Benjamin Smithburg (F2\'15)"]
-
-let newmessages =  ["Noah Ennis (W2\'15)", "Ben Anderman (SP1\'16)", "Noah Ennis (W2\'15)", "Todd Kekoa Olsen (SP1\'16)", "Noah Ennis (W2\'15)", "Chris Ball (SP2\'15)", "David Nolen", "Kamal Marhubi (S1\'15)", "Aliza Aufrichtig (W2\'16)", "Mikey Muhanna (SP1\'16)", "Oğuz Kayral (SP1\'16)", "gif bot", "Katerina Barone-Adesi (F\'13)", "David Nolen", "Katerina Barone-Adesi (F\'13)", "Katerina Barone-Adesi (F\'13)", "Katerina Barone-Adesi (F\'13)", "Diwank Singh Tomer (W2\'16)", "Noah Ennis (W2\'15)", "Joe Ardent (SP1\'16)", "James J. Porter (S\'13)", "Maggie Zhou (S\'13)", "Diwank Singh Tomer (W2\'16)", "Kamal Marhubi (S1\'15)", "Noam Finkelstein (S\'14)", "Lais Varejão Vital (S2\'15)", "Kamal Marhubi (S1\'15)", "Katerina Barone-Adesi (F\'13)", "Lais Varejão Vital (S2\'15)", "Chris Ball (SP2\'15)", "Noah Ennis (W2\'15)", "Oğuz Kayral (SP1\'16)", "Carlos Flores (SP2\'15)", "Alan Dutch", "Luna Lunapiena (SP2\'15)", "Duncan Regan (F2\'15)", "Nancy Thomas", "Kaley Sullivan (SP1\'16)", "Kaley Sullivan (SP1\'16)", "Ben Anderman (SP1\'16)", "Ben Anderman (SP1\'16)", "John Hergenroeder (SP2\'15)", "James J. Porter (S\'13)", "James J. Porter (S\'13)", "James J. Porter (S\'13)", "Catherine Elder (W1\'15)", "Khalid Omar Ali (F2\'15)", "Decky Coss (W\'14)", "James J. Porter (S\'13)", "Ezekiel Benjamin Smithburg (F2\'15)", "Ezekiel Benjamin Smithburg (F2\'15)", "Ezekiel Benjamin Smithburg (F2\'15)"]
-
-oldmessages == newmessages
+import Foundation
 
 
-var set = Set([1,2,3,4,5,6,7])
-
-set.remove(set.maxElement()!)
-
-set
-
-var arr = [[1,2,3],[4,5,6]]
-
-arr.last?.last
-arr.first?.first
-
-struct A {
-  enum Home {
-    case W, E, R
+class Person: NSObject {
+  let firstName: String
+  let lastName: String
+  let age: Int
+  let hairColor: [String] = ["black", "blonde"]
+  let ugly = true
+  
+  init(firstName: String, lastName: String, age: Int) {
+    self.firstName = firstName
+    self.lastName = lastName
+    self.age = age
   }
-  enum Narrow(let ) {
-    case T(narrow: String), Y(narrow: String), U(narrow: String)
+  
+
+}
+
+let alice = Person(firstName: "Alice", lastName: "Smith", age: 24)
+let bob = Person(firstName: "Bob", lastName: "Jones", age: 27)
+let charlie = Person(firstName: "Charlie", lastName: "Smith", age: 33)
+let quentin = Person(firstName: "Quentin", lastName: "Alberts", age: 31)
+let people: NSArray = [alice, bob, charlie, quentin]
+
+people.count
+
+let bobPredicate1 = NSPredicate(format: "firstName = 'Bob'")
+let bobPredicate = NSPredicate(format: "firstName = %@", "Bob")
+let smithPredicate = NSPredicate(format: "lastName = %@", "Smith")
+let thirtiesPredicate = NSPredicate(format: "age >= 30")
+
+//let hairPredicate = NSPredicate(format: "ANY hairColor IN %@ AND firstName = %@", ["black, blonde"], "Alice")
+
+let hairPredicate = NSPredicate(format: "ALL %@ IN %K", ["blonde"], "hairColor")
+
+let result:NSArray = people.filteredArrayUsingPredicate(hairPredicate)
+result.count
+
+
+let hairPredicate1 = NSPredicate(format: "%K[SIZE] = %d", "hairColor", 2)
+result.filteredArrayUsingPredicate(hairPredicate1)
+
+let peeps = people as! [Person]
+
+let predicate: [NSPredicate?] = [hairPredicate, hairPredicate1, nil]
+let filteredPredicate: [NSPredicate] = predicate.filter {
+  if $0 != nil {
+    return true
+  }
+  return false
+  }.map {$0!}
+
+let compound = NSCompoundPredicate(andPredicateWithSubpredicates: filteredPredicate)
+
+let uglyPredicate = NSPredicate(format: "ugly = %@", false)
+
+result.filteredArrayUsingPredicate(uglyPredicate)
+
+let a = true
+var re: Bool
+re = a ? true : false
+
+var c:Int?
+
+var b = 0 {
+didSet {
+  c = b
+}
+}
+
+
+
+
+b = 11
+
+c
+
+struct Haha {
+  var b  = 0
+  var c = 5 {
+    didSet {
+      b = c
+    }
+  }
+  init(q: Int) {
+    c = q
   }
 }
 
-let variable = A.Home.self
+var qw = Haha(q: 1)
 
-variable.W
+qw.c
+qw.b
 
-//This will help with narrowing... 
+qw.c = 4
+qw.b
 
-let var1 = A.Home.W
 
-let str = ""
+
+
+
+
+
+
+
+
+
 
 
 

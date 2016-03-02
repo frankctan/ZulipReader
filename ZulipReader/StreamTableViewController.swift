@@ -20,7 +20,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   var state: State = .Home
-  var narrow = String()
+  var narrow = Narrow()
   
   required init!(coder decoder: NSCoder!) {
     super.init(coder: decoder)
@@ -70,12 +70,6 @@ class StreamTableViewController: SLKTextViewController {
     else {
       data.register()
     }
-  }
-  
-  //MARK: HomeBarButtonItem Target
-  func homeButtonDidTouch(sender: AnyObject) {
-    state = .Home
-    data.loadStreamMessages(UserAction.Home)
   }
   
   
@@ -140,11 +134,7 @@ class StreamTableViewController: SLKTextViewController {
   
   func refresh(refreshControl: UIRefreshControl) {
     print("refreshing!")
-    
-    switch state {
-    case .Home: data.loadStreamMessages(UserAction.ScrollUp)
-    case .Narrow: data.loadStreamMessages(UserAction.ScrollUpNarrow(narrow: narrow))
-    }
+    data.loadStreamMessages(Action(narrow: self.narrow, action: .ScrollUp))
     refreshControl.endRefreshing()
   }
   
@@ -188,29 +178,54 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
 }
 
+  //MARK: HomeBarButtonItem Target
+extension StreamTableViewController {
+  func homeButtonDidTouch(sender: AnyObject) {
+    state = .Home
+    
+    narrow = Narrow(type: "stream")
+    
+    let action = Action(narrow: self.narrow, action: .Focus)
+    data.loadStreamMessages(action)
+  }
+}
+
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {
     state = .Narrow
-    narrow = "[[\"stream\", \"\(stream)\"]]"
-    data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
+    
+    let narrowString = "[[\"stream\", \"\(stream)\"]]"
+    narrow = Narrow(narrowString: narrowString, stream: stream)
+
+    let action = Action(narrow: self.narrow, action: .Focus)
+    data.loadStreamMessages(action)
     tableView.showLoading()
   }
   
   func narrowSubject(stream: String, subject: String) {
     state = .Narrow
-    narrow = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
-    data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
+    
+    let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
+    narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
+    
+    let action = Action(narrow: self.narrow, action: .Focus)
+    data.loadStreamMessages(action)
     tableView.showLoading()
   }
 }
 
 //MARK: StreamHeaderPrivateCellDelegate
 extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
-  func narrowConversation(emails: String) {
+  func narrowConversation(emails: [String]) {
     state = .Narrow
-    narrow = "[[\"is\", \"private\"],[\"pm-with\",\"\(emails)\"]]"
-    data.loadStreamMessages(UserAction.Narrow(narrow: narrow))
+    
+    let emailString = emails.joinWithSeparator(",")
+    let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
+    narrow = Narrow(narrowString: narrowString, privateRecipients: emails)
+    
+    let action = Action(narrow: self.narrow, action: .Focus)
+    data.loadStreamMessages(action)
     tableView.showLoading()
   }
 }

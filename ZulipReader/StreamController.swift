@@ -20,21 +20,103 @@ public enum UserAction {
   case ScrollUp, Refresh, Focus
 }
 
+public struct Narrow {
+  private var typePredicate: NSPredicate?
+  private var recipientPredicate: NSPredicate?
+  private var subjectPredicate: NSPredicate?
+  private var mentionedPredicate: NSPredicate?
+  private var narrowFlagPredicate: NSPredicate?
+  
+  var type = "" {
+    didSet {
+      self.typePredicate = NSPredicate(format: "type = %@", type)
+      print("type Predicate: \(typePredicate)")
+    }
+  }
+  
+  var recipient = [String]() {
+    didSet {
+      self.recipientPredicate = NSPredicate(format: "ALL %@ IN %K", recipient, "display_recipient")
+    }
+  }
+  
+  var subject = "" {
+    didSet {
+      self.subjectPredicate = NSPredicate(format: "subject = %@", subject)
+    }
+  }
+  
+  var mentioned = false {
+    didSet {
+      self.mentionedPredicate = NSPredicate(format: "mentioned = %@", mentioned)
+    }
+  }
+  
+  var narrowFlag = false {
+    didSet {
+      self.narrowFlagPredicate = NSPredicate(format: "narrow = %@", narrowFlag)
+    }
+  }
+  
+  var narrowString: String?
+  
+  init() {
+    self.type = "stream"
+    self.narrowFlag = false
+  }
+  
+  //inits are wrapped in closures to trigger the didSets
+  init(type: String) {
+    {self.type = type
+      if type == "stream" {
+        self.narrowFlag = false
+      }
+    }()
+  }
+  
+  init(narrowString: String?, stream: String) {
+    {self.narrowString = narrowString
+      self.recipient = [stream]
+      self.type = "stream"}()
+  }
+  
+  init(narrowString: String?, stream: String, subject: String) {
+    {self.narrowString = narrowString
+      self.recipient = [stream]
+      self.subject = subject
+      self.type = "stream"}()
+  }
+  
+  init(narrowString: String?, privateRecipients: [String]) {
+    {self.narrowString = narrowString
+      self.recipient = privateRecipients
+      self.type = "private"}()
+  }
+  
+  func predicate() -> NSPredicate {
+    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, narrowFlagPredicate]
+    let predicateArray = arr.filter {if $0 == nil {return false}; return true}.map {$0!}
+    let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
+    print("new predicate: \(compoundPredicate)")
+    return compoundPredicate
+  }
+}
+
 public struct Action {
-  let narrow: String?
+  let narrow: Narrow
   let userAction:UserAction
   
-  init(narrow: String) {
+  init(narrow: Narrow) {
     self.narrow = narrow
     userAction = .Refresh
   }
   
   init(action: UserAction) {
-    self.narrow = nil
+    self.narrow = Narrow()
     userAction = action
   }
   
-  init(narrow: String, action: UserAction) {
+  init(narrow: Narrow, action: UserAction) {
     self.narrow = narrow
     userAction = action
   }
@@ -53,7 +135,7 @@ class StreamController : DataController {
     let numBefore: Int
     let numAfter: Int
     let numAnchor: Int
-    let narrows: String?
+    let narrow: String?
     
     init() {
       self = MessageRequestParameters(anchor: 0)
@@ -63,21 +145,26 @@ class StreamController : DataController {
       numAnchor = anchor
       numBefore = 50
       numAfter = 50
-      narrows = nil
+      narrow = nil
     }
     
     init(anchor: Int, before: Int, after: Int) {
       numAnchor = anchor
       numBefore = before
       numAfter = after
-      narrows = nil
+      narrow = nil
     }
     
-    init(anchor: Int, before: Int, after: Int, narrow: String) {
+    init(anchor: Int, before: Int, after: Int, narrow: String?) {
       numAnchor = anchor
       numBefore = before
       numAfter = after
-      narrows = narrow
+      if let narrowParams = narrow {
+        self.narrow = narrowParams
+      }
+      else {
+        self.narrow = nil
+      }
     }
   }
   
@@ -111,7 +198,7 @@ class StreamController : DataController {
   //MARK: Get Stream Messages
   var loading = false
   
-  func loadStreamMessages(action: UserAction) {
+  func loadStreamMessages(action: Action) {
     //no double loading
     if loading {
       return
@@ -119,15 +206,15 @@ class StreamController : DataController {
     loading = true
     print("loading Stream Messages")
     print("action: \(action)")
-    var action = action
     //load messages from dB if we're going home/staying there
-    switch action {
-    case .Refresh, .Home:
-      let realmMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
-      self.messagesToController(realmMessages, newMessages: realmMessages, action: .Home)
-      action = .Refresh
-    default: break
-    }
+    
+    //    switch action.userAction {
+    //    case .Focus:
+    //      let realmMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+    //      self.messagesToController(realmMessages, newMessages: realmMessages, action: .Focus)
+    ////      action.userAction = .Refresh
+    //    default: break
+    //    }
     
     print("action: \(action)")
     let params = self.createRequestParameters(action)
@@ -139,29 +226,15 @@ class StreamController : DataController {
         case .Success(let boxedMessages):
           let messages = boxedMessages.unbox
           if !messages.isEmpty {
-            //Assign narrow to newMessages
+            
             let newMessages: [Message] = messages
+            let narrowFlag = action.narrow.narrowString == nil ? false : true
             
-//            if case .Narrow(let narrowParam), .ScrollUpNarrow(let narrowParam), .RefreshNarrow(let narrowParam):
-//              var results = [Message]()
-//              for message in messages {
-//                message.narrow = narrowParam
-//                results.append(message)
-//              }
-//              newMessages = results
-//            if case .action(let narrowParams) =
-            
-            if params.narrows == nil { //or, if action = narrow
-              
-              //self.messagesToRealm does not write duplicates
-              self.messagesToRealm(newMessages)
-              let realmMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
-              self.messagesToController(realmMessages, newMessages: newMessages, action: action)
-              
-            }
-            else {
-              self.messagesToController(newMessages, newMessages: newMessages, action: action)
-            }
+            //Realm saves the state in which the mesage was retrieved
+            self.messagesToRealm(newMessages, narrowFlag: narrowFlag)
+            let _realmMessages: NSArray = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+            let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+            self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
           }
           
         case .Error(let error):
@@ -192,12 +265,12 @@ class StreamController : DataController {
     var insertedRows = [NSIndexPath]()
     
     switch action {
-    case .Narrow(_), .Home, .Register:
+    case .Focus:
       deletedSections = NSMakeRange(0, oldTableCells.count)
       insertedSections = NSMakeRange(0, newTableCells.count)
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
-    case .ScrollUp, .ScrollUpNarrow(_):
+    case .ScrollUp:
       if self.compareTableCells(flatNewMessageTableCells.last!, flatOldTableCells.first!) {
         insertedSections = NSMakeRange(0, newMessageTableCells.count - 1)
       }
@@ -206,7 +279,7 @@ class StreamController : DataController {
       }
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
-    case .Refresh, .RefreshNarrow(_):
+    case .Refresh:
       let lastOldTableCell = flatOldTableCells.last!
       if self.compareTableCells(lastOldTableCell, flatNewMessageTableCells.first!) {
         insertedSections = NSMakeRange(lastOldTableCell.section + 1, newTableCells.count)
@@ -238,23 +311,17 @@ class StreamController : DataController {
       .andThen(processResponse)
   }
   
-  private func createRequestParameters(action: UserAction) -> MessageRequestParameters {
+  private func createRequestParameters(action: Action) -> MessageRequestParameters {
     var params = MessageRequestParameters()
     let (minAnchor, maxAnchor) = getAnchor()
     
-    switch action {
-    case .Register:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 10, after: 50)
-    case .Refresh, .Home:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50)
+    switch action.userAction {
+    case .Focus:
+      params = MessageRequestParameters(anchor: maxAnchor, before: 10, after: 50, narrow: action.narrow.narrowString)
+    case .Refresh:
+      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
     case .ScrollUp:
-      params = MessageRequestParameters(anchor: minAnchor, before: 10, after: 0)
-    case .Narrow(let narrow):
-      params = MessageRequestParameters(anchor: maxAnchor, before: 10, after: 10, narrow: narrow)
-    case .ScrollUpNarrow(let narrow):
-      params = MessageRequestParameters(anchor: minAnchor, before: 10, after: 0, narrow: narrow)
-    case .RefreshNarrow(let narrow):
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: narrow)
+      params = MessageRequestParameters(anchor: minAnchor, before: 10, after: 0, narrow: action.narrow.narrowString)
     }
     return params
   }
@@ -277,13 +344,7 @@ class StreamController : DataController {
   }
   
   private func createMessageRequest(params: MessageRequestParameters) -> Future<URLRequestConvertible, ZulipErrorDomain> {
-    let urlRequest: URLRequestConvertible
-    if let narrowRequest = params.narrows {
-      urlRequest = Router.GetNarrowMessages(anchor: params.numAnchor, before: params.numBefore, after: params.numAfter, narrow: narrowRequest)
-    }
-    else {
-      urlRequest = Router.GetOldMessages(anchor: params.numAnchor, before: params.numBefore, after: params.numAfter)
-    }
+    let urlRequest: URLRequestConvertible = Router.GetMessages(anchor: params.numAnchor, before: params.numBefore, after: params.numAfter, narrow: params.narrow)
     return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
   }
   
@@ -347,14 +408,18 @@ class StreamController : DataController {
     })
   }
   
-  //checks for uniqueness based on dateTime
-  private func messagesToRealm(messages: [Message]) {
+  //checks for uniqueness based on dateTime, saves whether the message was obtained while narrowed
+  private func messagesToRealm(messages: [Message], narrowFlag: Bool) {
     print("writing messages...")
     print("save path: \(realm.path)")
     let currentMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
     let currentMessageTimeStamp = currentMessages.map {$0.dateTime}
     for message in messages {
       if !currentMessageTimeStamp.contains(message.dateTime) {
+        
+        //true if message is persisted while in a "narrow" view
+        message.narrow = narrowFlag
+        
         do {
           try realm.write {
             realm.add(message)
@@ -467,7 +532,7 @@ class StreamController : DataController {
         case .Success(let boxedReg):
           let reg = boxedReg.unbox
           self.recordRegistration(reg)
-          self.loadStreamMessages(.Register)
+          self.loadStreamMessages(Action(narrow: Narrow(), action: .Focus))
           
         case .Error(let boxedError):
           let error = boxedError.unbox
@@ -529,5 +594,4 @@ class StreamController : DataController {
       } catch { fatalError("subs: could not write to realm") }
     }
   }
-  
 }

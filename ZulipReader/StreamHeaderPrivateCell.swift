@@ -11,7 +11,7 @@ import Spring
 import Kingfisher
 
 protocol StreamHeaderPrivateCellDelegate: class {
-  func narrowConversation(emails: String)
+  func narrowConversation(emails: [String])
 }
 
 class StreamHeaderPrivateCell: ZulipTableViewCell {
@@ -21,8 +21,7 @@ class StreamHeaderPrivateCell: ZulipTableViewCell {
   var recipientEmails = [String]()
   
   @IBAction func privateButtonDidTouch(sender: AnyObject) {
-    let emailString = recipientEmails.joinWithSeparator(",")
-    delegate?.narrowConversation(emailString)
+    delegate?.narrowConversation(recipientEmails)
   }
   
   override func configure(message: TableCell) {

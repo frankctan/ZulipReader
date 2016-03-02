@@ -13,12 +13,6 @@ import SwiftyJSON
 
 public typealias Header = [String:String]
 
-public struct UserData {
-  var header = Header()
-  var queueID = String()
-  var pointer = String()
-  var email = String()
-}
 //stream, narrow, subject
 public var streamColorLookup = [String:String]()
 
@@ -34,16 +28,19 @@ class DataController {
     case Login(username: String, password: String)
     case Register
     case GetSubscriptions
-    case GetOldMessages(anchor: Int, before: Int, after: Int)
-    case GetNarrowMessages(anchor: Int, before: Int, after: Int, narrow: String)
+    case GetMessages(anchor: Int, before: Int, after: Int, narrow: String?)
+//    case GetOldMessages(anchor: Int, before: Int, after: Int)
+//    case GetNarrowMessages(anchor: Int, before: Int, after: Int, narrow: String)
     //    case PostMessage(type: String, content: String, to: [String], subject: String?)
     
     var method: Alamofire.Method {
       switch self {
       case .Login, .Register:
         return .POST
-      case .GetSubscriptions, .GetOldMessages, .GetNarrowMessages:
+      case .GetSubscriptions, .GetMessages:
         return .GET
+//      case .GetSubscriptions, .GetOldMessages, .GetNarrowMessages:
+//        return .GET
       }
     }
     
@@ -62,15 +59,25 @@ class DataController {
         case .GetSubscriptions:
           return("/users/me/subscriptions", nil)
           
-        case .GetOldMessages(let anchor, let before, let after):
-          let messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
+        case .GetMessages(let anchor, let before, let after, let narrow):
+          let messageParams:[String: AnyObject]
+          if let narrowParams = narrow {
+            messageParams = ["anchor": anchor, "num_before": before,
+              "num_after": after, "narrow": narrowParams]
+          }
+          else {
+            messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
+          }
           return("/messages", messageParams)
           
-        case .GetNarrowMessages(let anchor, let before, let after, let narrow):
-          let messageParams = ["anchor": anchor, "num_before": before,
-            "num_after": after, "narrow": narrow]
-          
-          return("/messages", (messageParams as! [String : AnyObject]))
+//        case .GetOldMessages(let anchor, let before, let after):
+//          let messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
+//          return("/messages", messageParams)
+//          
+//        case .GetNarrowMessages(let anchor, let before, let after, let narrow):
+//          let messageParams = ["anchor": anchor, "num_before": before,
+//            "num_after": after, "narrow": narrow]
+//          return("/messages", (messageParams as! [String : AnyObject]))
         }
       }()
       
