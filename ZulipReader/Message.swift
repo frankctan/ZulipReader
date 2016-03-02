@@ -77,8 +77,7 @@ class Message: Object {
   //MARK: Added properties; not from Zulip
   dynamic var streamColor: String = ""
   dynamic var mentioned: Bool = false
-  dynamic var narrow: Bool = false
-
+  
   override static func ignoredProperties() -> [String] {
     return ["flags", "display_recipient","privateFullName"]
   }

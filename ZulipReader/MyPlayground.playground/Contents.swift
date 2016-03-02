@@ -37,6 +37,7 @@ let hairPredicate = NSPredicate(format: "ALL %@ IN %K", ["blonde"], "hairColor")
 let result:NSArray = people.filteredArrayUsingPredicate(hairPredicate)
 result.count
 
+result[0].firstName
 
 let hairPredicate1 = NSPredicate(format: "%K[SIZE] = %d", "hairColor", 2)
 result.filteredArrayUsingPredicate(hairPredicate1)
@@ -57,55 +58,11 @@ let uglyPredicate = NSPredicate(format: "ugly = %@", false)
 
 result.filteredArrayUsingPredicate(uglyPredicate)
 
-let a = true
-var re: Bool
-re = a ? true : false
+let dict: [String: Int]
 
-var c:Int?
-
-var b = 0 {
-didSet {
-  c = b
-}
-}
-
-
-
-
-b = 11
-
-c
-
-struct Haha {
-  var b  = 0
-  var c = 5 {
-    didSet {
-      b = c
-    }
-  }
-  init(q: Int) {
-    c = q
-  }
-}
-
-var qw = Haha(q: 1)
-
-qw.c
-qw.b
-
-qw.c = 4
-qw.b
-
-
-
-
-
-
-
-
-
-
-
+Int.max
+2147483647
+2147483647
 
 
 

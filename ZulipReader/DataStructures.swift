@@ -28,7 +28,7 @@ public struct Narrow {
   private var recipientPredicate: NSPredicate?
   private var subjectPredicate: NSPredicate?
   private var mentionedPredicate: NSPredicate?
-  private var narrowFlagPredicate: NSPredicate?
+  private var minimumIDPredicate: NSPredicate?
   
   var type: Type = .Stream {
     didSet {
@@ -55,46 +55,49 @@ public struct Narrow {
     }
   }
   
-  var narrowFlag = false {
+  var minimumMessageID = Int.max {
     didSet {
-      self.narrowFlagPredicate = NSPredicate(format: "narrow = %@", narrowFlag)
+      self.minimumIDPredicate = NSPredicate(format: "id >= %d", minimumMessageID)
     }
   }
   
   var narrowString: String?
   
   init() {
-    {self.narrowFlag = false}()
   }
   
-  //inits are wrapped in closures to trigger the didSets
+  //inits are wrapped in closures to trigger didSet
   init(type: Type) {
-    {self.narrowFlag = false
-      if type == .Private {
-        self.type = type
-      }
+    {
+      if type == .Private {self.type = type}
     }()
   }
   
   init(narrowString: String?, stream: String) {
-    {self.narrowString = narrowString
-      self.recipient = [stream]}()
+    {
+      self.narrowString = narrowString
+      self.recipient = [stream]
+    }()
   }
   
   init(narrowString: String?, stream: String, subject: String) {
-    {self.narrowString = narrowString
+    {
+      self.narrowString = narrowString
       self.recipient = [stream]
-      self.subject = subject}()
+      self.subject = subject
+    }()
   }
   
   init(narrowString: String?, privateRecipients: [String]) {
-    {self.narrowString = narrowString
+    {
+      self.narrowString = narrowString
       self.recipient = privateRecipients
-      self.type = .Private}()
+      self.type = .Private
+    }()
   }
   
   func predicate() -> NSPredicate {
-    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, narrowFlagPredicate]
+    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate]
     let predicateArray = arr.filter {if $0 == nil {return false}; return true}.map {$0!}
     let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
     print("new predicate: \(compoundPredicate)")
@@ -103,7 +106,7 @@ public struct Narrow {
 }
 
 public struct Action {
-  let narrow: Narrow
+  var narrow: Narrow
   var userAction:UserAction
   
   init(narrow: Narrow) {
@@ -119,6 +122,43 @@ public struct Action {
   init(narrow: Narrow, action: UserAction) {
     self.narrow = narrow
     userAction = action
+  }
+}
+
+public struct MessageRequestParameters {
+  let numBefore: Int
+  let numAfter: Int
+  let numAnchor: Int
+  let narrow: String?
+  
+  init() {
+    self = MessageRequestParameters(anchor: 0)
+  }
+  
+  init(anchor: Int) {
+    numAnchor = anchor
+    numBefore = 50
+    numAfter = 50
+    narrow = nil
+  }
+  
+  init(anchor: Int, before: Int, after: Int) {
+    numAnchor = anchor
+    numBefore = before
+    numAfter = after
+    narrow = nil
+  }
+  
+  init(anchor: Int, before: Int, after: Int, narrow: String?) {
+    numAnchor = anchor
+    numBefore = before
+    numAfter = after
+    if let narrowParams = narrow {
+      self.narrow = narrowParams
+    }
+    else {
+      self.narrow = nil
+    }
   }
 }
 

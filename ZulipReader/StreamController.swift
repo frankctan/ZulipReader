@@ -25,43 +25,8 @@ class StreamController : DataController {
   private var subscription: [String:String] = [:]
   private var registration = Registration()
   private var oldTableCells = [[TableCell]]()
-  
-  private struct MessageRequestParameters {
-    let numBefore: Int
-    let numAfter: Int
-    let numAnchor: Int
-    let narrow: String?
-    
-    init() {
-      self = MessageRequestParameters(anchor: 0)
-    }
-    
-    init(anchor: Int) {
-      numAnchor = anchor
-      numBefore = 50
-      numAfter = 50
-      narrow = nil
-    }
-    
-    init(anchor: Int, before: Int, after: Int) {
-      numAnchor = anchor
-      numBefore = before
-      numAfter = after
-      narrow = nil
-    }
-    
-    init(anchor: Int, before: Int, after: Int, narrow: String?) {
-      numAnchor = anchor
-      numBefore = before
-      numAfter = after
-      if let narrowParams = narrow {
-        self.narrow = narrowParams
-      }
-      else {
-        self.narrow = nil
-      }
-    }
-  }
+  private var minimumStreamMessageID = Int.max
+  private var minimumSubMessageID = [String: Int]()
   
   override init() {
     do {
@@ -100,10 +65,22 @@ class StreamController : DataController {
     }
     loading = true
     print("loading Stream Messages")
-    print("action: \(action)")
-    //load messages from dB if we're going home/staying there
+    print("action: \(action.userAction)")
     
     var action = action
+    
+    //Read minimum pointer for each sub
+    if let narrowString = action.narrow.narrowString {
+      if let currentPointer = self.minimumSubMessageID[narrowString] {
+        action.narrow.minimumMessageID = currentPointer
+      }
+      else {
+        action.narrow.minimumMessageID = Int.max
+      }
+    }
+    else {
+      action.narrow.minimumMessageID = self.minimumStreamMessageID
+    }
     
     switch action.userAction {
     case .Focus:
@@ -113,11 +90,10 @@ class StreamController : DataController {
         self.messagesToController(realmMessages, newMessages: realmMessages, action: action.userAction)
         action.userAction = .Refresh
       }
-      
     default: break
     }
     
-    print("action: \(action)")
+    print("action: \(action.userAction)")
     let params = self.createRequestParameters(action)
     self.messagePipeline(params)
       .start {result in
@@ -129,11 +105,25 @@ class StreamController : DataController {
           if !messages.isEmpty {
 
             let newMessages: [Message] = messages
-            let narrowFlag = action.narrow.narrowString == nil ? false : true
-            
-            //Realm saves the state in which the mesage was retrieved
-            self.messagesToRealm(newMessages, narrowFlag: narrowFlag)
+            self.messagesToRealm(newMessages)
             let _realmMessages: NSArray = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+            
+            //set minimumStreamMessageID if messages aren't narrowed
+            let currentMessagesMinimumID = newMessages[0].id
+            if let narrowString = action.narrow.narrowString {
+              if let currentPointer = self.minimumSubMessageID[narrowString] {
+                self.minimumSubMessageID[narrowString] = min(currentPointer, currentMessagesMinimumID)
+              }
+              else {
+                self.minimumSubMessageID[narrowString] = currentMessagesMinimumID
+              }
+              action.narrow.minimumMessageID = self.minimumSubMessageID[narrowString]!
+            }
+            else {
+              self.minimumStreamMessageID = min(self.minimumStreamMessageID, currentMessagesMinimumID)
+              action.narrow.minimumMessageID = self.minimumStreamMessageID
+            }
+            
             let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
             self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
           }
@@ -171,6 +161,8 @@ class StreamController : DataController {
     var insertedSections = NSRange()
     var insertedRows = [NSIndexPath]()
     
+    print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(newTableCells.reduce(0, combine: {$0 + $1.count}))")
+    
     switch action {
     case .Focus:
       deletedSections = NSMakeRange(0, oldTableCells.count)
@@ -178,28 +170,19 @@ class StreamController : DataController {
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
     case .ScrollUp:
-      print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(newTableCells.reduce(0, combine: {$0 + $1.count}))")
-      if self.compareTableCells(flatNewMessageTableCells.last!, flatOldTableCells.first!) {
-        insertedSections = NSMakeRange(0, newMessageTableCells.count - 1)
-      }
-      else {
-        insertedSections = NSMakeRange(0, newMessageTableCells.count)
-      }
+      insertedSections = NSMakeRange(0, newTableCells.count - oldTableCells.count)
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
     case .Refresh:
       let lastOldTableCell = flatOldTableCells.last!
-      if self.compareTableCells(lastOldTableCell, flatNewMessageTableCells.first!) {
-        insertedSections = NSMakeRange(lastOldTableCell.section + 1, newTableCells.count)
+      let rangeLength = newTableCells.count - oldTableCells.count
+      if rangeLength > 0 {
+        insertedSections = NSMakeRange(lastOldTableCell.section + 1, rangeLength)
       }
-      else {
-        insertedSections = NSMakeRange(lastOldTableCell.section, newTableCells.count)
-      }
-      let flatNewMessageTableCellsDateTime = flatNewMessageTableCells.map {$0.dateTime}
-      for tableCell in (newTableCells.flatMap {$0}) {
-        if flatNewMessageTableCellsDateTime.contains(tableCell.dateTime) {
-          insertedRows.append(NSIndexPath(forRow: tableCell.row, inSection: tableCell.section))
-        }
+      let newMessageCount = newMessages.count
+      let flatNewTableCells = newTableCells.flatMap {$0}
+      for index in (flatNewTableCells.count - newMessageCount)..<flatNewTableCells.count {
+        insertedRows.append(NSIndexPath(forRow: flatNewTableCells[index].row, inSection: flatNewTableCells[index].section))
       }
     }
     
@@ -319,18 +302,13 @@ class StreamController : DataController {
   }
   
   //checks for uniqueness based on dateTime, saves whether the message was obtained while narrowed
-  private func messagesToRealm(messages: [Message], narrowFlag: Bool) {
+  private func messagesToRealm(messages: [Message]) {
     print("writing messages...")
     print("save path: \(realm.path)")
     let currentMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
     let currentMessageTimeStamp = currentMessages.map {$0.dateTime}
     for message in messages {
-      //TODO: messages saved when narrowFlag is true are fucking with the homeview. Fix this!
       if !currentMessageTimeStamp.contains(message.dateTime) {
-        
-        //true if message is persisted while in a "narrow" view
-        message.narrow = narrowFlag
-        
         do {
           try realm.write {
             realm.add(message)
