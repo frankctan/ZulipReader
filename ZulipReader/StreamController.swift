@@ -262,11 +262,11 @@ class StreamController : DataController {
   }
   
   private func findTableUpdates(newTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
-    print("newTableCells: \(newTableCells.count)")
+    print("allMessages Section Count: \(newTableCells.count)")
 
     let newMessageTableCells = self.messageToTableCell(newMessages)
     
-    print("newMessageTableCells: \(newMessageTableCells.count)")
+    print("newMessages Section Count: \(newMessageTableCells.count)")
     let flatNewMessageTableCells = newMessageTableCells.flatMap {$0}
     let flatOldTableCells = oldTableCells.flatMap {$0}
     
@@ -281,7 +281,7 @@ class StreamController : DataController {
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
     case .ScrollUp:
-      print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(newMessages.count)")
+      print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(newTableCells.reduce(0, combine: {$0 + $1.count}))")
       if self.compareTableCells(flatNewMessageTableCells.last!, flatOldTableCells.first!) {
         insertedSections = NSMakeRange(0, newMessageTableCells.count - 1)
       }
@@ -426,6 +426,7 @@ class StreamController : DataController {
     let currentMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
     let currentMessageTimeStamp = currentMessages.map {$0.dateTime}
     for message in messages {
+      //TODO: messages saved when narrowFlag is true are fucking with the homeview. Fix this!
       if !currentMessageTimeStamp.contains(message.dateTime) {
         
         //true if message is persisted while in a "narrow" view
