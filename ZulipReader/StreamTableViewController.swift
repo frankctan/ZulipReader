@@ -188,7 +188,7 @@ extension StreamTableViewController: StreamControllerDelegate {
 extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
-    narrow = Narrow(type: "stream")
+    narrow = Narrow(type: .Stream)
     let action = Action(narrow: self.narrow, action: .Focus)
     data.loadStreamMessages(action)
   }

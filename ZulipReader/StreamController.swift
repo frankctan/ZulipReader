@@ -21,6 +21,17 @@ public enum UserAction {
   case ScrollUp, Refresh, Focus
 }
 
+public enum Type {
+  case Stream, Private
+  
+  var description: String {
+    switch self {
+    case .Stream: return "Stream"
+    case .Private: return "Private"
+    }
+  }
+}
+
 public struct Narrow {
   private var typePredicate: NSPredicate?
   private var recipientPredicate: NSPredicate?
@@ -28,9 +39,9 @@ public struct Narrow {
   private var mentionedPredicate: NSPredicate?
   private var narrowFlagPredicate: NSPredicate?
   
-  var type = "" {
+  var type: Type = .Stream {
     didSet {
-      self.typePredicate = NSPredicate(format: "type = %@", type)
+      self.typePredicate = NSPredicate(format: "type = %@", type.description)
       print("type Predicate: \(typePredicate)")
     }
   }
@@ -66,9 +77,9 @@ public struct Narrow {
   }
   
   //inits are wrapped in closures to trigger the didSets
-  init(type: String) {
+  init(type: Type) {
     {self.narrowFlag = false
-      if type == "private" {
+      if type == .Private {
         self.type = type
       }
     }()
@@ -88,7 +99,7 @@ public struct Narrow {
   init(narrowString: String?, privateRecipients: [String]) {
     {self.narrowString = narrowString
       self.recipient = privateRecipients
-      self.type = "private"}()
+      self.type = .Private}()
   }
   
   func predicate() -> NSPredicate {
