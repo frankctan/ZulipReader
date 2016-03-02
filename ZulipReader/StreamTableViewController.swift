@@ -163,11 +163,17 @@ class StreamTableViewController: SLKTextViewController {
 
 //MARK: StreamControllerDelegate
 extension StreamTableViewController: StreamControllerDelegate {
-  func didFetchMesssages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+  func didFetchMessages() {
     tableView.hideLoading()
+  }
+  
+  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+    tableView.hideLoading()
+    print("# of old sections: \(self.messages.count)")
     self.messages = messages
+    print("# of new sections: \(self.messages.count)")
     print("inserted sections: \(insertedSections)")
-    print("message sections: \(messages.count)")
+    print("deleted sections: \(deletedSections)")
     tableView.beginUpdates()
     tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
     tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
@@ -182,9 +188,7 @@ extension StreamTableViewController: StreamControllerDelegate {
 extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
-    
     narrow = Narrow(type: "stream")
-    
     let action = Action(narrow: self.narrow, action: .Focus)
     data.loadStreamMessages(action)
   }

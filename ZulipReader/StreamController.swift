@@ -13,7 +13,8 @@ import Locksmith
 import RealmSwift
 
 protocol StreamControllerDelegate: class {
-  func didFetchMesssages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
+  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
+  func didFetchMessages()
 }
 
 public enum UserAction {
@@ -61,30 +62,27 @@ public struct Narrow {
   var narrowString: String?
   
   init() {
-    self.type = "stream"
-    self.narrowFlag = false
+    {self.narrowFlag = false}()
   }
   
   //inits are wrapped in closures to trigger the didSets
   init(type: String) {
-    {self.type = type
-      if type == "stream" {
-        self.narrowFlag = false
+    {self.narrowFlag = false
+      if type == "private" {
+        self.type = type
       }
     }()
   }
   
   init(narrowString: String?, stream: String) {
     {self.narrowString = narrowString
-      self.recipient = [stream]
-      self.type = "stream"}()
+      self.recipient = [stream]}()
   }
   
   init(narrowString: String?, stream: String, subject: String) {
     {self.narrowString = narrowString
       self.recipient = [stream]
-      self.subject = subject
-      self.type = "stream"}()
+      self.subject = subject}()
   }
   
   init(narrowString: String?, privateRecipients: [String]) {
@@ -104,7 +102,7 @@ public struct Narrow {
 
 public struct Action {
   let narrow: Narrow
-  let userAction:UserAction
+  var userAction:UserAction
   
   init(narrow: Narrow) {
     self.narrow = narrow
@@ -208,13 +206,19 @@ class StreamController : DataController {
     print("action: \(action)")
     //load messages from dB if we're going home/staying there
     
-    //    switch action.userAction {
-    //    case .Focus:
-    //      let realmMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
-    //      self.messagesToController(realmMessages, newMessages: realmMessages, action: .Focus)
-    ////      action.userAction = .Refresh
-    //    default: break
-    //    }
+    var action = action
+    
+    switch action.userAction {
+    case .Focus:
+      let _realmMessages: NSArray = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+      let realmMessages = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+      if !realmMessages.isEmpty {
+        self.messagesToController(realmMessages, newMessages: realmMessages, action: action.userAction)
+        action.userAction = .Refresh
+      }
+      
+    default: break
+    }
     
     print("action: \(action)")
     let params = self.createRequestParameters(action)
@@ -226,7 +230,7 @@ class StreamController : DataController {
         case .Success(let boxedMessages):
           let messages = boxedMessages.unbox
           if !messages.isEmpty {
-            
+
             let newMessages: [Message] = messages
             let narrowFlag = action.narrow.narrowString == nil ? false : true
             
@@ -235,6 +239,9 @@ class StreamController : DataController {
             let _realmMessages: NSArray = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
             let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
             self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
+          }
+          else {
+            self.delegate?.didFetchMessages()
           }
           
         case .Error(let error):
@@ -250,13 +257,16 @@ class StreamController : DataController {
     print("in messagesToController")
     let newTableCells = self.messageToTableCell(allMessages)
     let (deletedSections, insertedSections, insertedRows) = self.findTableUpdates(newTableCells, newMessages: newMessages, action: action)
-    self.delegate?.didFetchMesssages(newTableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
+    self.delegate?.didFetchMessages(newTableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
     self.oldTableCells = newTableCells
   }
   
   private func findTableUpdates(newTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
-    
+    print("newTableCells: \(newTableCells.count)")
+
     let newMessageTableCells = self.messageToTableCell(newMessages)
+    
+    print("newMessageTableCells: \(newMessageTableCells.count)")
     let flatNewMessageTableCells = newMessageTableCells.flatMap {$0}
     let flatOldTableCells = oldTableCells.flatMap {$0}
     
@@ -271,6 +281,7 @@ class StreamController : DataController {
       insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
     case .ScrollUp:
+      print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(newMessages.count)")
       if self.compareTableCells(flatNewMessageTableCells.last!, flatOldTableCells.first!) {
         insertedSections = NSMakeRange(0, newMessageTableCells.count - 1)
       }
@@ -317,11 +328,11 @@ class StreamController : DataController {
     
     switch action.userAction {
     case .Focus:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 10, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 20, after: 50, narrow: action.narrow.narrowString)
     case .Refresh:
       params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
     case .ScrollUp:
-      params = MessageRequestParameters(anchor: minAnchor, before: 10, after: 0, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: minAnchor, before: 20, after: 0, narrow: action.narrow.narrowString)
     }
     return params
   }
