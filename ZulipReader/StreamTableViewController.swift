@@ -33,19 +33,6 @@ class StreamTableViewController: SLKTextViewController {
     tableViewSettings()
     
     state = .Home
-    
-    let tableViewController = UITableViewController()
-    tableViewController.tableView = self.tableView
-    let refresh = UIRefreshControl()
-    refresh.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
-    tableViewController.refreshControl = refresh
-
-    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
-    navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
-    
-    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
-    navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
-    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
   }
   
   override func viewDidAppear(animated: Bool) {
@@ -139,15 +126,18 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   func tableViewSettings() {
+    //General tableview settings
     tableView.estimatedRowHeight = 60
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     
+    //TableView Cells
     tableView.registerNib(UINib(nibName: "StreamHeaderNavCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderNavCell")
     tableView.registerNib(UINib(nibName: "StreamHeaderPrivateCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderPrivateCell")
     tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
     tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
     
+    //SLKTextViewController
     self.setTextInputbarHidden(true, animated: false)
     self.bounces = true
     self.shakeToClearEnabled = true
@@ -158,6 +148,21 @@ class StreamTableViewController: SLKTextViewController {
     self.textInputbar.autoHideRightButton = true
     self.typingIndicatorView.canResignByTouch = true
     self.rightButton.setTitle("Send", forState: UIControlState.Normal)
+    
+    //Pull to Refresh
+    let tableViewController = UITableViewController()
+    tableViewController.tableView = self.tableView
+    let refresh = UIRefreshControl()
+    refresh.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    tableViewController.refreshControl = refresh
+    
+    //Navigation Bar
+    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
+    navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
+    
+    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
+    navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
+    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
   }
 }
 
