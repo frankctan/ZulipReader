@@ -160,9 +160,14 @@ class StreamTableViewController: SLKTextViewController {
     let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
+    //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
+//    self.revealViewController().setFrontViewController(self, animated: false)
+//    self.revealViewController().setRearViewController(SideMenuTableViewController(), animated: false)
+    
     navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+    self.revealViewController().rearViewRevealWidth = 100
   }
 }
 

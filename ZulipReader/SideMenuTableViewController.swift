@@ -17,9 +17,9 @@ class SideMenuTableViewController: UITableViewController {
     var selection = ""
     
     override func viewDidLoad() {
-        for (k,v) in Array(streamColorLookup).sort({$0.0 < $1.0}) {
-            streamColor.append((k,v))
-        }
+//        for (k,v) in Array(streamColorLookup).sort({$0.0 < $1.0}) {
+//            streamColor.append((k,v))
+//        }
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     }
     

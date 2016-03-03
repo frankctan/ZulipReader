@@ -14,8 +14,6 @@ import SwiftyJSON
 public typealias Header = [String:String]
 
 //stream, narrow, subject
-public var streamColorLookup = [String:String]()
-
 class DataController {
   
   typealias Parameter = [String:AnyObject]
@@ -29,8 +27,6 @@ class DataController {
     case Register
     case GetSubscriptions
     case GetMessages(anchor: Int, before: Int, after: Int, narrow: String?)
-//    case GetOldMessages(anchor: Int, before: Int, after: Int)
-//    case GetNarrowMessages(anchor: Int, before: Int, after: Int, narrow: String)
     //    case PostMessage(type: String, content: String, to: [String], subject: String?)
     
     var method: Alamofire.Method {
@@ -39,8 +35,6 @@ class DataController {
         return .POST
       case .GetSubscriptions, .GetMessages:
         return .GET
-//      case .GetSubscriptions, .GetOldMessages, .GetNarrowMessages:
-//        return .GET
       }
     }
     
@@ -69,15 +63,6 @@ class DataController {
             messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
           }
           return("/messages", messageParams)
-          
-//        case .GetOldMessages(let anchor, let before, let after):
-//          let messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
-//          return("/messages", messageParams)
-//          
-//        case .GetNarrowMessages(let anchor, let before, let after, let narrow):
-//          let messageParams = ["anchor": anchor, "num_before": before,
-//            "num_after": after, "narrow": narrow]
-//          return("/messages", (messageParams as! [String : AnyObject]))
         }
       }()
       
