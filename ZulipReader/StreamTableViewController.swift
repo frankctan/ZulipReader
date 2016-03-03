@@ -162,8 +162,8 @@ class StreamTableViewController: SLKTextViewController {
     
     //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
-//    self.revealViewController().setFrontViewController(self, animated: false)
-//    self.revealViewController().setRearViewController(SideMenuTableViewController(), animated: false)
+    self.revealViewController().setFrontViewController(self, animated: false)
+    self.revealViewController().setRearViewController(SideMenuTableViewController(), animated: false)
     
     navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
