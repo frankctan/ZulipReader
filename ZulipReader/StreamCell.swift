@@ -26,13 +26,10 @@ class StreamCell: ZulipTableViewCell {
 
     timeLabel.text = timeAgoSinceDate(message.dateTime, numericDates: true)
     
-//    let attributedContent = message.content
-//    contentTextView.text = attributedContent
-//    contentTextView.attributedText = nil
     contentTextView.attributedText = message.attributedContent
     self.backgroundColor = UIColor(hex: "FFFFFF")
     
-    if message.type == "private" {
+    if message.type == .Private {
       self.backgroundColor = UIColor(hex: "FEFFE0")
     }
     if message.mentioned == true {

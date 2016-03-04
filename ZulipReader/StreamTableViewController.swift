@@ -39,7 +39,6 @@ class StreamTableViewController: SLKTextViewController {
     if let navigationController = self.navigationController as? ScrollingNavigationController {
       navigationController.followScrollView(tableView, delay: 0.0)
     }
-    
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
@@ -65,7 +64,7 @@ class StreamTableViewController: SLKTextViewController {
     
     //TODO: Is there anyway to refactor this?
     switch headerType {
-    case "stream":
+    case .Stream:
       let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
       cell.configure(messages[section][0])
       cell.delegate = self
@@ -74,7 +73,7 @@ class StreamTableViewController: SLKTextViewController {
       let headerView = UIView(frame: cell.frame)
       headerView.addSubview(cell)
       return headerView
-    case "private":
+    case .Private:
       let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
       cell.configure(messages[section][0])
       cell.delegate = self
@@ -83,7 +82,6 @@ class StreamTableViewController: SLKTextViewController {
       let headerView = UIView(frame: cell.frame)
       headerView.addSubview(cell)
       return headerView
-    default: fatalError()
     }
   }
   

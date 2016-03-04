@@ -25,7 +25,7 @@ struct TableCell {
   var display_recipient = Set<String>()
   var privateFullName = Set<String>()
   var subject = ""
-  var type = ""
+  var type:Type = .Stream
   var streamColor = ""
   
   var sender_full_name = ""
@@ -52,7 +52,7 @@ struct TableCell {
     display_recipient = Set(message.display_recipient)
     privateFullName = Set(message.privateFullName)
     subject = message.subject
-    type = message.type
+    if message.type == "private" {self.type = .Private}
     streamColor = message.streamColor
     
     sender_full_name = message.sender_full_name

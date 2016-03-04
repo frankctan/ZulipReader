@@ -24,7 +24,7 @@ class StreamExtendedCell: ZulipTableViewCell {
       
         self.backgroundColor = UIColor(hex: "FFFFFF")
         
-        if message.type == "private" {
+        if message.type == .Private {
             self.backgroundColor = UIColor(hex: "FEFFE0")
         }
         if message.mentioned == true {
