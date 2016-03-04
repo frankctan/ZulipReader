@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
   
-  
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     
     //THIS DELETES REALM FILES.
@@ -27,14 +26,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let frame = UIScreen.mainScreen().bounds
     window = UIWindow(frame: frame)
-
+    self.window?.backgroundColor = UIColor.whiteColor()
     
     let frontViewController = ScrollingNavigationController(rootViewController: StreamTableViewController())
-    let rearViewController = SideMenuTableViewController()
-    let revealViewController = SWRevealViewController(rearViewController: rearViewController, frontViewController: frontViewController)
-    
-    
-    self.window?.backgroundColor = UIColor.whiteColor()
+    let revealViewController = SWRevealViewController()
+    revealViewController.setFrontViewController(frontViewController, animated: true)
+
     self.window?.rootViewController = revealViewController
     self.window?.makeKeyAndVisible()
     

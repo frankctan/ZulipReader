@@ -17,9 +17,14 @@ protocol StreamControllerDelegate: class {
   func didFetchMessages()
 }
 
+protocol SubscriptionDelegate: class {
+  func didFetchSubscriptions(subscriptions: [String: String])
+}
+
 class StreamController : DataController {
   
   weak var delegate: StreamControllerDelegate?
+  weak var subscriptionDelegate: SubscriptionDelegate?
   
   private let realm: Realm
   private var subscription: [String:String] = [:]
@@ -460,11 +465,12 @@ class StreamController : DataController {
     })
   }
   
-  //writes subscription dictionary, realm persistence, other registration info
+  //writes subscription dictionary, realm persistence, sends subscription colors to sideMenuDelegate
   private func recordRegistration(registration: Registration) {
     for sub in registration.subscription {
-      subscription[sub["name"].stringValue] = sub["color"].stringValue
+      self.subscription[sub["name"].stringValue] = sub["color"].stringValue
     }
+    self.subscriptionDelegate?.didFetchSubscriptions(self.subscription)
     subscriptionsToRealm(registration.subscription)
     self.registration = registration
   }
