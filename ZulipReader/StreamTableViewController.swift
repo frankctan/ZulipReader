@@ -13,6 +13,7 @@ import SlackTextViewController
 class StreamTableViewController: SLKTextViewController {
   
   let data = StreamController()
+  let sideMenuTableViewController = SideMenuTableViewController()
   var messages = [[TableCell]]()
   
   enum State {
@@ -22,16 +23,13 @@ class StreamTableViewController: SLKTextViewController {
   var state: State = .Home
   var narrow = Narrow()
   
-  required init!(coder decoder: NSCoder!) {
-    super.init(coder: decoder)
-  }
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     
     data.delegate = self
+    data.subscriptionDelegate = sideMenuTableViewController
+    sideMenuTableViewController.delegate = self
     tableViewSettings()
-    
     state = .Home
   }
   
@@ -41,6 +39,8 @@ class StreamTableViewController: SLKTextViewController {
     if let navigationController = self.navigationController as? ScrollingNavigationController {
       navigationController.followScrollView(tableView, delay: 0.0)
     }
+    
+    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
     loadData()
@@ -58,8 +58,7 @@ class StreamTableViewController: SLKTextViewController {
       data.register()
     }
   }
-  
-  
+
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let headerType = messages[section][0].type
@@ -157,17 +156,18 @@ class StreamTableViewController: SLKTextViewController {
     tableViewController.refreshControl = refresh
     
     //Navigation Bar
+    //Sticky headers follow the scrolling of the navbar
+    self.navigationController?.navigationBar.translucent = false
+    
     let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
     //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
-//    self.revealViewController().setFrontViewController(self, animated: false)
-//    self.revealViewController().setRearViewController(SideMenuTableViewController(), animated: false)
+//    self.revealViewController().rearViewRevealWidth = 100
+    self.revealViewController().rearViewController = self.sideMenuTableViewController
     
     navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
-    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
-    self.revealViewController().rearViewRevealWidth = 100
   }
 }
 
@@ -194,7 +194,7 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
 }
 
-  //MARK: HomeBarButtonItem Target
+//MARK: HomeBarButtonItem Target
 extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
@@ -204,13 +204,24 @@ extension StreamTableViewController {
   }
 }
 
+//MARK: SideMenuDelegate
+extension StreamTableViewController: SideMenuDelegate {
+  func sideMenuDidNarrow(narrow: Narrow) {
+    state = .Narrow
+    self.narrow = narrow
+    let action = Action(narrow: self.narrow, action: .Focus)
+    data.loadStreamMessages(action)
+    tableView.showLoading()
+  }
+}
+
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {
     state = .Narrow
     
     let narrowString = "[[\"stream\", \"\(stream)\"]]"
-    narrow = Narrow(narrowString: narrowString, stream: stream)
+    self.narrow = Narrow(narrowString: narrowString, stream: stream)
 
     let action = Action(narrow: self.narrow, action: .Focus)
     data.loadStreamMessages(action)
@@ -221,7 +232,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     state = .Narrow
     
     let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
-    narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
+    self.narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
     
     let action = Action(narrow: self.narrow, action: .Focus)
     data.loadStreamMessages(action)

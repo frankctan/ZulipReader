@@ -73,6 +73,14 @@ public struct Narrow {
     }()
   }
   
+  init(narrowString: String?, type: Type?, mentioned: Bool?) {
+    {
+      self.narrowString = narrowString
+      if type == .Private {self.type = type!}
+      if let mentioned = mentioned {self.mentioned = mentioned}
+    }()
+  }
+  
   init(narrowString: String?, stream: String) {
     {
       self.narrowString = narrowString

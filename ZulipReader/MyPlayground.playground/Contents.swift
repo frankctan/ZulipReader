@@ -58,11 +58,17 @@ let uglyPredicate = NSPredicate(format: "ugly = %@", false)
 
 result.filteredArrayUsingPredicate(uglyPredicate)
 
-let dict: [String: Int]
+let dict: [String: Int] = ["c": 1, "b": 2, "a": 3]
 
 Int.max
 2147483647
 2147483647
+
+let sortedDict = dict.sort {$0.0 < $1.0}
+
+
+
+
 
 
 

@@ -8,13 +8,12 @@
 
 import UIKit
 import RealmSwift
-
+import AMScrollingNavbar
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
-  
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     
@@ -25,7 +24,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     catch {print("could not delete")}
     print("deleted realm files")
     
+    let frame = UIScreen.mainScreen().bounds
+    window = UIWindow(frame: frame)
     self.window?.backgroundColor = UIColor.whiteColor()
+    
+    let frontViewController = ScrollingNavigationController(rootViewController: StreamTableViewController())
+    let revealViewController = SWRevealViewController()
+    revealViewController.setFrontViewController(frontViewController, animated: true)
+
+    self.window?.rootViewController = revealViewController
+    self.window?.makeKeyAndVisible()
+    
     return true
   }
   
