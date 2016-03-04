@@ -18,7 +18,7 @@
         </mutableArray>
     </customFonts>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController" customModule="ZulipReader" customModuleProvider="target"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <viewController storyboardIdentifier="LoginViewController" id="22B-s8-P2T" customClass="LoginViewController" customModule="ZulipReader" customModuleProvider="target">
             <layoutGuides>

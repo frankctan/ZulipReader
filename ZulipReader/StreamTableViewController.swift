@@ -15,6 +15,7 @@ class StreamTableViewController: SLKTextViewController {
   let data = StreamController()
   let sideMenuTableViewController = SideMenuTableViewController()
   var messages = [[TableCell]]()
+  var timer = NSTimer()
   
   enum State {
     case Home, Narrow
@@ -44,8 +45,8 @@ class StreamTableViewController: SLKTextViewController {
     
     print("in streamTableViewController:viewDidAppear")
     loadData()
-//    let timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: true)
-//    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+    timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: true)
+    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
     tableView.showLoading()
   }
   
@@ -57,8 +58,7 @@ class StreamTableViewController: SLKTextViewController {
   func loadData() {
     if !data.isLoggedIn() {
       print("showing login screen")
-      let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-      let controller = storyBoard.instantiateViewControllerWithIdentifier("LoginViewController")
+      let controller = LoginViewController()
       presentViewController(controller, animated: true, completion: nil)
     }
     else {
@@ -94,7 +94,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return 27.0
+    return 40.0
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -191,13 +191,12 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("inserted sections: \(insertedSections)")
     print("deleted sections: \(deletedSections)")
     tableView.beginUpdates()
-    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
-    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
-    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
+    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
+    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
+    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
     tableView.endUpdates()
     
-    tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
-    
+//    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
   }
 }
 
@@ -219,6 +218,12 @@ extension StreamTableViewController: SideMenuDelegate {
     let action = Action(narrow: self.narrow, action: .Focus)
     data.loadStreamMessages(action)
     tableView.showLoading()
+  }
+  
+  func sideMenuDidLogout() {
+    data.clearDefaults()
+    timer.invalidate()
+    loadData()
   }
 }
 

@@ -182,6 +182,8 @@
 				67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */,
 				67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */,
 				67A9DA851C1E14E400AEEF1B /* StreamHeaderNavCell.xib */,
+				67BE80141C890CC00004D544 /* SideMenuCell.xib */,
+				67BE80121C890C940004D544 /* LoginViewController.xib */,
 			);
 			name = StreamTableViews;
 			sourceTree = "<group>";
@@ -240,8 +242,6 @@
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				674EDAD81C8746C300FCAE67 /* DataStructures.swift */,
 				6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */,
-				67BE80141C890CC00004D544 /* SideMenuCell.xib */,
-				67BE80121C890C940004D544 /* LoginViewController.xib */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,

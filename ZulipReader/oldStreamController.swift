@@ -5,9 +5,9 @@
 //  Created by Frank Tan on 2/23/16.
 //  Copyright © 2016 Frank Tan. All rights reserved.
 //
-
-import Foundation
-
+//
+//import Foundation
+//
 //
 //  func getNarrowMessages(anchor: String, before: Int, after: Int, narrow: String) {
 //    print("getNarrowMessages")

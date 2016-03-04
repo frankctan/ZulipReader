@@ -20,13 +20,13 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="23.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qCT-yF-TVW" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
-                        <rect key="frame" x="45" y="-0.5" width="330" height="25"/>
+                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qCT-yF-TVW" userLabel="Subject Button" customClass="DesignableButton" customModule="Spring">
+                        <rect key="frame" x="51" y="-1" width="324" height="26"/>
                         <color key="backgroundColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="25" id="LOT-9X-Vtr"/>
                         </constraints>
-                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
+                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                         <inset key="contentEdgeInsets" minX="20" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <state key="normal" title="Button">
                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -44,8 +44,8 @@
                         </connections>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IFE-ha-cyG" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
-                        <rect key="frame" x="0.0" y="-2" width="58" height="27"/>
-                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="15"/>
+                        <rect key="frame" x="0.0" y="-2" width="64" height="27"/>
+                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                         <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="9" maxY="0.0"/>
                         <state key="normal" title="Button" backgroundImage="Path 3">
                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>

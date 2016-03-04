@@ -11,13 +11,14 @@ import AMScrollingNavbar
 
 protocol SideMenuDelegate: class {
   func sideMenuDidNarrow(narrow: Narrow)
+  func sideMenuDidLogout()
 }
 
 class SideMenuTableViewController: UITableViewController {
   
   weak var delegate: SideMenuDelegate?
   
-  var titleCells = ["Private", "Mentioned"]
+  var titleCells = ["Private", "Mentioned", "Logout"]
   var sectionTitles = ["GENERAL","STREAMS"]
   var subscriptions: [(String, String)]?
   
@@ -63,9 +64,11 @@ class SideMenuTableViewController: UITableViewController {
           narrow = Narrow(narrowString: narrowString, type: .Private, mentioned: nil)
         case "Mentioned":
           narrow = Narrow(narrowString: narrowString, type: nil, mentioned: true)
+        case "Logout":
+          self.delegate?.sideMenuDidLogout()
+        return
       default:
         fatalError("Side Menu Error")
-        narrow = Narrow()
       }
     }
     else {
