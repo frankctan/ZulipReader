@@ -44,6 +44,7 @@
 		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
 		67BE80131C890C940004D544 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80121C890C940004D544 /* LoginViewController.xib */; };
 		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
+		67BE80171C8A08840004D544 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80161C8A08840004D544 /* Storyboard.storyboard */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
@@ -104,6 +105,7 @@
 		67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuCell.swift; sourceTree = "<group>"; };
 		67BE80121C890C940004D544 /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
+		67BE80161C8A08840004D544 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
 				67A9DA8E1C1F546600AEEF1B /* Login */,
 				673251761C0A7154009A546C /* StreamController.swift */,
+				67BE80161C8A08840004D544 /* Storyboard.storyboard */,
 				6788F2B21C7C4C3D00AC1D71 /* oldStreamController.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				674EDAD81C8746C300FCAE67 /* DataStructures.swift */,
@@ -361,6 +364,7 @@
 				67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */,
 				678A6BE01C12279700AE091B /* SourceSansPro-Bold-webfont.ttf in Resources */,
 				678A6BE31C12279700AE091B /* SourceSansPro-ExtraLightIt-webfont.ttf in Resources */,
+				67BE80171C8A08840004D544 /* Storyboard.storyboard in Resources */,
 				678A6BE51C12279700AE091B /* SourceSansPro-Light-webfont.ttf in Resources */,
 				678A6BE21C12279700AE091B /* SourceSansPro-ExtraLight-webfont.ttf in Resources */,
 				67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */,

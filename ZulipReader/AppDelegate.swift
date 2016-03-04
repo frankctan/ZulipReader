@@ -36,10 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     self.window?.backgroundColor = UIColor.whiteColor()
     self.window?.rootViewController = revealViewController
-//    revealViewController.frontViewPosition = FrontViewPosition.Left
     self.window?.makeKeyAndVisible()
-    
-    print("made revealviewcontroller root")
     
     return true
   }

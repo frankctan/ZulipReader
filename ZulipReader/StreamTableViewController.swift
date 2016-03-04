@@ -30,6 +30,7 @@ class StreamTableViewController: SLKTextViewController {
     super.viewDidLoad()
     
     data.delegate = self
+    self.edgesForExtendedLayout = UIRectEdge.Top
     tableViewSettings()
     
     state = .Home
@@ -40,14 +41,8 @@ class StreamTableViewController: SLKTextViewController {
     
     if let navigationController = self.navigationController as? ScrollingNavigationController {
       navigationController.followScrollView(tableView, delay: 0.0)
-//      self.revealViewController().setFrontViewController(navigationController, animated: false)
-
     }
-//    let revealController = SWRevealViewController(rearViewController: SideMenuTableViewController(), frontViewController: self.navigationController)
-//    revealController.frontViewController = navigationController
-//    revealController.rearViewController = SideMenuTableViewController()
-//    revealController.setFrontViewController(navigationController!, animated: false)
-//    self.revealViewController().setRearViewController(SideMenuTableViewController(), animated: false)
+    
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     self.revealViewController().rearViewRevealWidth = 100
     
@@ -172,6 +167,8 @@ class StreamTableViewController: SLKTextViewController {
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
     
     navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
+    
+    
   }
 }
 
