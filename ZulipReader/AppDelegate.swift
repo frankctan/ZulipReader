@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     catch {print("could not delete")}
     print("deleted realm files")
     
+    let frame = UIScreen.mainScreen().bounds
+    window = UIWindow(frame: frame)
 
     
     let frontViewController = ScrollingNavigationController(rootViewController: StreamTableViewController())
@@ -34,7 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     self.window?.backgroundColor = UIColor.whiteColor()
     self.window?.rootViewController = revealViewController
+//    revealViewController.frontViewPosition = FrontViewPosition.Left
     self.window?.makeKeyAndVisible()
+    
+    print("made revealviewcontroller root")
     
     return true
   }
