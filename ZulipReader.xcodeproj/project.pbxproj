@@ -42,9 +42,10 @@
 		67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */; };
 		67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */; };
 		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
+		67BE80131C890C940004D544 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80121C890C940004D544 /* LoginViewController.xib */; };
+		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
-		67D1F1BD1BFA6AEA006F9468 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */; };
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
 		67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */; };
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
@@ -101,10 +102,11 @@
 		67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
 		67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuCell.swift; sourceTree = "<group>"; };
+		67BE80121C890C940004D544 /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
+		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		67D1F1BC1BFA6AEA006F9468 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		67D1F1C11BFA6AEA006F9468 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		67D1F1C31BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -235,7 +237,8 @@
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				674EDAD81C8746C300FCAE67 /* DataStructures.swift */,
 				6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */,
-				67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */,
+				67BE80141C890CC00004D544 /* SideMenuCell.xib */,
+				67BE80121C890C940004D544 /* LoginViewController.xib */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
@@ -353,6 +356,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67BE80131C890C940004D544 /* LoginViewController.xib in Resources */,
 				678A6BE61C12279700AE091B /* SourceSansPro-LightIt-webfont.ttf in Resources */,
 				67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */,
 				678A6BE01C12279700AE091B /* SourceSansPro-Bold-webfont.ttf in Resources */,
@@ -360,6 +364,7 @@
 				678A6BE51C12279700AE091B /* SourceSansPro-Light-webfont.ttf in Resources */,
 				678A6BE21C12279700AE091B /* SourceSansPro-ExtraLight-webfont.ttf in Resources */,
 				67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */,
+				67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */,
 				67A9DA861C1E14E400AEEF1B /* StreamHeaderNavCell.xib in Resources */,
 				678A6BE91C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf in Resources */,
 				67A9DA881C1E1C5100AEEF1B /* StreamExtendedCell.xib in Resources */,
@@ -368,7 +373,6 @@
 				678A6BE41C12279700AE091B /* SourceSansPro-It-webfont.ttf in Resources */,
 				678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */,
 				678A6BE81C12279700AE091B /* SourceSansPro-Semibold-webfont.ttf in Resources */,
-				67D1F1BD1BFA6AEA006F9468 /* Main.storyboard in Resources */,
 				678A6BE11C12279700AE091B /* SourceSansPro-BoldIt-webfont.ttf in Resources */,
 				678A6BE71C12279700AE091B /* SourceSansPro-Regular-webfont.ttf in Resources */,
 				678A6BDF1C12279700AE091B /* SourceSansPro-BlackIt-webfont.ttf in Resources */,
@@ -480,14 +484,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		67D1F1BB1BFA6AEA006F9468 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				67D1F1BC1BFA6AEA006F9468 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

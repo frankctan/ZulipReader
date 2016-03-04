@@ -22,9 +22,9 @@ class StreamTableViewController: SLKTextViewController {
   var state: State = .Home
   var narrow = Narrow()
   
-  required init!(coder decoder: NSCoder!) {
-    super.init(coder: decoder)
-  }
+//  required init!(coder decoder: NSCoder!) {
+//    super.init(coder: decoder)
+//  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -40,7 +40,16 @@ class StreamTableViewController: SLKTextViewController {
     
     if let navigationController = self.navigationController as? ScrollingNavigationController {
       navigationController.followScrollView(tableView, delay: 0.0)
+//      self.revealViewController().setFrontViewController(navigationController, animated: false)
+
     }
+//    let revealController = SWRevealViewController(rearViewController: SideMenuTableViewController(), frontViewController: self.navigationController)
+//    revealController.frontViewController = navigationController
+//    revealController.rearViewController = SideMenuTableViewController()
+//    revealController.setFrontViewController(navigationController!, animated: false)
+//    self.revealViewController().setRearViewController(SideMenuTableViewController(), animated: false)
+    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+    self.revealViewController().rearViewRevealWidth = 100
     
     print("in streamTableViewController:viewDidAppear")
     loadData()
@@ -58,7 +67,6 @@ class StreamTableViewController: SLKTextViewController {
       data.register()
     }
   }
-  
   
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -162,12 +170,8 @@ class StreamTableViewController: SLKTextViewController {
     
     //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
-    self.revealViewController().setFrontViewController(self, animated: false)
-    self.revealViewController().setRearViewController(SideMenuTableViewController(), animated: false)
     
     navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
-    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
-    self.revealViewController().rearViewRevealWidth = 100
   }
 }
 
