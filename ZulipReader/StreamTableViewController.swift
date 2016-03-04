@@ -30,7 +30,6 @@ class StreamTableViewController: SLKTextViewController {
     super.viewDidLoad()
     
     data.delegate = self
-    self.edgesForExtendedLayout = UIRectEdge.Top
     tableViewSettings()
     
     state = .Home
@@ -62,7 +61,7 @@ class StreamTableViewController: SLKTextViewController {
       data.register()
     }
   }
-  
+
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let headerType = messages[section][0].type
@@ -160,6 +159,9 @@ class StreamTableViewController: SLKTextViewController {
     tableViewController.refreshControl = refresh
     
     //Navigation Bar
+    //Sticky headers follow the scrolling of the navbar
+    self.navigationController?.navigationBar.translucent = false
+    
     let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
