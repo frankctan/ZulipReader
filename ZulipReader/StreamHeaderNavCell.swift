@@ -17,7 +17,6 @@ protocol StreamHeaderNavCellDelegate: class {
 
 class StreamHeaderNavCell: ZulipTableViewCell {
   
-  
   weak var delegate: StreamHeaderNavCellDelegate?
   
   @IBOutlet weak var streamLabel: UIButton!

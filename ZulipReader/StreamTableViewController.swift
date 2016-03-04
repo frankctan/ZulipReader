@@ -26,6 +26,7 @@ class StreamTableViewController: SLKTextViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    
     data.delegate = self
     data.subscriptionDelegate = sideMenuTableViewController
     sideMenuTableViewController.delegate = self
@@ -43,7 +44,14 @@ class StreamTableViewController: SLKTextViewController {
     
     print("in streamTableViewController:viewDidAppear")
     loadData()
+//    let timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: true)
+//    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
     tableView.showLoading()
+  }
+  
+  func autoRefresh(timer: NSTimer) {
+    print("shots fired")
+    data.loadStreamMessages(Action(narrow: self.narrow, action: .Refresh))
   }
   
   func loadData() {
@@ -189,6 +197,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.endUpdates()
     
     tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+    
   }
 }
 

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2C2C5BF5ACF8CDAF8E4E96AE /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB93339AFD280F7DC56DBE /* Pods.framework */; };
+		404A0D84BF29236BFE878D35 /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */; };
 		670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamExtendedCell.swift */; };
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
 		673251771C0A7154009A546C /* StreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251761C0A7154009A546C /* StreamController.swift */; };
@@ -51,7 +52,6 @@
 		67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */; };
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
 		67F9565A1C6D3B3100A2EB85 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F956591C6D3B3100A2EB85 /* Subscription.swift */; };
-		71D4747A9061BFF45274E73F /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24C180949DCB3ECA0BC7C310 /* Pods_ZulipReader.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +65,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		24C180949DCB3ECA0BC7C310 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		670295011C1B65E500314A04 /* StreamExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamExtendedCell.swift; sourceTree = "<group>"; };
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
@@ -116,9 +116,9 @@
 		67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZulipReaderTests.swift; sourceTree = "<group>"; };
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67F956591C6D3B3100A2EB85 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		6C7DDAE37609C11A5FE4C078 /* Pods-ZulipReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.debug.xcconfig"; sourceTree = "<group>"; };
 		C6AB93339AFD280F7DC56DBE /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CAA2B6E202A24E8DB41C597B /* Pods-ZulipReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.release.xcconfig"; sourceTree = "<group>"; };
-		ED28679FBC500E1F634DEABF /* Pods-ZulipReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.debug.xcconfig"; sourceTree = "<group>"; };
+		FF3C41EC74CE44A8965B6E6F /* Pods-ZulipReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				71D4747A9061BFF45274E73F /* Pods_ZulipReader.framework in Frameworks */,
+				404A0D84BF29236BFE878D35 /* Pods_ZulipReader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,7 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				C6AB93339AFD280F7DC56DBE /* Pods.framework */,
-				24C180949DCB3ECA0BC7C310 /* Pods_ZulipReader.framework */,
+				41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -211,7 +211,7 @@
 				67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */,
 				67D1F1B51BFA6AEA006F9468 /* Products */,
 				5C8E98633BCDDCEFAEEC1B78 /* Frameworks */,
-				B1CB2B6DBCDF3EE16053A023 /* Pods */,
+				E41C3FE7CC12FEFED90CBDF7 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -264,11 +264,11 @@
 			path = ZulipReaderTests;
 			sourceTree = "<group>";
 		};
-		B1CB2B6DBCDF3EE16053A023 /* Pods */ = {
+		E41C3FE7CC12FEFED90CBDF7 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				ED28679FBC500E1F634DEABF /* Pods-ZulipReader.debug.xcconfig */,
-				CAA2B6E202A24E8DB41C597B /* Pods-ZulipReader.release.xcconfig */,
+				6C7DDAE37609C11A5FE4C078 /* Pods-ZulipReader.debug.xcconfig */,
+				FF3C41EC74CE44A8965B6E6F /* Pods-ZulipReader.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -280,12 +280,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 67D1F1D11BFA6AEA006F9468 /* Build configuration list for PBXNativeTarget "ZulipReader" */;
 			buildPhases = (
-				2D8472BDF4F5F866BC2F9D52 /* Check Pods Manifest.lock */,
+				6C0E8B7DDC23375695A3EA8A /* Check Pods Manifest.lock */,
 				67D1F1B01BFA6AEA006F9468 /* Sources */,
 				67D1F1B11BFA6AEA006F9468 /* Frameworks */,
 				67D1F1B21BFA6AEA006F9468 /* Resources */,
-				84BBBB4BB87E9B06CFC0A87F /* Embed Pods Frameworks */,
-				99E555ACC532DA118CB9F121 /* Copy Pods Resources */,
+				6A9C23D91FFD412EE5C5F41D /* Embed Pods Frameworks */,
+				4B1B195D898B77D40873318E /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -393,22 +393,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2D8472BDF4F5F866BC2F9D52 /* Check Pods Manifest.lock */ = {
+		4B1B195D898B77D40873318E /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		84BBBB4BB87E9B06CFC0A87F /* Embed Pods Frameworks */ = {
+		6A9C23D91FFD412EE5C5F41D /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -423,19 +423,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		99E555ACC532DA118CB9F121 /* Copy Pods Resources */ = {
+		6C0E8B7DDC23375695A3EA8A /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader-resources.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -584,7 +584,7 @@
 		};
 		67D1F1D21BFA6AEA006F9468 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ED28679FBC500E1F634DEABF /* Pods-ZulipReader.debug.xcconfig */;
+			baseConfigurationReference = 6C7DDAE37609C11A5FE4C078 /* Pods-ZulipReader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -599,7 +599,7 @@
 		};
 		67D1F1D31BFA6AEA006F9468 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAA2B6E202A24E8DB41C597B /* Pods-ZulipReader.release.xcconfig */;
+			baseConfigurationReference = FF3C41EC74CE44A8965B6E6F /* Pods-ZulipReader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
