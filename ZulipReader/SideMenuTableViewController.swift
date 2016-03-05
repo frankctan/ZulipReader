@@ -65,6 +65,7 @@ class SideMenuTableViewController: UITableViewController {
         case "Mentioned":
           narrow = Narrow(narrowString: narrowString, type: nil, mentioned: true)
         case "Logout":
+          revealViewController().revealToggleAnimated(true)
           self.delegate?.sideMenuDidLogout()
         return
       default:

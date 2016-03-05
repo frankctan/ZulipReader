@@ -22,18 +22,26 @@ class LoginViewController: UIViewController {
     data.delegate = self
   }
   
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    super.init(nibName: "LoginView", bundle: nil)
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+  }
+  
   @IBAction func loginButtonDidTouch(sender: UIButton) {
     usernameTextField.text = "frankctan@gmail.com"
     passwordTextField.text = "recursion"
     
-    guard let userName = usernameTextField.text,
+    guard let username = usernameTextField.text,
       let password = passwordTextField.text
       else {
         dialogView.animation = "shake"
         dialogView.animate()
         return
     }
-    data.login(userName, password: password)
+    data.login(username, password: password)
   }
 }
 

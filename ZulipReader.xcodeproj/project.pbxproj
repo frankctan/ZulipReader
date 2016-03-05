@@ -46,6 +46,8 @@
 		67BE80131C890C940004D544 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80121C890C940004D544 /* LoginViewController.xib */; };
 		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
 		67BE80171C8A08840004D544 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80161C8A08840004D544 /* Storyboard.storyboard */; };
+		67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67C582B01C8B452E005D0C47 /* LoginView.xib */; };
+		67C582B31C8B461D005D0C47 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C582B21C8B461D005D0C47 /* LoginView.swift */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
@@ -106,6 +108,8 @@
 		67BE80121C890C940004D544 /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
 		67BE80161C8A08840004D544 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
+		67C582B01C8B452E005D0C47 /* LoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
+		67C582B21C8B461D005D0C47 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -193,6 +197,8 @@
 			children = (
 				676C98441BFD69360042CB26 /* LoginController.swift */,
 				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
+				67C582B21C8B461D005D0C47 /* LoginView.swift */,
+				67C582B01C8B452E005D0C47 /* LoginView.xib */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -373,6 +379,7 @@
 				678A6BE91C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf in Resources */,
 				67A9DA881C1E1C5100AEEF1B /* StreamExtendedCell.xib in Resources */,
 				67A9DA841C1E0F5800AEEF1B /* StreamCell.xib in Resources */,
+				67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */,
 				67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */,
 				678A6BE41C12279700AE091B /* SourceSansPro-It-webfont.ttf in Resources */,
 				678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */,
@@ -453,6 +460,7 @@
 				670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */,
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
+				67C582B31C8B461D005D0C47 /* LoginView.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
 				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,
 				67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */,

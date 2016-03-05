@@ -12,25 +12,25 @@ import SlackTextViewController
 
 class StreamTableViewController: SLKTextViewController {
   
-  let data = StreamController()
-  let sideMenuTableViewController = SideMenuTableViewController()
-  var messages = [[TableCell]]()
-  var timer = NSTimer()
-  
   enum State {
     case Home, Narrow
   }
   
   var state: State = .Home
+  var data: StreamController?
+  var sideMenuTableViewController: SideMenuTableViewController?
+  var messages = [[TableCell]]()
+  var timer = NSTimer()
   var narrow = Narrow()
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    
+    self.data = StreamController()
+    self.sideMenuTableViewController = SideMenuTableViewController()
+    guard let data = data else {fatalError()}
     data.delegate = self
     data.subscriptionDelegate = sideMenuTableViewController
-    sideMenuTableViewController.delegate = self
+    sideMenuTableViewController?.delegate = self
     tableViewSettings()
     state = .Home
   }
@@ -44,18 +44,19 @@ class StreamTableViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
-    loadData()
-    timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: true)
-    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+    self.loadData()
+    timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: false)
     tableView.showLoading()
   }
   
   func autoRefresh(timer: NSTimer) {
     print("shots fired")
+    guard let data = data else {fatalError()}
     data.loadStreamMessages(Action(narrow: self.narrow, action: .Refresh))
   }
   
   func loadData() {
+    guard let data = data else {fatalError()}
     if !data.isLoggedIn() {
       print("showing login screen")
       let controller = LoginViewController()
@@ -126,6 +127,7 @@ class StreamTableViewController: SLKTextViewController {
   
   func refresh(refreshControl: UIRefreshControl) {
     print("refreshing!")
+    guard let data = data else {fatalError()}
     data.loadStreamMessages(Action(narrow: self.narrow, action: .ScrollUp))
     refreshControl.endRefreshing()
   }
@@ -181,6 +183,7 @@ class StreamTableViewController: SLKTextViewController {
 extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMessages() {
     tableView.hideLoading()
+    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
@@ -197,6 +200,8 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.endUpdates()
     
 //    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+    
+    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
   }
 }
 
@@ -206,6 +211,7 @@ extension StreamTableViewController {
     state = .Home
     narrow = Narrow(type: .Stream)
     let action = Action(narrow: self.narrow, action: .Focus)
+    guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
   }
 }
@@ -216,14 +222,25 @@ extension StreamTableViewController: SideMenuDelegate {
     state = .Narrow
     self.narrow = narrow
     let action = Action(narrow: self.narrow, action: .Focus)
+    guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
     tableView.showLoading()
   }
   
   func sideMenuDidLogout() {
+    guard let data = data else {fatalError()}
     data.clearDefaults()
-    timer.invalidate()
-    loadData()
+    self.timer.invalidate()
+    self.timer = NSTimer()
+    self.data = nil
+    self.sideMenuTableViewController = nil
+    self.state = .Home
+    self.messages = [[TableCell]]()
+    self.narrow = Narrow()
+    tableView.reloadData()
+    
+    self.viewDidLoad()
+    self.viewDidAppear(true)
   }
 }
 
@@ -236,6 +253,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     self.narrow = Narrow(narrowString: narrowString, stream: stream)
 
     let action = Action(narrow: self.narrow, action: .Focus)
+    guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
     tableView.showLoading()
   }
@@ -247,6 +265,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     self.narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
     
     let action = Action(narrow: self.narrow, action: .Focus)
+    guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
     tableView.showLoading()
   }
@@ -262,6 +281,7 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
     narrow = Narrow(narrowString: narrowString, privateRecipients: emails)
     
     let action = Action(narrow: self.narrow, action: .Focus)
+    guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
     tableView.showLoading()
   }

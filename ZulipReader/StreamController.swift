@@ -33,6 +33,10 @@ class StreamController : DataController {
   private var minimumStreamMessageID = Int.max
   private var minimumSubMessageID = [String: Int]()
   
+  deinit {
+    print("streamcontroller deinit")
+  }
+  
   override init() {
     do {
       realm = try Realm()
@@ -42,7 +46,6 @@ class StreamController : DataController {
   }
   
   func isLoggedIn() -> Bool {
-//    clearDefaults()
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
         Router.basicAuth = authHead
@@ -54,16 +57,19 @@ class StreamController : DataController {
   func clearDefaults() {
     do {
       try realm.write {
+        print("deleting realm")
         realm.deleteAll()
       }
     }
     catch{print("could not clear realm")}
+    print("deleting keychain")
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }
     catch {print("unable to clear locksmith")}
     Router.basicAuth = nil
     NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
+    
   }
   
   //MARK: Get Stream Messages
@@ -473,6 +479,7 @@ class StreamController : DataController {
   
   //writes subscription dictionary, realm persistence, sends subscription colors to sideMenuDelegate
   private func recordRegistration(registration: Registration) {
+    print("registration saved")
     for sub in registration.subscription {
       self.subscription[sub["name"].stringValue] = sub["color"].stringValue
     }
