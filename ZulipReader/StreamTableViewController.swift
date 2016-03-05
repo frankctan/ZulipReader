@@ -30,7 +30,7 @@ class StreamTableViewController: SLKTextViewController {
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
   var timer = NSTimer()
-  var narrow = Narrow()
+  var action = Action()
   var refreshControl: UIRefreshControl?
   
   override func viewDidLoad() {
@@ -62,7 +62,8 @@ class StreamTableViewController: SLKTextViewController {
   func autoRefresh(timer: NSTimer) {
     print("shots fired")
     guard let data = data else {fatalError()}
-    data.loadStreamMessages(Action(narrow: self.narrow, action: .Refresh))
+    self.action.userAction = .Refresh
+    data.loadStreamMessages(self.action)
   }
   
   func loadData() {
@@ -76,7 +77,7 @@ class StreamTableViewController: SLKTextViewController {
       data.register()
     }
   }
-
+  
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let headerType = messages[section][0].type
@@ -143,7 +144,8 @@ class StreamTableViewController: SLKTextViewController {
     print("refreshing!")
     self.refreshControl = refreshControl
     guard let data = data else {fatalError()}
-    data.loadStreamMessages(Action(narrow: self.narrow, action: .ScrollUp))
+    self.action.userAction = .ScrollUp
+    data.loadStreamMessages(self.action)
   }
   
   func logout() {
@@ -156,7 +158,7 @@ class StreamTableViewController: SLKTextViewController {
     self.refreshControl = nil
     self.state = .Home
     self.messages = [[TableCell]]()
-    self.narrow = Narrow()
+    self.action = Action()
     tableView.reloadData()
     
     self.viewDidLoad()
@@ -164,21 +166,20 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   //MARK: SLKTextViewController
-    override func didPressRightButton(sender: AnyObject!) {
-      super.didPressRightButton(sender)
-      self.textView.refreshFirstResponder()
-      let sentMessage = self.textView.text.copy() as! String
-
+  override func didPressRightButton(sender: AnyObject!) {
+    super.didPressRightButton(sender)
+    self.textView.refreshFirstResponder()
+    let sentMessage = self.textView.text.copy() as! String
+    let recipient = self.action.narrow.recipient
+    let subject = self.action.narrow.subject
+    
+    let messagePost = MessagePost(content: sentMessage, recipient: recipient, subject: subject)
+    
+    self.action.userAction = .Refresh
+    guard let data = data else {fatalError()}
+    data.postMessage(messagePost, action: self.action)
+  }
   
-//      if narrowType == "private" {
-//        narrowSubject = nil
-//      }
-//      if State == .Subject {
-//        data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
-//      }
-//      data.getStreamMessages(narrowParams)
-    }
-
   
   func tableViewSettings() {
     //General tableview settings
@@ -252,7 +253,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
     tableView.endUpdates()
     
-//    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+    //    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
     
     self.refreshControl?.endRefreshing()
     
@@ -264,11 +265,11 @@ extension StreamTableViewController: StreamControllerDelegate {
 extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
-    narrow = Narrow(type: .Stream)
+    let narrow = Narrow(type: .Stream)
     self.navigationController?.navigationBar.topItem?.title = "Stream"
-    let action = Action(narrow: self.narrow, action: .Focus)
+    self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
-    data.loadStreamMessages(action)
+    data.loadStreamMessages(self.action)
   }
 }
 
@@ -276,23 +277,24 @@ extension StreamTableViewController {
 extension StreamTableViewController: SideMenuDelegate {
   func sideMenuDidTouch(selection: String) {
     state = .Stream
+    let narrow: Narrow
     switch selection {
     case "Private":
       let narrowString = "[[\"is\", \"\(selection.lowercaseString)\"]]"
-      self.narrow = Narrow(narrowString: narrowString, type: .Private, mentioned: nil)
+      narrow = Narrow(narrowString: narrowString, type: .Private, mentioned: nil)
     case "Mentioned":
       let narrowString = "[[\"is\", \"\(selection.lowercaseString)\"]]"
-      self.narrow = Narrow(narrowString: narrowString, type: nil, mentioned: true)
+      narrow = Narrow(narrowString: narrowString, type: nil, mentioned: true)
     case "Logout":
       self.logout()
       return
     default:
       let narrowString = "[[\"stream\", \"\(selection)\"]]"
-      self.narrow = Narrow(narrowString: narrowString, stream: selection)
+      narrow = Narrow(narrowString: narrowString, stream: selection)
     }
     
     self.navigationController?.navigationBar.topItem?.title = selection
-    let action = Action(narrow: self.narrow, action: .Focus)
+    self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
     tableView.showLoading()
@@ -305,12 +307,12 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     state = .Stream
     
     let narrowString = "[[\"stream\", \"\(stream)\"]]"
-    self.narrow = Narrow(narrowString: narrowString, stream: stream)
+    let narrow = Narrow(narrowString: narrowString, stream: stream)
     self.navigationController?.navigationBar.topItem?.title = stream
     
-    let action = Action(narrow: self.narrow, action: .Focus)
+    self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
-    data.loadStreamMessages(action)
+    data.loadStreamMessages(self.action)
     tableView.showLoading()
   }
   
@@ -318,12 +320,12 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     state = .Subject
     
     let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
-    self.narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
+    let narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
     self.navigationController?.navigationBar.topItem?.title = subject
     
-    let action = Action(narrow: self.narrow, action: .Focus)
+    self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
-    data.loadStreamMessages(action)
+    data.loadStreamMessages(self.action)
     tableView.showLoading()
   }
 }
@@ -335,9 +337,9 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
     
     let emailString = emails.joinWithSeparator(",")
     let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
-    narrow = Narrow(narrowString: narrowString, privateRecipients: emails)
+    let narrow = Narrow(narrowString: narrowString, privateRecipients: emails)
     
-    let action = Action(narrow: self.narrow, action: .Focus)
+    self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
     tableView.showLoading()

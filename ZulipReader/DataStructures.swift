@@ -23,6 +23,26 @@ public enum Type {
   }
 }
 
+public struct MessagePost {
+  let content: String
+  let recipient: [String]
+  let subject: String?
+  let type: Type
+  
+  init(content: String, recipient: [String], subject: String?) {
+    self.content = content
+    self.recipient = recipient
+    if let subject = subject {
+      self.subject = subject
+      self.type = .Stream
+    }
+    else {
+      self.subject = nil
+      self.type = .Private
+    }
+  }
+}
+
 public struct Narrow {
   private var typePredicate: NSPredicate?
   private var recipientPredicate: NSPredicate?
@@ -43,9 +63,11 @@ public struct Narrow {
     }
   }
   
-  var subject = "" {
+  var subject:String? = nil {
     didSet {
-      self.subjectPredicate = NSPredicate(format: "subject = %@", subject)
+      if subject != nil {
+        self.subjectPredicate = NSPredicate(format: "subject = %@", subject!)
+      }
     }
   }
   
@@ -116,6 +138,11 @@ public struct Narrow {
 public struct Action {
   var narrow: Narrow
   var userAction: UserAction
+  
+  init() {
+    self.narrow = Narrow()
+    self.userAction = .Focus
+  }
   
   init(narrow: Narrow) {
     self.narrow = narrow

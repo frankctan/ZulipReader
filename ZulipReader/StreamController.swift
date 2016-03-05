@@ -67,6 +67,32 @@ class StreamController : DataController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
     
   }
+
+  //MARK: Post Messages
+  func createPostRequest(message: MessagePost) -> Future<URLRequestConvertible, ZulipErrorDomain> {
+    let recipient: String
+    if message.type == .Private {
+      recipient = message.recipient.joinWithSeparator(",")
+    } else {
+      recipient = message.recipient[0]
+    }
+    
+    let urlRequest: URLRequestConvertible = Router.PostMessage(type: message.type.description, content: message.content, to: recipient, subject: message.subject)
+    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
+  }
+  
+  func postMessage(message: MessagePost, action: Action) {
+    createPostRequest(message)
+    .andThen(AlamofireRequest)
+      .start {result in
+        switch result {
+        case .Success(_):
+          self.loadStreamMessages(action)
+        case .Error(let error):
+          print(error)
+        }
+    }
+  }
   
   //MARK: Get Stream Messages
   var loading = false
