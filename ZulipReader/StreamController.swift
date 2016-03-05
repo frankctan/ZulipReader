@@ -33,10 +33,6 @@ class StreamController : DataController {
   private var minimumStreamMessageID = Int.max
   private var minimumSubMessageID = [String: Int]()
   
-  deinit {
-    print("streamcontroller deinit")
-  }
-  
   override init() {
     do {
       realm = try Realm()

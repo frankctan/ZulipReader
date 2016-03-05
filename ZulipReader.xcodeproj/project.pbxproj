@@ -18,7 +18,7 @@
 		6785E7A41C6D05CD008ED151 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6785E7A31C6D05CD008ED151 /* Message.swift */; };
 		6788F2AF1C7BCD5800AC1D71 /* UITableViewCellExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */; };
 		6788F2B11C7BD0EA00AC1D71 /* OldStreamTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */; };
-		6788F2B31C7C4C3D00AC1D71 /* oldStreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2B21C7C4C3D00AC1D71 /* oldStreamController.swift */; };
+		6788F2B31C7C4C3D00AC1D71 /* OldStreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6788F2B21C7C4C3D00AC1D71 /* OldStreamController.swift */; };
 		678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */; };
 		678A6BB71C10EBA200AE091B /* TableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678A6BB61C10EBA200AE091B /* TableCell.swift */; };
 		678A6BDE1C12279700AE091B /* SourceSansPro-Black-webfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */; };
@@ -44,9 +44,7 @@
 		67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */; };
 		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
 		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
-		67BE80171C8A08840004D544 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80161C8A08840004D544 /* Storyboard.storyboard */; };
 		67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67C582B01C8B452E005D0C47 /* LoginView.xib */; };
-		67C582B31C8B461D005D0C47 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C582B21C8B461D005D0C47 /* LoginView.swift */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
@@ -77,7 +75,7 @@
 		6785E7A51C6D0909008ED151 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtension.swift; sourceTree = "<group>"; };
 		6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldStreamTableViewController.swift; sourceTree = "<group>"; };
-		6788F2B21C7C4C3D00AC1D71 /* oldStreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = oldStreamController.swift; sourceTree = "<group>"; };
+		6788F2B21C7C4C3D00AC1D71 /* OldStreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldStreamController.swift; sourceTree = "<group>"; };
 		678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamHeaderNavCell.swift; sourceTree = "<group>"; };
 		678A6BB61C10EBA200AE091B /* TableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableCell.swift; sourceTree = "<group>"; };
 		678A6BD21C12279700AE091B /* SourceSansPro-Black-webfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Black-webfont.ttf"; sourceTree = "<group>"; };
@@ -105,9 +103,7 @@
 		67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
 		67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuCell.swift; sourceTree = "<group>"; };
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
-		67BE80161C8A08840004D544 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		67C582B01C8B452E005D0C47 /* LoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
-		67C582B21C8B461D005D0C47 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -174,6 +170,7 @@
 		67A9DA8D1C1F544700AEEF1B /* StreamTableViews */ = {
 			isa = PBXGroup;
 			children = (
+				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
 				67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */,
 				67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */,
 				678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */,
@@ -195,7 +192,6 @@
 			children = (
 				676C98441BFD69360042CB26 /* LoginController.swift */,
 				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
-				67C582B21C8B461D005D0C47 /* LoginView.swift */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -207,6 +203,37 @@
 				67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */,
 			);
 			name = SWRevealViewController;
+			sourceTree = "<group>";
+		};
+		67C582B51C8B5AD8005D0C47 /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				6785E7A31C6D05CD008ED151 /* Message.swift */,
+				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
+			);
+			name = Realm;
+			sourceTree = "<group>";
+		};
+		67C582B61C8B5B3A005D0C47 /* public */ = {
+			isa = PBXGroup;
+			children = (
+				677F6AEE1C752D04005EB84E /* Futures.swift */,
+				678A6BB61C10EBA200AE091B /* TableCell.swift */,
+				674EDAD81C8746C300FCAE67 /* DataStructures.swift */,
+			);
+			name = public;
+			sourceTree = "<group>";
+		};
+		67C582B71C8B5B84005D0C47 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				67D1F1C31BFA6AEA006F9468 /* Info.plist */,
+				67A9DA7E1C1CCED900AEEF1B /* ZulipReader-Bridging-Header.h */,
+				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
+				67A9DA961C209D4600AEEF1B /* SWRevealViewController */,
+				678A6BEA1C1227AD00AE091B /* Fonts */,
+			);
+			name = Misc;
 			sourceTree = "<group>";
 		};
 		67D1F1AB1BFA6AEA006F9468 = {
@@ -234,26 +261,17 @@
 			children = (
 				67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */,
 				673251741C0A5D85009A546C /* DataController.swift */,
-				677F6AEE1C752D04005EB84E /* Futures.swift */,
-				678A6BB61C10EBA200AE091B /* TableCell.swift */,
-				6785E7A31C6D05CD008ED151 /* Message.swift */,
-				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
-				67A9DA8E1C1F546600AEEF1B /* Login */,
 				673251761C0A7154009A546C /* StreamController.swift */,
-				67BE80161C8A08840004D544 /* Storyboard.storyboard */,
-				6788F2B21C7C4C3D00AC1D71 /* oldStreamController.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
-				674EDAD81C8746C300FCAE67 /* DataStructures.swift */,
-				6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
-				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
-				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
-				67D1F1C31BFA6AEA006F9468 /* Info.plist */,
+				6788F2B21C7C4C3D00AC1D71 /* OldStreamController.swift */,
+				6788F2B01C7BD0EA00AC1D71 /* OldStreamTableViewController.swift */,
 				6785E7A51C6D0909008ED151 /* MyPlayground.playground */,
-				67A9DA7E1C1CCED900AEEF1B /* ZulipReader-Bridging-Header.h */,
-				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
-				67A9DA961C209D4600AEEF1B /* SWRevealViewController */,
-				678A6BEA1C1227AD00AE091B /* Fonts */,
+				67C582B61C8B5B3A005D0C47 /* public */,
+				67C582B51C8B5AD8005D0C47 /* Realm */,
+				67A9DA8E1C1F546600AEEF1B /* Login */,
+				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
+				67C582B71C8B5B84005D0C47 /* Misc */,
 			);
 			path = ZulipReader;
 			sourceTree = "<group>";
@@ -366,7 +384,6 @@
 				67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */,
 				678A6BE01C12279700AE091B /* SourceSansPro-Bold-webfont.ttf in Resources */,
 				678A6BE31C12279700AE091B /* SourceSansPro-ExtraLightIt-webfont.ttf in Resources */,
-				67BE80171C8A08840004D544 /* Storyboard.storyboard in Resources */,
 				678A6BE51C12279700AE091B /* SourceSansPro-Light-webfont.ttf in Resources */,
 				678A6BE21C12279700AE091B /* SourceSansPro-ExtraLight-webfont.ttf in Resources */,
 				67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */,
@@ -456,11 +473,10 @@
 				670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */,
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
-				67C582B31C8B461D005D0C47 /* LoginView.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
 				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,
 				67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */,
-				6788F2B31C7C4C3D00AC1D71 /* oldStreamController.swift in Sources */,
+				6788F2B31C7C4C3D00AC1D71 /* OldStreamController.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
 				6788F2B11C7BD0EA00AC1D71 /* OldStreamTableViewController.swift in Sources */,
