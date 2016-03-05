@@ -22,6 +22,7 @@ class StreamTableViewController: SLKTextViewController {
   var messages = [[TableCell]]()
   var timer = NSTimer()
   var narrow = Narrow()
+  var refreshControl: UIRefreshControl?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -127,9 +128,9 @@ class StreamTableViewController: SLKTextViewController {
   
   func refresh(refreshControl: UIRefreshControl) {
     print("refreshing!")
+    self.refreshControl = refreshControl
     guard let data = data else {fatalError()}
     data.loadStreamMessages(Action(narrow: self.narrow, action: .ScrollUp))
-    refreshControl.endRefreshing()
   }
   
   func tableViewSettings() {
@@ -172,7 +173,6 @@ class StreamTableViewController: SLKTextViewController {
     
     //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
-//    self.revealViewController().rearViewRevealWidth = 100
     self.revealViewController().rearViewController = self.sideMenuTableViewController
     
     navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
@@ -184,6 +184,7 @@ extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMessages() {
     tableView.hideLoading()
     NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+    self.refreshControl?.endRefreshing()
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
@@ -200,6 +201,8 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.endUpdates()
     
 //    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+    
+    self.refreshControl?.endRefreshing()
     
     NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
   }
