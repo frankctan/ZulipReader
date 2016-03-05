@@ -20,6 +20,10 @@ class LoginViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     data.delegate = self
+    let panGestureRecognizer = UIPanGestureRecognizer.init(target: self, action: "viewDidPan:")
+    view.addGestureRecognizer(panGestureRecognizer)
+    usernameTextField.delegate = self
+    passwordTextField.delegate = self
   }
   
   override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
@@ -30,10 +34,17 @@ class LoginViewController: UIViewController {
       fatalError("init(coder:) has not been implemented")
   }
   
+  func viewDidPan(sender: AnyObject) {
+    view.endEditing(true)
+  }
+  
   @IBAction func loginButtonDidTouch(sender: UIButton) {
     usernameTextField.text = "frankctan@gmail.com"
-    passwordTextField.text = "recursion"
-    
+    passwordTextField.text = "recursion1"
+    login()
+  }
+  
+  func login() {
     guard let username = usernameTextField.text,
       let password = passwordTextField.text
       else {
@@ -52,10 +63,25 @@ extension LoginViewController: LoginControllerDelegate {
       self.dismissViewControllerAnimated(true, completion: nil)
     }
     else {
-      usernameTextField.text = ""
       passwordTextField.text = ""
       dialogView.animation = "shake"
       dialogView.animate()
     }
+  }
+}
+
+//MARK: UITextFieldDelegate
+extension LoginViewController: UITextFieldDelegate {
+  func textFieldShouldReturn(textField: UITextField) -> Bool {
+    if textField.returnKeyType == UIReturnKeyType.Next {
+      passwordTextField.becomeFirstResponder()
+      return true
+    }
+    else if (textField.returnKeyType == UIReturnKeyType.Go) {
+      self.login()
+      view.endEditing(true)
+      return true
+    }
+    return false
   }
 }

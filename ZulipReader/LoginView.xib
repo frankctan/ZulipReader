@@ -34,21 +34,21 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MR3-zH-PJB" customClass="DesignableView" customModule="Spring">
                     <rect key="frame" x="20" y="144" width="280" height="280"/>
                     <subviews>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tzx-8c-ut6" customClass="DesignableTextField" customModule="Spring" propertyAccessControl="none">
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="tzx-8c-ut6" customClass="DesignableTextField" customModule="Spring" propertyAccessControl="none">
                             <rect key="frame" x="15" y="118" width="250" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="0am-ay-A87"/>
                             </constraints>
                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" returnKeyType="next"/>
                         </textField>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HmV-AH-f6T" customClass="DesignableTextField" customModule="Spring">
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="HmV-AH-f6T" customClass="DesignableTextField" customModule="Spring">
                             <rect key="frame" x="15" y="172" width="250" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="oG9-yl-C8r"/>
                             </constraints>
                             <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
-                            <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                            <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES"/>
                         </textField>
                         <button opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hpf-JM-d6J" customClass="SpringButton" customModule="Spring">
                             <rect key="frame" x="15" y="226" width="250" height="44"/>
