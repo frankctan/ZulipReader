@@ -13,10 +13,19 @@ import SlackTextViewController
 class StreamTableViewController: SLKTextViewController {
   
   enum State {
-    case Home, Narrow
+    case Home, Stream, Subject
   }
   
-  var state: State = .Home
+  var state: State = .Home {
+    didSet {
+      if state == .Subject {
+        self.setTextInputbarHidden(false, animated: true)
+      }
+      else {
+        self.setTextInputbarHidden(true, animated: true)
+      }
+    }
+  }
   var data: StreamController?
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
@@ -103,6 +112,10 @@ class StreamTableViewController: SLKTextViewController {
     return UITableViewAutomaticDimension
   }
   
+  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+  }
+  
   //MARK: TableViewDataSource
   override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
     return messages.count
@@ -149,6 +162,22 @@ class StreamTableViewController: SLKTextViewController {
     self.viewDidLoad()
     self.viewDidAppear(true)
   }
+  
+  //MARK: SLKTextViewController
+    override func didPressRightButton(sender: AnyObject!) {
+      super.didPressRightButton(sender)
+      self.textView.refreshFirstResponder()
+      let sentMessage = self.textView.text.copy() as! String
+
+  
+//      if narrowType == "private" {
+//        narrowSubject = nil
+//      }
+//      if State == .Subject {
+//        data.postMessage(narrowType, content: sendMessage, to: narrowRecipient, subject: narrowSubject)
+//      }
+//      data.getStreamMessages(narrowParams)
+    }
 
   
   func tableViewSettings() {
@@ -171,7 +200,7 @@ class StreamTableViewController: SLKTextViewController {
     self.shakeToClearEnabled = true
     self.keyboardPanningEnabled = true
     self.inverted = false
-    self.textView.placeholder = "Message"
+    self.textView.placeholder = "Compose your message here!"
     self.textView.placeholderColor = UIColor.lightGrayColor()
     self.textInputbar.autoHideRightButton = true
     self.typingIndicatorView.canResignByTouch = true
@@ -246,7 +275,7 @@ extension StreamTableViewController {
 //MARK: SideMenuDelegate
 extension StreamTableViewController: SideMenuDelegate {
   func sideMenuDidTouch(selection: String) {
-    state = .Narrow
+    state = .Stream
     switch selection {
     case "Private":
       let narrowString = "[[\"is\", \"\(selection.lowercaseString)\"]]"
@@ -273,7 +302,7 @@ extension StreamTableViewController: SideMenuDelegate {
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {
-    state = .Narrow
+    state = .Stream
     
     let narrowString = "[[\"stream\", \"\(stream)\"]]"
     self.narrow = Narrow(narrowString: narrowString, stream: stream)
@@ -286,7 +315,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
   }
   
   func narrowSubject(stream: String, subject: String) {
-    state = .Narrow
+    state = .Subject
     
     let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
     self.narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
@@ -302,7 +331,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
 //MARK: StreamHeaderPrivateCellDelegate
 extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
   func narrowConversation(emails: [String]) {
-    state = .Narrow
+    state = .Subject
     
     let emailString = emails.joinWithSeparator(",")
     let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
