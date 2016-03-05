@@ -10,8 +10,7 @@ import UIKit
 import AMScrollingNavbar
 
 protocol SideMenuDelegate: class {
-  func sideMenuDidNarrow(narrow: Narrow)
-  func sideMenuDidLogout()
+  func sideMenuDidTouch(selection: String)
 }
 
 class SideMenuTableViewController: UITableViewController {
@@ -35,7 +34,6 @@ class SideMenuTableViewController: UITableViewController {
     let statusBarFrame = UIApplication.sharedApplication().statusBarFrame
     self.navigationController?.navigationBar.frame.origin.y = -navBarFrame.height + statusBarFrame.height
     tableView.frame.origin.y = statusBarFrame.height
-    
     tableView.frame.size.height += navBarFrame.height
     
     //gets rid of bottom border
@@ -70,32 +68,16 @@ class SideMenuTableViewController: UITableViewController {
   }
   
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    let userSelection: String
-    let narrow: Narrow
+    let selection: String
     if indexPath.section == 0 {
-      userSelection = titleCells[indexPath.row]
-      let narrowString = "[[\"is\", \"\(userSelection.lowercaseString)\"]]"
-      switch userSelection {
-        case "Private":
-          narrow = Narrow(narrowString: narrowString, type: .Private, mentioned: nil)
-        case "Mentioned":
-          narrow = Narrow(narrowString: narrowString, type: nil, mentioned: true)
-        case "Logout":
-          revealViewController().revealToggleAnimated(true)
-          self.delegate?.sideMenuDidLogout()
-        return
-      default:
-        fatalError("Side Menu Error")
-      }
+      selection = titleCells[indexPath.row]
     }
     else {
-      userSelection = subscriptions![indexPath.row].0
-      let narrowString = "[[\"stream\", \"\(userSelection)\"]]"
-      narrow = Narrow(narrowString: narrowString, stream: userSelection)
+      guard let subscriptions = self.subscriptions else {return}
+      selection = subscriptions[indexPath.row].0
     }
-    
     revealViewController().revealToggleAnimated(true)
-    delegate?.sideMenuDidNarrow(narrow)
+    delegate?.sideMenuDidTouch(selection)
   }
   
   override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -106,5 +88,6 @@ class SideMenuTableViewController: UITableViewController {
 extension SideMenuTableViewController: SubscriptionDelegate {
   func didFetchSubscriptions(subscriptions: [String : String]) {
     self.subscriptions = subscriptions.sort {$0.0 < $1.0}
+    tableView.reloadData()
   }
 }

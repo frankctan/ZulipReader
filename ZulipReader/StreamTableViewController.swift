@@ -133,8 +133,28 @@ class StreamTableViewController: SLKTextViewController {
     data.loadStreamMessages(Action(narrow: self.narrow, action: .ScrollUp))
   }
   
+  func logout() {
+    guard let data = data else {fatalError()}
+    data.clearDefaults()
+    self.timer.invalidate()
+    self.timer = NSTimer()
+    self.data = nil
+    self.sideMenuTableViewController = nil
+    self.refreshControl = nil
+    self.state = .Home
+    self.messages = [[TableCell]]()
+    self.narrow = Narrow()
+    tableView.reloadData()
+    
+    self.viewDidLoad()
+    self.viewDidAppear(true)
+  }
+
+  
   func tableViewSettings() {
     //General tableview settings
+    self.navigationController?.navigationBar.topItem?.title = "Stream"
+    
     tableView.estimatedRowHeight = 60
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
@@ -216,6 +236,7 @@ extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
     narrow = Narrow(type: .Stream)
+    self.navigationController?.navigationBar.topItem?.title = "Stream"
     let action = Action(narrow: self.narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
@@ -224,30 +245,28 @@ extension StreamTableViewController {
 
 //MARK: SideMenuDelegate
 extension StreamTableViewController: SideMenuDelegate {
-  func sideMenuDidNarrow(narrow: Narrow) {
+  func sideMenuDidTouch(selection: String) {
     state = .Narrow
-    self.narrow = narrow
+    switch selection {
+    case "Private":
+      let narrowString = "[[\"is\", \"\(selection.lowercaseString)\"]]"
+      self.narrow = Narrow(narrowString: narrowString, type: .Private, mentioned: nil)
+    case "Mentioned":
+      let narrowString = "[[\"is\", \"\(selection.lowercaseString)\"]]"
+      self.narrow = Narrow(narrowString: narrowString, type: nil, mentioned: true)
+    case "Logout":
+      self.logout()
+      return
+    default:
+      let narrowString = "[[\"stream\", \"\(selection)\"]]"
+      self.narrow = Narrow(narrowString: narrowString, stream: selection)
+    }
+    
+    self.navigationController?.navigationBar.topItem?.title = selection
     let action = Action(narrow: self.narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
     tableView.showLoading()
-  }
-  
-  func sideMenuDidLogout() {
-    guard let data = data else {fatalError()}
-    data.clearDefaults()
-    self.timer.invalidate()
-    self.timer = NSTimer()
-    self.data = nil
-    self.sideMenuTableViewController = nil
-    self.refreshControl = nil
-    self.state = .Home
-    self.messages = [[TableCell]]()
-    self.narrow = Narrow()
-    tableView.reloadData()
-    
-    self.viewDidLoad()
-    self.viewDidAppear(true)
   }
 }
 
@@ -258,7 +277,8 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     
     let narrowString = "[[\"stream\", \"\(stream)\"]]"
     self.narrow = Narrow(narrowString: narrowString, stream: stream)
-
+    self.navigationController?.navigationBar.topItem?.title = stream
+    
     let action = Action(narrow: self.narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(action)
@@ -270,6 +290,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     
     let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
     self.narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
+    self.navigationController?.navigationBar.topItem?.title = subject
     
     let action = Action(narrow: self.narrow, action: .Focus)
     guard let data = data else {fatalError()}
