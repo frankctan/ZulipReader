@@ -43,7 +43,6 @@
 		67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */; };
 		67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */; };
 		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
-		67BE80131C890C940004D544 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80121C890C940004D544 /* LoginViewController.xib */; };
 		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
 		67BE80171C8A08840004D544 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80161C8A08840004D544 /* Storyboard.storyboard */; };
 		67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67C582B01C8B452E005D0C47 /* LoginView.xib */; };
@@ -105,7 +104,6 @@
 		67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
 		67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuCell.swift; sourceTree = "<group>"; };
-		67BE80121C890C940004D544 /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
 		67BE80161C8A08840004D544 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		67C582B01C8B452E005D0C47 /* LoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
@@ -187,7 +185,7 @@
 				67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */,
 				67A9DA851C1E14E400AEEF1B /* StreamHeaderNavCell.xib */,
 				67BE80141C890CC00004D544 /* SideMenuCell.xib */,
-				67BE80121C890C940004D544 /* LoginViewController.xib */,
+				67C582B01C8B452E005D0C47 /* LoginView.xib */,
 			);
 			name = StreamTableViews;
 			sourceTree = "<group>";
@@ -198,7 +196,6 @@
 				676C98441BFD69360042CB26 /* LoginController.swift */,
 				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
 				67C582B21C8B461D005D0C47 /* LoginView.swift */,
-				67C582B01C8B452E005D0C47 /* LoginView.xib */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -365,7 +362,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67BE80131C890C940004D544 /* LoginViewController.xib in Resources */,
 				678A6BE61C12279700AE091B /* SourceSansPro-LightIt-webfont.ttf in Resources */,
 				67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */,
 				678A6BE01C12279700AE091B /* SourceSansPro-Bold-webfont.ttf in Resources */,

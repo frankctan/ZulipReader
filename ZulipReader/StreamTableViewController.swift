@@ -237,6 +237,7 @@ extension StreamTableViewController: SideMenuDelegate {
     self.timer = NSTimer()
     self.data = nil
     self.sideMenuTableViewController = nil
+    self.refreshControl = nil
     self.state = .Home
     self.messages = [[TableCell]]()
     self.narrow = Narrow()
