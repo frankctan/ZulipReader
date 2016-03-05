@@ -5,7 +5,7 @@ class Person: NSObject {
   let firstName: String
   let lastName: String
   let age: Int
-  let hairColor: [String] = ["black", "blonde"]
+  let hairColor: [String] = ["black","blonde"]
   let ugly = true
   
   init(firstName: String, lastName: String, age: Int) {
@@ -32,7 +32,7 @@ let thirtiesPredicate = NSPredicate(format: "age >= 30")
 
 //let hairPredicate = NSPredicate(format: "ANY hairColor IN %@ AND firstName = %@", ["black, blonde"], "Alice")
 
-let hairPredicate = NSPredicate(format: "ALL %@ IN %K", ["blonde"], "hairColor")
+let hairPredicate = NSPredicate(format: "(ALL %@ IN %K) AND (ALL %K IN %@)", ["black", "blonde"], "hairColor", "hairColor", ["blonde","black"])
 
 let result:NSArray = people.filteredArrayUsingPredicate(hairPredicate)
 result.count

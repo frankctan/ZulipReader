@@ -59,7 +59,9 @@ public struct Narrow {
   
   var recipient = [String]() {
     didSet {
-      self.recipientPredicate = NSPredicate(format: "ALL %@ IN %K", recipient, "display_recipient")
+      let predicate = NSPredicate(format: "ALL %@ IN %K", recipient, "display_recipient")
+      let conversePredicate = NSPredicate(format: "ALL %K IN %@", "display_recipient", recipient)
+      self.recipientPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, conversePredicate])
     }
   }
   

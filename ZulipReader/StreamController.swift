@@ -88,7 +88,8 @@ class StreamController : DataController {
         switch result {
         case .Success(_):
           self.loadStreamMessages(action)
-        case .Error(let error):
+        case .Error(let boxedError):
+          let error = boxedError.unbox
           print(error)
         }
     }
@@ -344,9 +345,9 @@ class StreamController : DataController {
     print("writing messages...")
     print("save path: \(realm.path)")
     let currentMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
-    let currentMessageTimeStamp = currentMessages.map {$0.dateTime}
+    let currentMessageID = currentMessages.map {$0.id}
     for message in messages {
-      if !currentMessageTimeStamp.contains(message.dateTime) {
+      if !currentMessageID.contains(message.id) {
         do {
           try realm.write {
             realm.add(message)
