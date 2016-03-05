@@ -25,6 +25,22 @@ class SideMenuTableViewController: UITableViewController {
   override func viewDidLoad() {
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     tableView.registerNib(UINib(nibName: "SideMenuCell", bundle: nil), forCellReuseIdentifier: "sideCell")
+    self.navigationController?.navigationBar.translucent = false
+  }
+  
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    guard let navigationController = self.navigationController else {return}
+    let navBarFrame = navigationController.navigationBar.frame
+    let statusBarFrame = UIApplication.sharedApplication().statusBarFrame
+    self.navigationController?.navigationBar.frame.origin.y = -navBarFrame.height + statusBarFrame.height
+    tableView.frame.origin.y = statusBarFrame.height
+    
+    tableView.frame.size.height += navBarFrame.height
+    
+    //gets rid of bottom border
+    self.navigationController?.navigationBar.shadowImage = UIImage()
+    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: .Default)
   }
   
   override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

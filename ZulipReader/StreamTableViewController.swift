@@ -173,9 +173,12 @@ class StreamTableViewController: SLKTextViewController {
     
     //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
-    self.revealViewController().rearViewController = self.sideMenuTableViewController
     
-    navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
+    let sideMenuNavController = UINavigationController(rootViewController: self.sideMenuTableViewController!)
+    
+    self.revealViewController().rearViewController = sideMenuNavController
+    
+    self.navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
   }
 }
 
