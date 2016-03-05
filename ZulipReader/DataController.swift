@@ -13,7 +13,6 @@ import SwiftyJSON
 
 public typealias Header = [String:String]
 
-//stream, narrow, subject
 class DataController {
   
   typealias Parameter = [String:AnyObject]
@@ -27,11 +26,11 @@ class DataController {
     case Register
     case GetSubscriptions
     case GetMessages(anchor: Int, before: Int, after: Int, narrow: String?)
-    //    case PostMessage(type: String, content: String, to: [String], subject: String?)
+    case PostMessage(type: String, content: String, to: String, subject: String?)
     
     var method: Alamofire.Method {
       switch self {
-      case .Login, .Register:
+      case .Login, .Register, .PostMessage:
         return .POST
       case .GetSubscriptions, .GetMessages:
         return .GET
@@ -49,6 +48,18 @@ class DataController {
         case .Register:
           let registerParams = ["event_types:": ["message","pointer"]]
           return("/register", registerParams)
+          
+        case .PostMessage(let type, let content, let recipient, let subject):
+          let messageParams:[String: AnyObject]
+          if let subject = subject {
+            //Stream
+            messageParams = ["type": type, "content": content, "recipient": recipient, "subject": subject]
+          }
+          else {
+            //Private
+            messageParams = ["type": type, "content": content, "recipient": recipient]
+          }
+          return("/messages", messageParams)
           
         case .GetSubscriptions:
           return("/users/me/subscriptions", nil)
@@ -78,15 +89,5 @@ class DataController {
       print(encoding.encode(URLRequest, parameters: result.parameters).0)
       return encoding.encode(URLRequest, parameters: result.parameters).0
     }
-    //      case .PostMessage(let type, let content, let recipients, let subject):
-    //        if subject == nil {
-    //          //PM
-    //          return "/messages?type=\(type)&content=\(content)&to=\(recipients)"
-    //        } else {
-    //          //Stream
-    //          return "/messages?type=\(type)&content=\(content)&to=\(recipients[0])&subject=\(subject!)"
-    //        }
-
-    //    }
   }
 }
