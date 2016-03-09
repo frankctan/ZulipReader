@@ -18,12 +18,13 @@ class StreamTableViewController: SLKTextViewController {
   
   var state: State = .Home {
     didSet {
-      if state == .Subject {
+      switch state {
+      case .Subject:
         self.setTextInputbarHidden(false, animated: true)
-      }
-      else {
+      default:
         self.setTextInputbarHidden(true, animated: true)
       }
+      
     }
   }
   var data: StreamController?
@@ -47,6 +48,7 @@ class StreamTableViewController: SLKTextViewController {
     sideMenuTableViewController?.delegate = self
     tableViewSettings()
     state = .Home
+    tableView.scrollsToTop = true
   }
   
   override func viewDidAppear(animated: Bool) {
