@@ -99,14 +99,14 @@ class StreamController : DataController {
   }
   
   //MARK: Get Stream Messages
-  var loading = false
+//  var loading = false
   
   func loadStreamMessages(action: Action) {
-    //no double loading
-    if loading {
-      return
-    }
-    loading = true
+//    //no double loading
+//    if loading {
+//      return
+//    }
+//    loading = true
     print("loading Stream Messages")
     print("action: \(action.userAction)")
     
@@ -126,6 +126,7 @@ class StreamController : DataController {
       }
     default: break
     }
+    
     print("action: \(action.userAction)")
     let params = self.createRequestParameters(action)
     self.messagePipeline(params)
@@ -150,7 +151,7 @@ class StreamController : DataController {
             let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
             self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
           }
-            //else (there are no new messages)
+            //else there are no new messages
           else {
             self.delegate?.didFetchMessages()
           }
@@ -158,7 +159,7 @@ class StreamController : DataController {
         case .Error(let error):
           print(error.unbox.description)
         }
-        self.loading = false
+//        self.loading = false
     }
   }
   

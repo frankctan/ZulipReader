@@ -13,14 +13,14 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="StreamHeaderPrivateCell" rowHeight="24" id="0rv-GH-QlA" customClass="StreamHeaderPrivateCell" customModule="ZulipReader" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="24"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="27"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="center" tableViewCell="0rv-GH-QlA" id="y90-Ec-sE7">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="23.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="26.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vHo-JJ-LVg" userLabel="privateButton" customClass="DesignableButton" customModule="Spring">
-                        <rect key="frame" x="0.0" y="0.0" width="64" height="24"/>
+                        <rect key="frame" x="0.0" y="0.0" width="64" height="26.5"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                         <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="9" maxY="0.0"/>

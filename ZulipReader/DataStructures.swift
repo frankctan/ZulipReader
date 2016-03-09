@@ -69,7 +69,7 @@ public struct Narrow {
   var subject:String? = nil {
     didSet {
       if subject != nil {
-        self.subjectPredicate = NSPredicate(format: "subject = %@", subject!)
+        self.subjectPredicate = NSPredicate(format: "subject =[cd] %@", subject!)
       }
     }
   }

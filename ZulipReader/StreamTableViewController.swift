@@ -111,7 +111,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return 40.0
+    return 27.0
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -241,7 +241,6 @@ class StreamTableViewController: SLKTextViewController {
 extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMessages() {
     tableView.hideLoading()
-    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
     self.refreshControl?.endRefreshing()
   }
   
@@ -261,8 +260,6 @@ extension StreamTableViewController: StreamControllerDelegate {
     //    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
     
     self.refreshControl?.endRefreshing()
-    
-    NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
   }
 }
 
