@@ -31,7 +31,9 @@ class StreamController : DataController {
   private var registration = Registration()
   private var oldTableCells = [[TableCell]]()
   private var minimumStreamMessageID = Int.max
+  private var maximimumStreamMessageID = Int.min
   private var minimumSubMessageID = [String: Int]()
+  private var maximumSubMessageID = [String: Int]()
   
   override init() {
     do {
@@ -77,6 +79,7 @@ class StreamController : DataController {
       recipient = message.recipient[0]
     }
     
+    print("post url request:")
     let urlRequest: URLRequestConvertible = Router.PostMessage(type: message.type.description, content: message.content, to: recipient, subject: message.subject)
     return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
   }
@@ -107,20 +110,11 @@ class StreamController : DataController {
     print("loading Stream Messages")
     print("action: \(action.userAction)")
     
+    //action is modified by readMinMaxID
     var action = action
     
-    //Read minimum pointer for each sub
-    if let narrowString = action.narrow.narrowString {
-      if let currentPointer = self.minimumSubMessageID[narrowString] {
-        action.narrow.minimumMessageID = currentPointer
-      }
-      else {
-        action.narrow.minimumMessageID = Int.max
-      }
-    }
-    else {
-      action.narrow.minimumMessageID = self.minimumStreamMessageID
-    }
+    //Read min & max pointer for each narrow string
+    action = self.readMinMaxID(action)
     
     switch action.userAction {
     case .Focus:
@@ -132,41 +126,31 @@ class StreamController : DataController {
       }
     default: break
     }
-    
     print("action: \(action.userAction)")
     let params = self.createRequestParameters(action)
     self.messagePipeline(params)
       .start {result in
-        print("results from message pipeline!")
         switch result {
           
         case .Success(let boxedMessages):
           let messages = boxedMessages.unbox
           if !messages.isEmpty {
-
+            //write new messages
             let newMessages: [Message] = messages
             self.messagesToRealm(newMessages)
+            
+            //set min and max ID's if messages aren't narrowed
+            let newMessagesMinID = newMessages[0].id
+            let newMessagesMaxID = newMessages.last!.id
+            self.writeMinMaxID(action, minMessageID: newMessagesMinID, maxMessageID: newMessagesMaxID)
+            action = self.readMinMaxID(action)
+            
+            //filter realm messages and ready them for tableview
             let _realmMessages: NSArray = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
-            
-            //set minimumStreamMessageID if messages aren't narrowed
-            let currentMessagesMinimumID = newMessages[0].id
-            if let narrowString = action.narrow.narrowString {
-              if let currentPointer = self.minimumSubMessageID[narrowString] {
-                self.minimumSubMessageID[narrowString] = min(currentPointer, currentMessagesMinimumID)
-              }
-              else {
-                self.minimumSubMessageID[narrowString] = currentMessagesMinimumID
-              }
-              action.narrow.minimumMessageID = self.minimumSubMessageID[narrowString]!
-            }
-            else {
-              self.minimumStreamMessageID = min(self.minimumStreamMessageID, currentMessagesMinimumID)
-              action.narrow.minimumMessageID = self.minimumStreamMessageID
-            }
-            
             let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
             self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
           }
+            //else (there are no new messages)
           else {
             self.delegate?.didFetchMessages()
           }
@@ -175,6 +159,44 @@ class StreamController : DataController {
           print(error.unbox.description)
         }
         self.loading = false
+    }
+  }
+  
+  private func readMinMaxID(action: Action) -> Action {
+    var returnAction = action
+    if let narrowString = action.narrow.narrowString {
+      if let minID = self.minimumSubMessageID[narrowString],
+        let maxID = self.maximumSubMessageID[narrowString] {
+          returnAction.narrow.minimumMessageID = minID
+          returnAction.narrow.maximumMessageID = maxID
+      }
+      else {
+        returnAction.narrow.minimumMessageID = Int.max
+        returnAction.narrow.maximumMessageID = Int.min
+      }
+    }
+    else {
+      returnAction.narrow.minimumMessageID = self.minimumStreamMessageID
+      returnAction.narrow.maximumMessageID = self.maximimumStreamMessageID
+    }
+    return returnAction
+  }
+  
+  private func writeMinMaxID(action: Action, minMessageID: Int, maxMessageID: Int) {
+    if let narrowString = action.narrow.narrowString {
+      if let minID = self.minimumSubMessageID[narrowString],
+        let maxID = self.maximumSubMessageID[narrowString]{
+          self.minimumSubMessageID[narrowString] = min(minID, minMessageID)
+          self.maximumSubMessageID[narrowString] = max(maxID, maxMessageID)
+      }
+      else {
+        self.minimumSubMessageID[narrowString] = minMessageID
+        self.maximumSubMessageID[narrowString] = maxMessageID
+      }
+    }
+    else {
+      self.minimumStreamMessageID = min(self.minimumStreamMessageID, minMessageID)
+      self.maximimumStreamMessageID = max(self.maximimumStreamMessageID, maxMessageID)
     }
   }
   

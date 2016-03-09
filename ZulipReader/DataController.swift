@@ -14,10 +14,6 @@ import SwiftyJSON
 public typealias Header = [String:String]
 
 class DataController {
-  
-  typealias Parameter = [String:AnyObject]
-  let baseURL = "https://api.zulip.com/v1"
-  
   enum Router: URLRequestConvertible {
     static let baseURL = "https://api.zulip.com/v1"
     static var basicAuth: String?
@@ -50,25 +46,25 @@ class DataController {
           return("/register", registerParams)
           
         case .PostMessage(let type, let content, let recipient, let subject):
-          let messageParams:[String: AnyObject]
-          if let subject = subject {
+          let postParams: [String: AnyObject]
+          if let messageSubject = subject {
             //Stream
-            messageParams = ["type": type, "content": content, "recipient": recipient, "subject": subject]
+            postParams = ["type": type, "content": content, "to": recipient, "subject": messageSubject]
           }
           else {
             //Private
-            messageParams = ["type": type, "content": content, "recipient": recipient]
+            postParams = ["type": type, "content": content, "to": recipient]
           }
-          return("/messages", messageParams)
+          print("postParams: \(postParams)")
+          return("/messages", postParams)
           
         case .GetSubscriptions:
           return("/users/me/subscriptions", nil)
           
         case .GetMessages(let anchor, let before, let after, let narrow):
-          let messageParams:[String: AnyObject]
+          let messageParams: [String: AnyObject]
           if let narrowParams = narrow {
-            messageParams = ["anchor": anchor, "num_before": before,
-              "num_after": after, "narrow": narrowParams]
+            messageParams = ["anchor": anchor, "num_before": before, "num_after": after, "narrow": narrowParams]
           }
           else {
             messageParams = ["anchor": anchor, "num_before": before, "num_after": after]
@@ -77,6 +73,7 @@ class DataController {
         }
       }()
       
+      print("result.parameters: \(result.parameters)")
       let URL = NSURL(string: Router.baseURL)!
       let URLRequest = NSMutableURLRequest(URL: URL.URLByAppendingPathComponent(result.path))
       URLRequest.HTTPMethod = method.rawValue
@@ -85,7 +82,7 @@ class DataController {
         URLRequest.setValue(authHeader,forHTTPHeaderField: "Authorization")
       }
       
-      let encoding = Alamofire.ParameterEncoding.URL
+      let encoding = Alamofire.ParameterEncoding.URLEncodedInURL
       print(encoding.encode(URLRequest, parameters: result.parameters).0)
       return encoding.encode(URLRequest, parameters: result.parameters).0
     }

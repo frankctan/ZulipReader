@@ -49,6 +49,7 @@ public struct Narrow {
   private var subjectPredicate: NSPredicate?
   private var mentionedPredicate: NSPredicate?
   private var minimumIDPredicate: NSPredicate?
+  private var maximumIDPredicate: NSPredicate?
   
   var type: Type = .Stream {
     didSet {
@@ -82,6 +83,12 @@ public struct Narrow {
   var minimumMessageID = Int.max {
     didSet {
       self.minimumIDPredicate = NSPredicate(format: "id >= %d", minimumMessageID)
+    }
+  }
+  
+  var maximumMessageID = Int.min {
+    didSet {
+      self.maximumIDPredicate = NSPredicate(format: "id<= %d", maximumMessageID)
     }
   }
   
@@ -129,7 +136,7 @@ public struct Narrow {
   }
   
   func predicate() -> NSPredicate {
-    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate]
+    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate, maximumIDPredicate]
     let predicateArray = arr.filter {if $0 == nil {return false}; return true}.map {$0!}
     let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
     print("new predicate: \(compoundPredicate)")

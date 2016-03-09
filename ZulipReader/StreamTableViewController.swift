@@ -30,7 +30,11 @@ class StreamTableViewController: SLKTextViewController {
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
   var timer = NSTimer()
-  var action = Action()
+  var action = Action() {
+    didSet {
+      print(action)
+    }
+  }
   var refreshControl: UIRefreshControl?
   
   override func viewDidLoad() {
@@ -167,9 +171,8 @@ class StreamTableViewController: SLKTextViewController {
   
   //MARK: SLKTextViewController
   override func didPressRightButton(sender: AnyObject!) {
-    super.didPressRightButton(sender)
     self.textView.refreshFirstResponder()
-    let sentMessage = self.textView.text.copy() as! String
+    let sentMessage: String = self.textView.text
     let recipient = self.action.narrow.recipient
     let subject = self.action.narrow.subject
     
@@ -178,6 +181,7 @@ class StreamTableViewController: SLKTextViewController {
     self.action.userAction = .Refresh
     guard let data = data else {fatalError()}
     data.postMessage(messagePost, action: self.action)
+    super.didPressRightButton(sender)
   }
   
   

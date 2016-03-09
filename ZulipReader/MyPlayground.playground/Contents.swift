@@ -68,6 +68,13 @@ let sortedDict = dict.sort {$0.0 < $1.0}
 
 
 
+var b: [String:String] = [:]
+
+b["a"] = nil
+
+b["one"] = "yes"
+
+b
 
 
 
