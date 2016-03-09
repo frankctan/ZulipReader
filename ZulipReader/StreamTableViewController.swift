@@ -58,9 +58,9 @@ class StreamTableViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
-    self.loadData()
+    
     timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: false)
-    tableView.showLoading()
+    self.loadData()
   }
   
   func autoRefresh(timer: NSTimer) {
@@ -78,6 +78,7 @@ class StreamTableViewController: SLKTextViewController {
       presentViewController(controller, animated: true, completion: nil)
     }
     else {
+      tableView.showLoading()
       data.register()
     }
   }

@@ -38,10 +38,15 @@ class LoginViewController: UIViewController {
     view.endEditing(true)
   }
   
+  var loading = false
   @IBAction func loginButtonDidTouch(sender: UIButton) {
-    usernameTextField.text = "frankctan@gmail.com"
-    passwordTextField.text = "recursion1"
-    login()
+    if !loading {
+      usernameTextField.text = "frankctan@gmail.com"
+      passwordTextField.text = "recursion1"
+      login()
+      loading = true
+    }
+    
   }
   
   func login() {
