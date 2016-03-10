@@ -336,13 +336,14 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
 
 //MARK: StreamHeaderPrivateCellDelegate
 extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
-  func narrowConversation(emails: [String]) {
+  func narrowConversation(message: TableCell) {
     state = .Subject
     
-    let emailString = emails.joinWithSeparator(",")
+    let pmWith = message.pmWith.sort()
+    let emailString = pmWith.joinWithSeparator(",")
     let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
-    let narrow = Narrow(narrowString: narrowString, privateRecipients: emails)
     
+    let narrow = Narrow(narrowString: narrowString, pmWith: pmWith)
     self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(action)

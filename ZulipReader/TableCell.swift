@@ -24,11 +24,13 @@ enum CellTypes {
 struct TableCell {
   var display_recipient = Set<String>()
   var privateFullName = Set<String>()
+  var pmWith = Set<String>()
   var subject = ""
   var type:Type = .Stream
   var streamColor = ""
   
   var sender_full_name = ""
+  var sender_email = ""
 
   var dateTime = NSDate()
   var avatar_url = ""
@@ -51,11 +53,13 @@ struct TableCell {
   init(_ message: Message) {
     display_recipient = Set(message.display_recipient)
     privateFullName = Set(message.privateFullName)
+    pmWith = Set(message.pmWith)
     subject = message.subject
     if message.type == "private" {self.type = .Private}
     streamColor = message.streamColor
     
     sender_full_name = message.sender_full_name
+    sender_email = message.sender_email
     dateTime = message.dateTime
     avatar_url = message.avatar_url
     mentioned = message.mentioned

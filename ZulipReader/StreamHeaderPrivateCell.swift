@@ -11,21 +11,21 @@ import Spring
 import Kingfisher
 
 protocol StreamHeaderPrivateCellDelegate: class {
-  func narrowConversation(emails: [String])
+  func narrowConversation(message: TableCell)
 }
 
 class StreamHeaderPrivateCell: ZulipTableViewCell {
   
   weak var delegate: StreamHeaderPrivateCellDelegate?
   @IBOutlet weak var privateLabel: UIButton!
-  var recipientEmails = [String]()
+  var message = TableCell()
   
   @IBAction func privateButtonDidTouch(sender: AnyObject) {
-    delegate?.narrowConversation(recipientEmails)
+    delegate?.narrowConversation(self.message)
   }
   
   override func configure(message: TableCell) {
-    recipientEmails = Array(message.display_recipient.sort())
+    self.message = message
     let recipientNames = Array(message.privateFullName.sort())
     let title: String
     let recipientCount = recipientNames.count
@@ -35,6 +35,7 @@ class StreamHeaderPrivateCell: ZulipTableViewCell {
     case 1: title = "You & \(recipientNames[0])"
     default: title = "You & \(recipientCount) others"
     }
+    
     privateLabel.setTitle(title, forState: UIControlState.Normal)
   }
 }

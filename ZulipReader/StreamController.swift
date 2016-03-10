@@ -69,7 +69,7 @@ class StreamController : DataController {
     NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
     
   }
-
+  
   //MARK: Post Messages
   func createPostRequest(message: MessagePost) -> Future<URLRequestConvertible, ZulipErrorDomain> {
     let recipient: String
@@ -86,7 +86,7 @@ class StreamController : DataController {
   
   func postMessage(message: MessagePost, action: Action) {
     createPostRequest(message)
-    .andThen(AlamofireRequest)
+      .andThen(AlamofireRequest)
       .start {result in
         switch result {
         case .Success(_):
@@ -99,14 +99,7 @@ class StreamController : DataController {
   }
   
   //MARK: Get Stream Messages
-//  var loading = false
-  
   func loadStreamMessages(action: Action) {
-//    //no double loading
-//    if loading {
-//      return
-//    }
-//    loading = true
     print("loading Stream Messages")
     print("action: \(action.userAction)")
     
@@ -159,7 +152,6 @@ class StreamController : DataController {
         case .Error(let error):
           print(error.unbox.description)
         }
-//        self.loading = false
     }
   }
   
@@ -168,17 +160,14 @@ class StreamController : DataController {
     if let narrowString = action.narrow.narrowString {
       if let minID = self.minimumSubMessageID[narrowString],
         let maxID = self.maximumSubMessageID[narrowString] {
-          returnAction.narrow.minimumMessageID = minID
-          returnAction.narrow.maximumMessageID = maxID
+          returnAction.narrow.setMinMaxID(minID, maxID: maxID)
       }
       else {
-        returnAction.narrow.minimumMessageID = Int.max
-        returnAction.narrow.maximumMessageID = Int.min
+        returnAction.narrow.setMinMaxID(Int.min, maxID: Int.max)
       }
     }
     else {
-      returnAction.narrow.minimumMessageID = self.minimumStreamMessageID
-      returnAction.narrow.maximumMessageID = self.maximimumStreamMessageID
+      returnAction.narrow.setMinMaxID(self.minimumStreamMessageID, maxID: self.maximimumStreamMessageID)
     }
     return returnAction
   }
@@ -212,7 +201,7 @@ class StreamController : DataController {
   
   private func findTableUpdates(newTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     print("allMessages Section Count: \(newTableCells.count)")
-
+    
     let newMessageTableCells = self.messageToTableCell(newMessages)
     
     print("newMessages Section Count: \(newMessageTableCells.count)")
@@ -341,15 +330,19 @@ class StreamController : DataController {
         }
         
         //assigns streamColor
-        if msg.type == "private", let privateRecipients = message["display_recipient"].array {
-          msg.display_recipient = privateRecipients.map {$0["email"].stringValue}
-          
-          msg.privateFullName =
-            privateRecipients
+        if msg.type == "private",
+          let privateRecipients = message["display_recipient"].array {
+            msg.display_recipient = privateRecipients.map {$0["email"].stringValue}
+            
+            msg.privateFullName = privateRecipients
               .filter {if $0["email"].stringValue == ownEmail {return false}; return true}
               .map {$0["full_name"].stringValue}
-          
-          msg.streamColor = "none"
+            
+            var pmWithSet = Set(msg.display_recipient + [msg.sender_email])
+            pmWithSet.remove(ownEmail)
+            msg.pmWith = Array(pmWithSet)
+            
+            msg.streamColor = "none"
         }
         
         if msg.type == "stream",let streamRecipient = message["display_recipient"].string {

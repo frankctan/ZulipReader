@@ -50,15 +50,16 @@ public struct Narrow {
   private var mentionedPredicate: NSPredicate?
   private var minimumIDPredicate: NSPredicate?
   private var maximumIDPredicate: NSPredicate?
+  private var pmWithPredicate: NSPredicate?
   
-  var type: Type = .Stream {
+  private(set) var type: Type = .Stream {
     didSet {
       self.typePredicate = NSPredicate(format: "type = %@", type.description)
       print("type Predicate: \(typePredicate)")
     }
   }
   
-  var recipient = [String]() {
+  private(set) var recipient = [String]() {
     didSet {
       let predicate = NSPredicate(format: "ALL %@ IN %K", recipient, "display_recipient")
       let conversePredicate = NSPredicate(format: "ALL %K IN %@", "display_recipient", recipient)
@@ -66,7 +67,15 @@ public struct Narrow {
     }
   }
   
-  var subject:String? = nil {
+  private(set) var pmWith = [String]() {
+    didSet {
+      let predicate = NSPredicate(format: "ALL %@ in %K", pmWith, "pmWith")
+      let conversePredicate = NSPredicate(format: "ALL %K in %@", "pmWith", pmWith)
+      pmWithPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, conversePredicate])
+    }
+  }
+  
+  private(set) var subject:String? = nil {
     didSet {
       if subject != nil {
         self.subjectPredicate = NSPredicate(format: "subject =[cd] %@", subject!)
@@ -74,25 +83,30 @@ public struct Narrow {
     }
   }
   
-  var mentioned = false {
+  private(set) var mentioned = false {
     didSet {
       self.mentionedPredicate = NSPredicate(format: "mentioned = %@", mentioned)
     }
   }
   
-  var minimumMessageID = Int.max {
+  private(set) var minimumMessageID = Int.max {
     didSet {
       self.minimumIDPredicate = NSPredicate(format: "id >= %d", minimumMessageID)
     }
   }
   
-  var maximumMessageID = Int.min {
+  private(set) var maximumMessageID = Int.min {
     didSet {
       self.maximumIDPredicate = NSPredicate(format: "id<= %d", maximumMessageID)
     }
   }
   
-  var narrowString: String?
+  private(set) var narrowString: String?
+  
+  mutating func setMinMaxID(minID: Int, maxID: Int) {
+    self.minimumMessageID = minID
+    self.maximumMessageID = maxID
+  }
   
   init() {
   }
@@ -127,16 +141,16 @@ public struct Narrow {
     }()
   }
   
-  init(narrowString: String?, privateRecipients: [String]) {
+  init(narrowString: String?, pmWith: [String]) {
     {
       self.narrowString = narrowString
-      self.recipient = privateRecipients
+      self.pmWith = pmWith
       self.type = .Private
     }()
   }
   
   func predicate() -> NSPredicate {
-    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate, maximumIDPredicate]
+    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate, maximumIDPredicate, pmWithPredicate]
     let predicateArray = arr.filter {if $0 == nil {return false}; return true}.map {$0!}
     let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
     print("new predicate: \(compoundPredicate)")

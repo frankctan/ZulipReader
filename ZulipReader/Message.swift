@@ -22,7 +22,8 @@ class Message: Object {
     }
     set {
       _backingFlags.removeAll()
-      _backingFlags.appendContentsOf(newValue.map({ RealmString(value: [$0]) }))
+      _backingFlags.appendContentsOf(newValue.map({ RealmString(value: [$0])
+      }))
     }
   }
   let _backingFlags = List<RealmString>()
@@ -33,7 +34,8 @@ class Message: Object {
     }
     set {
       _backingDisplayRecipient.removeAll()
-      _backingDisplayRecipient.appendContentsOf(newValue.map({ RealmString(value: [$0]) }))
+      _backingDisplayRecipient.appendContentsOf(newValue.map({ RealmString(value: [$0])
+      }))
     }
   }
   let _backingDisplayRecipient = List<RealmString>()
@@ -77,8 +79,20 @@ class Message: Object {
   //MARK: Added properties; not from Zulip
   dynamic var streamColor: String = ""
   dynamic var mentioned: Bool = false
+  var pmWith: [String] { //Collect the emails from this field.
+    get {
+      return _pmWith.map {$0.stringValue}
+    }
+    set {
+      _pmWith.removeAll()
+      _pmWith.appendContentsOf(newValue.map({ RealmString(value: [$0])
+      }))
+    }
+  }
+  
+  let _pmWith = List<RealmString>()
   
   override static func ignoredProperties() -> [String] {
-    return ["flags", "display_recipient","privateFullName"]
+    return ["flags", "display_recipient","privateFullName", "pmWith"]
   }
 }

@@ -76,6 +76,18 @@ b["one"] = "yes"
 
 b
 
+var qw: Set<String> = ["a","b"]
+
+qw.insert("c")
+
+let t = qw.remove("a")
+t
+qw
+qw.remove("q")
+
+
+qw
+
 
 
 
