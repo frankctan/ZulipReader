@@ -87,29 +87,32 @@ class StreamTableViewController: SLKTextViewController {
   
   //MARK: TableViewDelegate
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    let headerType = messages[section][0].type
+    let headerCell = messages[section][0]
+    let headerType = headerCell.type
+    let cell: ZulipTableViewCell
     
-    //TODO: Is there anyway to refactor this?
     switch headerType {
     case .Stream:
-      let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
-      cell.configure(messages[section][0])
-      cell.delegate = self
-      let originalFrame = cell.frame
-      cell.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: tableView.frame.width, height: originalFrame.height))
-      let headerView = UIView(frame: cell.frame)
-      headerView.addSubview(cell)
-      return headerView
+      cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
+      let navCell = cell as! StreamHeaderNavCell
+      navCell.delegate = self
+    
     case .Private:
-      let cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
-      cell.configure(messages[section][0])
-      cell.delegate = self
-      let originalFrame = cell.frame
-      cell.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: tableView.frame.width, height: originalFrame.height))
-      let headerView = UIView(frame: cell.frame)
-      headerView.addSubview(cell)
-      return headerView
+      cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
+      let privateCell = cell as! StreamHeaderPrivateCell
+      privateCell.delegate = self
     }
+  
+    cell.configure(headerCell)
+    return configureHeaderView(cell)
+  }
+  
+  func configureHeaderView(cell: ZulipTableViewCell) -> UIView {
+    let originalFrame = cell.frame
+    cell.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: tableView.frame.width, height: originalFrame.height))
+    let headerView = UIView(frame: cell.frame)
+    headerView.addSubview(cell)
+    return headerView
   }
   
   override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -187,7 +190,6 @@ class StreamTableViewController: SLKTextViewController {
     super.didPressRightButton(sender)
   }
   
-  
   func tableViewSettings() {
     //General tableview settings
     self.navigationController?.navigationBar.topItem?.title = "Stream"
@@ -224,17 +226,13 @@ class StreamTableViewController: SLKTextViewController {
     //Navigation Bar
     //Sticky headers follow the scrolling of the navbar
     self.navigationController?.navigationBar.translucent = false
-    
     let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
     //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
-    
     let sideMenuNavController = UINavigationController(rootViewController: self.sideMenuTableViewController!)
-    
     self.revealViewController().rearViewController = sideMenuNavController
-    
     self.navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
   }
 }
@@ -271,9 +269,14 @@ extension StreamTableViewController {
     state = .Home
     let narrow = Narrow(type: .Stream)
     self.navigationController?.navigationBar.topItem?.title = "Stream"
+    self.focusAction(narrow)
+  }
+  
+  func focusAction(narrow: Narrow) {
     self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(self.action)
+    tableView.showLoading()
   }
 }
 
@@ -298,10 +301,8 @@ extension StreamTableViewController: SideMenuDelegate {
     }
     
     self.navigationController?.navigationBar.topItem?.title = selection
-    self.action = Action(narrow: narrow, action: .Focus)
-    guard let data = data else {fatalError()}
-    data.loadStreamMessages(action)
-    tableView.showLoading()
+    
+    self.focusAction(narrow)
   }
 }
 
@@ -314,10 +315,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     let narrow = Narrow(narrowString: narrowString, stream: stream)
     self.navigationController?.navigationBar.topItem?.title = stream
     
-    self.action = Action(narrow: narrow, action: .Focus)
-    guard let data = data else {fatalError()}
-    data.loadStreamMessages(self.action)
-    tableView.showLoading()
+    self.focusAction(narrow)
   }
   
   func narrowSubject(stream: String, subject: String) {
@@ -327,10 +325,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     let narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
     self.navigationController?.navigationBar.topItem?.title = subject
     
-    self.action = Action(narrow: narrow, action: .Focus)
-    guard let data = data else {fatalError()}
-    data.loadStreamMessages(self.action)
-    tableView.showLoading()
+    self.focusAction(narrow)
   }
 }
 

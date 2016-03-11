@@ -14,7 +14,7 @@ class StreamExtendedCell: ZulipTableViewCell {
     
     @IBOutlet weak var contentTextView: AutoTextView!
     
-     override func configure(message: TableCell) {
+    override func configure(message: TableCell) {
         contentTextView.textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         layoutIfNeeded()
 //        let attributedContent = message.content
