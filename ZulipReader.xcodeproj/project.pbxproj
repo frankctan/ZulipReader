@@ -210,14 +210,14 @@
 			name = Realm;
 			sourceTree = "<group>";
 		};
-		67C582B61C8B5B3A005D0C47 /* public */ = {
+		67C582B61C8B5B3A005D0C47 /* Public */ = {
 			isa = PBXGroup;
 			children = (
 				677F6AEE1C752D04005EB84E /* Futures.swift */,
 				678A6BB61C10EBA200AE091B /* TableCell.swift */,
 				674EDAD81C8746C300FCAE67 /* DataStructures.swift */,
 			);
-			name = public;
+			name = Public;
 			sourceTree = "<group>";
 		};
 		67C582B71C8B5B84005D0C47 /* Misc */ = {
@@ -261,7 +261,7 @@
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				6785E7A51C6D0909008ED151 /* MyPlayground.playground */,
-				67C582B61C8B5B3A005D0C47 /* public */,
+				67C582B61C8B5B3A005D0C47 /* Public */,
 				67C582B51C8B5AD8005D0C47 /* Realm */,
 				67A9DA8E1C1F546600AEEF1B /* Login */,
 				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,

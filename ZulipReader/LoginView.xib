@@ -64,14 +64,14 @@
                                 <action selector="loginButtonDidTouch:" destination="-1" eventType="touchUpInside" id="KFY-b4-DVF"/>
                             </connections>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Zulip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cin-dh-0He" customClass="DesignableLabel" customModule="Spring">
-                            <rect key="frame" x="107" y="66" width="67" height="41.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Zulip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cin-dh-0He" customClass="DesignableLabel" customModule="Spring">
+                            <rect key="frame" x="107" y="66" width="67" height="42"/>
                             <fontDescription key="fontDescription" name="SourceSansPro-Bold" family="Source Sans Pro" pointSize="30"/>
                             <color key="textColor" red="0.1717500985" green="0.63812547919999996" blue="0.2866695225" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log in to" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xNg-i4-6VD" customClass="DesignableLabel" customModule="Spring">
-                            <rect key="frame" x="91" y="22" width="99.5" height="36.5"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Log in to" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xNg-i4-6VD" customClass="DesignableLabel" customModule="Spring">
+                            <rect key="frame" x="91" y="22" width="100" height="37"/>
                             <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="27"/>
                             <color key="textColor" red="0.1717500985" green="0.63812547919999996" blue="0.2866695225" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>

@@ -60,7 +60,6 @@ class StreamTableViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
-    
     timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: false)
     self.loadData()
   }
@@ -176,10 +175,16 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   //MARK: SLKTextViewController
+  //Right button only appears in .Subject
   override func didPressRightButton(sender: AnyObject!) {
     self.textView.refreshFirstResponder()
     let sentMessage: String = self.textView.text
-    let recipient = self.action.narrow.recipient
+    
+    //pmWith or stream will be empty
+    let pmWith = self.action.narrow.pmWith
+    let stream = self.action.narrow.recipient
+    let recipient = pmWith + stream
+    
     let subject = self.action.narrow.subject
     
     let messagePost = MessagePost(content: sentMessage, recipient: recipient, subject: subject)
@@ -242,6 +247,8 @@ extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMessages() {
     tableView.hideLoading()
     self.refreshControl?.endRefreshing()
+    
+    tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentSize.height), animated: true)
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
@@ -257,7 +264,8 @@ extension StreamTableViewController: StreamControllerDelegate {
     tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
     tableView.endUpdates()
     
-    //    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+    tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentSize.height), animated: true)
+    
     
     self.refreshControl?.endRefreshing()
   }
@@ -267,7 +275,7 @@ extension StreamTableViewController: StreamControllerDelegate {
 extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
-    let narrow = Narrow(type: .Stream)
+    let narrow = Narrow()
     self.navigationController?.navigationBar.topItem?.title = "Stream"
     self.focusAction(narrow)
   }
@@ -288,10 +296,10 @@ extension StreamTableViewController: SideMenuDelegate {
     switch selection {
     case "Private":
       let narrowString = "[[\"is\", \"\(selection.lowercaseString)\"]]"
-      narrow = Narrow(narrowString: narrowString, type: .Private, mentioned: nil)
+      narrow = Narrow(narrowString: narrowString, type: .Private)
     case "Mentioned":
       let narrowString = "[[\"is\", \"\(selection.lowercaseString)\"]]"
-      narrow = Narrow(narrowString: narrowString, type: nil, mentioned: true)
+      narrow = Narrow(narrowString: narrowString, mentioned: true)
     case "Logout":
       self.logout()
       return

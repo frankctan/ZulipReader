@@ -67,7 +67,6 @@ class StreamController : DataController {
     catch {print("unable to clear locksmith")}
     Router.basicAuth = nil
     NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
-    
   }
   
   //MARK: Post Messages
@@ -111,7 +110,7 @@ class StreamController : DataController {
     
     switch action.userAction {
     case .Focus:
-      let _realmMessages: NSArray = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+      let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
       let realmMessages = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
       if !realmMessages.isEmpty {
         self.messagesToController(realmMessages, newMessages: realmMessages, action: action.userAction)
@@ -140,7 +139,7 @@ class StreamController : DataController {
             action = self.readMinMaxID(action)
             
             //filter realm messages and ready them for tableview
-            let _realmMessages: NSArray = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+            let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
             let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
             self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
           }
@@ -360,7 +359,7 @@ class StreamController : DataController {
   private func messagesToRealm(messages: [Message]) {
     print("writing messages...")
     print("save path: \(realm.path)")
-    let currentMessages = self.realm.objects(Message).sorted("timestamp", ascending: true).map {$0}
+    let currentMessages = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
     let currentMessageID = currentMessages.map {$0.id}
     for message in messages {
       if !currentMessageID.contains(message.id) {

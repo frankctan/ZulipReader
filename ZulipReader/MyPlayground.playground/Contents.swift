@@ -88,6 +88,11 @@ qw.remove("q")
 
 qw
 
+let arr = [String]()
+let arr1 = ["a"]
+
+arr + arr1
+
 
 
 

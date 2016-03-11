@@ -108,17 +108,10 @@ public struct Narrow {
     self.maximumMessageID = maxID
   }
   
-  init() {
-  }
+  init() {}
   
   //inits are wrapped in closures to trigger didSet
-  init(type: Type) {
-    {
-      if type == .Private {self.type = type}
-    }()
-  }
-  
-  init(narrowString: String?, type: Type?, mentioned: Bool?) {
+  init(narrowString: String?, type: Type? = nil, mentioned: Bool? = nil) {
     {
       self.narrowString = narrowString
       if type == .Private {self.type = type!}
