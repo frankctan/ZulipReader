@@ -95,13 +95,13 @@ class StreamTableViewController: SLKTextViewController {
       cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderNavCell") as! StreamHeaderNavCell
       let navCell = cell as! StreamHeaderNavCell
       navCell.delegate = self
-    
+      
     case .Private:
       cell = tableView.dequeueReusableCellWithIdentifier("StreamHeaderPrivateCell") as! StreamHeaderPrivateCell
       let privateCell = cell as! StreamHeaderPrivateCell
       privateCell.delegate = self
     }
-  
+    
     cell.configure(headerCell)
     return configureHeaderView(cell)
   }
@@ -119,7 +119,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return UITableViewAutomaticDimension
+    return 500
   }
   
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -180,7 +180,7 @@ class StreamTableViewController: SLKTextViewController {
     self.textView.refreshFirstResponder()
     let sentMessage: String = self.textView.text
     
-    //pmWith or stream will be empty
+    //Either pmWith or stream will be empty []
     let pmWith = self.action.narrow.pmWith
     let stream = self.action.narrow.recipient
     let recipient = pmWith + stream
@@ -199,7 +199,7 @@ class StreamTableViewController: SLKTextViewController {
     //General tableview settings
     self.navigationController?.navigationBar.topItem?.title = "Stream"
     
-    tableView.estimatedRowHeight = 60
+    tableView.estimatedRowHeight = 500
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     
@@ -242,32 +242,43 @@ class StreamTableViewController: SLKTextViewController {
   }
 }
 
+//MARK: ScrollViewControllerDelegate
+extension StreamTableViewController {
+  override func scrollViewDidScroll(scrollView: UIScrollView) {
+    //    print("scrollView contentsize: \(scrollView.contentSize)")
+    //    print("tableView contentsize: \(tableView.contentSize)")
+    //    print("scrollView contentOffset: \(scrollView.contentOffset)")
+    //    print("tableView contentOffset: \(tableView.contentOffset)")
+  }
+}
+
 //MARK: StreamControllerDelegate
 extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMessages() {
     tableView.hideLoading()
     self.refreshControl?.endRefreshing()
-    
-    tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentSize.height), animated: true)
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     tableView.hideLoading()
     print("# of old sections: \(self.messages.count)")
     self.messages = messages
+    self.refreshControl?.endRefreshing()
     print("# of new sections: \(self.messages.count)")
     print("inserted sections: \(insertedSections)")
     print("deleted sections: \(deletedSections)")
-    tableView.beginUpdates()
-    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
-    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
-    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
-    tableView.endUpdates()
     
-    tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentSize.height), animated: true)
-    
-    
-    self.refreshControl?.endRefreshing()
+    UIView.animateWithDuration(0.01, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+      self.tableView.beginUpdates()
+      self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
+      self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
+      self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
+      self.tableView.endUpdates()
+      }, completion: {
+        if $0 {
+            self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+        }
+    })
   }
 }
 
