@@ -75,7 +75,7 @@ public struct Narrow {
     }
   }
   
-  private(set) var subject:String? = nil {
+  private(set) var subject: String? = nil {
     didSet {
       if subject != nil {
         self.subjectPredicate = NSPredicate(format: "subject =[cd] %@", subject!)
