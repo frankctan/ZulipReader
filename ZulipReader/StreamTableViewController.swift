@@ -182,7 +182,7 @@ class StreamTableViewController: SLKTextViewController {
     
     //Either pmWith or stream will be empty []
     let pmWith = self.action.narrow.pmWith
-    let stream = self.action.narrow.recipient
+    let stream = self.action.narrow.stream
     let recipient = pmWith + stream
     
     let subject = self.action.narrow.subject
@@ -270,13 +270,13 @@ extension StreamTableViewController: StreamControllerDelegate {
     
     UIView.animateWithDuration(0.01, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
       self.tableView.beginUpdates()
-      self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
-      self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
-      self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
+      self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
+      self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
+      self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
       self.tableView.endUpdates()
       }, completion: {
         if $0 {
-            self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+            self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
         }
     })
   }

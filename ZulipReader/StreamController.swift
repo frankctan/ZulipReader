@@ -21,7 +21,7 @@ protocol SubscriptionDelegate: class {
   func didFetchSubscriptions(subscriptions: [String: String])
 }
 
-class StreamController : DataController {
+class StreamController {
   
   weak var delegate: StreamControllerDelegate?
   weak var subscriptionDelegate: SubscriptionDelegate?
@@ -32,10 +32,9 @@ class StreamController : DataController {
   private var oldTableCells = [[TableCell]]()
   private var minimumStreamMessageID = Int.max
   private var maximimumStreamMessageID = Int.min
-  private var minimumSubMessageID = [String: Int]()
-  private var maximumSubMessageID = [String: Int]()
+  private var streamMessageRange = [String: (Int, Int)]()
   
-  override init() {
+  init() {
     do {
       realm = try Realm()
     } catch let error as NSError {
@@ -105,89 +104,104 @@ class StreamController : DataController {
     //action is modified by readMinMaxID
     var action = action
     
-    //Read min & max pointer for each narrow string
-    action = self.readMinMaxID(action)
+
+//    action = self.readMinMaxID(action)
+//    
+//    switch action.userAction {
+//    case .Focus:
+//      let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
+//      let realmMessages = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+//      if !realmMessages.isEmpty {
+//        self.messagesToController(realmMessages, newMessages: realmMessages, action: action.userAction)
+//        action.userAction = .Refresh
+//      }
+//    default: break
+//    }
     
-    switch action.userAction {
-    case .Focus:
-      let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-      let realmMessages = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-      if !realmMessages.isEmpty {
-        self.messagesToController(realmMessages, newMessages: realmMessages, action: action.userAction)
-        action.userAction = .Refresh
-      }
-    default: break
-    }
+    //TODO: Read Messages From Database
     
-    print("action: \(action.userAction)")
-    let params = self.createRequestParameters(action)
-    self.messagePipeline(params)
-      .start {result in
-        switch result {
-          
-        case .Success(let boxedMessages):
-          let messages = boxedMessages.unbox
-          if !messages.isEmpty {
-            //write new messages
-            let newMessages: [Message] = messages
-            self.messagesToRealm(newMessages)
-            
-            //set min and max ID's if messages aren't narrowed
-            let newMessagesMinID = newMessages[0].id
-            let newMessagesMaxID = newMessages.last!.id
-            self.writeMinMaxID(action, minMessageID: newMessagesMinID, maxMessageID: newMessagesMaxID)
-            action = self.readMinMaxID(action)
-            
-            //filter realm messages and ready them for tableview
-            let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-            let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-            self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
-          }
-            //else there are no new messages
-          else {
-            self.delegate?.didFetchMessages()
-          }
-          
-        case .Error(let error):
-          print(error.unbox.description)
-        }
+//    self.messagePipeline(params)
+//      .start {result in
+//        switch result {
+//          
+//        case .Success(let boxedMessages):
+//          let messages = boxedMessages.unbox
+//          if !messages.isEmpty {
+//            //write new messages
+//            let newMessages: [Message] = messages
+//            self.messagesToRealm(newMessages)
+//            
+//            //set min and max ID's if messages aren't narrowed
+//            let newMessagesMinID = newMessages[0].id
+//            let newMessagesMaxID = newMessages.last!.id
+////            self.writeMinMaxID(action, minMessageID: newMessagesMinID, maxMessageID: newMessagesMaxID)
+////            action = self.readMinMaxID(action)
+//            
+//            //filter realm messages and ready them for tableview
+//            let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
+//            let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+//            self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
+//          }
+//            //else there are no new messages
+//          else {
+//            self.delegate?.didFetchMessages()
+//          }
+//          
+//        case .Error(let error):
+//          print(error.unbox.description)
+//        }
+//    }
+    
+    let operation = URLToMessageArray(action: action, subscription: self.subscription, registrationMax: self.registration.maxMessageID)
+    operation.completionBlock = {
+      dispatch_async(dispatch_get_main_queue()) {
+        let toController = NSArray(array: self.realm.objects(Message).sorted("id", ascending: true).map {$0})
+        let mess = toController.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+        self.messagesToController(mess, newMessages: mess, action: action.userAction)
+      }
     }
+    print("created operation")
+    queue.messageToTableCell.addOperation(operation)
   }
+  let queue = Queue()
   
-  private func readMinMaxID(action: Action) -> Action {
-    var returnAction = action
-    if let narrowString = action.narrow.narrowString {
-      if let minID = self.minimumSubMessageID[narrowString],
-        let maxID = self.maximumSubMessageID[narrowString] {
-          returnAction.narrow.setMinMaxID(minID, maxID: maxID)
-      }
-      else {
-        returnAction.narrow.setMinMaxID(Int.min, maxID: Int.max)
-      }
-    }
-    else {
-      returnAction.narrow.setMinMaxID(self.minimumStreamMessageID, maxID: self.maximimumStreamMessageID)
-    }
-    return returnAction
-  }
-  
-  private func writeMinMaxID(action: Action, minMessageID: Int, maxMessageID: Int) {
-    if let narrowString = action.narrow.narrowString {
-      if let minID = self.minimumSubMessageID[narrowString],
-        let maxID = self.maximumSubMessageID[narrowString]{
-          self.minimumSubMessageID[narrowString] = min(minID, minMessageID)
-          self.maximumSubMessageID[narrowString] = max(maxID, maxMessageID)
-      }
-      else {
-        self.minimumSubMessageID[narrowString] = minMessageID
-        self.maximumSubMessageID[narrowString] = maxMessageID
-      }
-    }
-    else {
-      self.minimumStreamMessageID = min(self.minimumStreamMessageID, minMessageID)
-      self.maximimumStreamMessageID = max(self.maximimumStreamMessageID, maxMessageID)
-    }
-  }
+  //  private func readMinMaxID(action: Action) -> Action {
+  //    var returnAction = action
+  //    if let narrowString = action.narrow.narrowString,
+  //      let messageRange = self.streamMessageRange[narrowString] {
+  //        let minID = messageRange.0
+  //        let maxID = messageRange.1
+  //        returnAction.narrow.setMinMaxID(minID, maxID: maxID)
+  //    }
+  //    else {
+  //      returnAction.narrow.setMinMaxID(Int.min, maxID: Int.max)
+  //    }
+  //  }
+  //
+  //  else {
+  //  returnAction.narrow.setMinMaxID(self.minimumStreamMessageID, maxID: self.maximimumStreamMessageID)
+  //  }
+  //  return returnAction
+  //}
+//  
+//  private func writeMinMaxID(action: Action, minMessageID: Int, maxMessageID: Int) {
+//    if let narrowString = action.narrow.narrowString,
+//      let messageRange = self.streamMessageRange[narrowString] {
+//        let minID = messageRange.0
+//        let maxID = messageRange.1{
+//          self.streamMessageRange[narrowString].0 = min(minID, minMessageID)
+//          self.streamMessageRange[narrowString].1 = max(maxID, maxMessageID)
+//        }
+//        else {
+//          self.streamMessageRange[narrowString] = minMessageID
+//          self.streamMessageRange[narrowString] = maxMessageID
+//        }
+//    }
+//    else {
+//      self.minimumStreamMessageID = min(self.minimumStreamMessageID, minMessageID)
+//      self.maximimumStreamMessageID = max(self.maximimumStreamMessageID, maxMessageID)
+//    }
+//  }
   
   //only called if server sends new messages
   private func messagesToController(allMessages: [Message], newMessages: [Message], action: UserAction) {
@@ -246,132 +260,23 @@ class StreamController : DataController {
     return false
   }
   
-  private func messagePipeline(params: MessageRequestParameters) -> Future<[Message], ZulipErrorDomain> {
-    return createMessageRequest(params)
-      .andThen(AlamofireRequest)
-      .andThen(processResponse)
-  }
-  
-  private func createRequestParameters(action: Action) -> MessageRequestParameters {
-    var params = MessageRequestParameters()
-    let (minAnchor, maxAnchor) = getAnchor()
-    
-    switch action.userAction {
-    case .Focus:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 20, after: 50, narrow: action.narrow.narrowString)
-    case .Refresh:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
-    case .ScrollUp:
-      params = MessageRequestParameters(anchor: minAnchor, before: 20, after: 0, narrow: action.narrow.narrowString)
-    }
-    return params
-  }
-  
-  private func getAnchor() -> (min: Int, max: Int) {
-    let messages = oldTableCells.flatMap {$0}
-    
-    var realmMaxID = 0
-    if let last = messages.last {
-      realmMaxID = last.id
-    }
-    //registrationID used for first message load
-    let registrationID = registration.maxMessageID
-    
-    //minID only used to scroll up
-    var realmMinID = 0
-    if let first = messages.first {
-      realmMinID = first.id
-    }
-    //offset by 1 to reduce duplicates
-    return (realmMinID-1, max(realmMaxID, registrationID)+1)
-  }
-  
-  private func createMessageRequest(params: MessageRequestParameters) -> Future<URLRequestConvertible, ZulipErrorDomain> {
-    let urlRequest: URLRequestConvertible = Router.GetMessages(anchor: params.numAnchor, before: params.numBefore, after: params.numAfter, narrow: params.narrow)
-    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
-  }
-  
-  private func processResponse(response: JSON) -> Future<[Message], ZulipErrorDomain> {
-    return parseMessageRequest(response)
-      .andThen(createMessageObject)
-  }
-  
-  private func parseMessageRequest(response: JSON) -> Future<[JSON], ZulipErrorDomain> {
-    return Future<[JSON], ZulipErrorDomain>(operation: {completion in
-      let result: Result<[JSON], ZulipErrorDomain>
-      if let responseArray = response["messages"].array {
-        result = Result.Success(Box(responseArray))
-      }
-      else {
-        result = Result.Error(Box(ZulipErrorDomain.ZulipRequestFailure(message: "unable to retrieve responseJSON")))
-      }
-      completion(result)
-    })
-  }
-  
-  private func createMessageObject(messages: [JSON]) -> Future<[Message], ZulipErrorDomain> {
-    return Future<[Message], ZulipErrorDomain>(operation: {completion in
-      let result: Result<[Message], ZulipErrorDomain>
-      var results = [Message]()
-      guard let ownEmail = NSUserDefaults.standardUserDefaults().stringForKey("email") else {fatalError()}
-      
-      for message in messages {
-        var messageDict = message.dictionaryObject!
-        
-        //assigns most of Message
-        let msg = Message(value: messageDict)
-        
-        //flag and display_recipient are [String]
-        //need special treatment
-        if let flags = messageDict["flags"] {
-          msg.flags = flags as! [String]
-          msg.mentioned = msg.flags.contains("mentioned") || msg.flags.contains("wildcard_mentioned")
-        }
-        
-        //assigns streamColor
-        if msg.type == "private",
-          let privateRecipients = message["display_recipient"].array {
-            msg.display_recipient = privateRecipients.map {$0["email"].stringValue}
-            
-            msg.privateFullName = privateRecipients
-              .filter {if $0["email"].stringValue == ownEmail {return false}; return true}
-              .map {$0["full_name"].stringValue}
-            
-            var pmWithSet = Set(msg.display_recipient + [msg.sender_email])
-            pmWithSet.remove(ownEmail)
-            msg.pmWith = Array(pmWithSet)
-            
-            msg.streamColor = "none"
-        }
-        
-        if msg.type == "stream",let streamRecipient = message["display_recipient"].string {
-          msg.display_recipient = [streamRecipient]
-          msg.streamColor = self.subscription[streamRecipient]!
-        }
-        results.append(msg)
-      }
-      result = Result.Success(Box(results))
-      completion(result)
-    })
-  }
-  
   //checks for uniqueness based on dateTime, saves whether the message was obtained while narrowed
-  private func messagesToRealm(messages: [Message]) {
-    print("writing messages...")
-    print("save path: \(realm.path)")
-    let currentMessages = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-    let currentMessageID = currentMessages.map {$0.id}
-    for message in messages {
-      if !currentMessageID.contains(message.id) {
-        do {
-          try realm.write {
-            realm.add(message)
-          }
-        } catch { fatalError("msgs: could not write to realm") }
-      }
-    }
-    print("finished writing")
-  }
+//  private func messagesToRealm(messages: [Message]) {
+//    print("writing messages...")
+//    print("save path: \(realm.path)")
+//    let currentMessages = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
+//    let currentMessageID = currentMessages.map {$0.id}
+//    for message in messages {
+//      if !currentMessageID.contains(message.id) {
+//        do {
+//          try realm.write {
+//            realm.add(message)
+//          }
+//        } catch { fatalError("msgs: could not write to realm") }
+//      }
+//    }
+//    print("finished writing")
+//  }
   
   //MARK: Prepare messages for table view
   private func messageToTableCell(messages: [Message]) -> [[TableCell]] {
@@ -528,7 +433,7 @@ class StreamController : DataController {
   
   private func subscriptionsToRealm(subscriptions: [JSON]) {
     print("writing subscriptions")
-    print("save path: \(realm.path)")
+//    print("save path: \(realm.path)")
     for subscription in subscriptions {
       let subDict = subscription.dictionaryObject
       let sub = Subscription(value: subDict!)

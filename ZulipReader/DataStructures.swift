@@ -45,7 +45,7 @@ public struct MessagePost {
 
 public struct Narrow {
   private var typePredicate: NSPredicate?
-  private var recipientPredicate: NSPredicate?
+  private var streamPredicate: NSPredicate?
   private var subjectPredicate: NSPredicate?
   private var mentionedPredicate: NSPredicate?
   private var minimumIDPredicate: NSPredicate?
@@ -59,11 +59,11 @@ public struct Narrow {
     }
   }
   
-  private(set) var recipient = [String]() {
+  private(set) var stream = [String]() {
     didSet {
-      let predicate = NSPredicate(format: "ALL %@ IN %K", recipient, "display_recipient")
-      let conversePredicate = NSPredicate(format: "ALL %K IN %@", "display_recipient", recipient)
-      self.recipientPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, conversePredicate])
+      let predicate = NSPredicate(format: "ALL %@ IN %K", stream, "display_recipient")
+      let conversePredicate = NSPredicate(format: "ALL %K IN %@", "display_recipient", stream)
+      self.streamPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, conversePredicate])
     }
   }
   
@@ -122,14 +122,14 @@ public struct Narrow {
   init(narrowString: String?, stream: String) {
     {
       self.narrowString = narrowString
-      self.recipient = [stream]
+      self.stream = [stream]
     }()
   }
   
   init(narrowString: String?, stream: String, subject: String) {
     {
       self.narrowString = narrowString
-      self.recipient = [stream]
+      self.stream = [stream]
       self.subject = subject
     }()
   }
@@ -143,7 +143,7 @@ public struct Narrow {
   }
   
   func predicate() -> NSPredicate {
-    let arr = [typePredicate, recipientPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate, maximumIDPredicate, pmWithPredicate]
+    let arr = [typePredicate, streamPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate, maximumIDPredicate, pmWithPredicate]
     let predicateArray = arr.filter {if $0 == nil {return false}; return true}.map {$0!}
     let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
     print("new predicate: \(compoundPredicate)")

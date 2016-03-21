@@ -137,28 +137,6 @@ class MessageArrayToTableCellArray: NSOperation {
   }
 }
 
-class URLToMessageArray: NSOperation {
-  let action: Action
-  
-  init(action: Action) {
-    self.action = action
-  }
-  
-  private func createRequestParameters(action: Action) -> MessageRequestParameters {
-    var params = MessageRequestParameters()
-    let (minAnchor, maxAnchor) = getAnchor()
-    
-    switch action.userAction {
-    case .Focus:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 20, after: 50, narrow: action.narrow.narrowString)
-    case .Refresh:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
-    case .ScrollUp:
-      params = MessageRequestParameters(anchor: minAnchor, before: 20, after: 0, narrow: action.narrow.narrowString)
-    }
-    return params
-  }
-}
 
 class MessagesArrayToRealm: NSOperation {
   let messages: [Message]

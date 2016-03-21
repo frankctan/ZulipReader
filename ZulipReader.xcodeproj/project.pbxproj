@@ -10,6 +10,7 @@
 		2C2C5BF5ACF8CDAF8E4E96AE /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB93339AFD280F7DC56DBE /* Pods.framework */; };
 		404A0D84BF29236BFE878D35 /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */; };
 		670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamExtendedCell.swift */; };
+		67195EA61CA073C80079C4D5 /* URLToMessageArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */; };
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
 		673251771C0A7154009A546C /* StreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251761C0A7154009A546C /* StreamController.swift */; };
 		674EDAD91C8746C300FCAE67 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674EDAD81C8746C300FCAE67 /* DataStructures.swift */; };
@@ -65,6 +66,7 @@
 /* Begin PBXFileReference section */
 		41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		670295011C1B65E500314A04 /* StreamExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamExtendedCell.swift; sourceTree = "<group>"; };
+		67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLToMessageArray.swift; sourceTree = "<group>"; };
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
 		674EDAD81C8746C300FCAE67 /* DataStructures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				673251761C0A7154009A546C /* StreamController.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67B46E201C9C7B39006EBF11 /* MessageOperations.swift */,
+				67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				6785E7A51C6D0909008ED151 /* MyPlayground.playground */,
 				67C582B61C8B5B3A005D0C47 /* Public */,
@@ -463,6 +466,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */,
+				67195EA61CA073C80079C4D5 /* URLToMessageArray.swift in Sources */,
 				677F6AEF1C752D04005EB84E /* Futures.swift in Sources */,
 				673251751C0A5D85009A546C /* DataController.swift in Sources */,
 				67B46E211C9C7B39006EBF11 /* MessageOperations.swift in Sources */,

@@ -15,7 +15,7 @@ protocol LoginControllerDelegate: class {
   func didFinishFetch(flag: Bool)
 }
 
-class LoginController : DataController {
+class LoginController {
   
   weak var delegate: LoginControllerDelegate?
   
