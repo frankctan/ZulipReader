@@ -21,7 +21,7 @@ protocol SubscriptionDelegate: class {
   func didFetchSubscriptions(subscriptions: [String: String])
 }
 
-class StreamController {
+class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayDelegate {
   
   weak var delegate: StreamControllerDelegate?
   weak var subscriptionDelegate: SubscriptionDelegate?
@@ -96,77 +96,41 @@ class StreamController {
     }
   }
   
+  let queue = Queue()
   //MARK: Get Stream Messages
   func loadStreamMessages(action: Action) {
     print("loading Stream Messages")
     print("action: \(action.userAction)")
     
-    //action is modified by readMinMaxID
-    var action = action
-    
-
-//    action = self.readMinMaxID(action)
-//    
-//    switch action.userAction {
-//    case .Focus:
-//      let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-//      let realmMessages = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-//      if !realmMessages.isEmpty {
-//        self.messagesToController(realmMessages, newMessages: realmMessages, action: action.userAction)
-//        action.userAction = .Refresh
-//      }
-//    default: break
-//    }
-    
-    //TODO: Read Messages From Database
-    
-//    self.messagePipeline(params)
-//      .start {result in
-//        switch result {
-//          
-//        case .Success(let boxedMessages):
-//          let messages = boxedMessages.unbox
-//          if !messages.isEmpty {
-//            //write new messages
-//            let newMessages: [Message] = messages
-//            self.messagesToRealm(newMessages)
-//            
-//            //set min and max ID's if messages aren't narrowed
-//            let newMessagesMinID = newMessages[0].id
-//            let newMessagesMaxID = newMessages.last!.id
-////            self.writeMinMaxID(action, minMessageID: newMessagesMinID, maxMessageID: newMessagesMaxID)
-////            action = self.readMinMaxID(action)
-//            
-//            //filter realm messages and ready them for tableview
-//            let _realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-//            let realmMessages:[Message] = _realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-//            self.messagesToController(realmMessages, newMessages: newMessages, action: action.userAction)
-//          }
-//            //else there are no new messages
-//          else {
-//            self.delegate?.didFetchMessages()
-//          }
-//          
-//        case .Error(let error):
-//          print(error.unbox.description)
-//        }
-//    }
-    
     let operation = URLToMessageArray(action: action, subscription: self.subscription, registrationMax: self.registration.maxMessageID)
-    operation.completionBlock = {
-      dispatch_async(dispatch_get_main_queue()) {
-        let toController = NSArray(array: self.realm.objects(Message).sorted("id", ascending: true).map {$0})
-        let mess = toController.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-        
-        self.writeMinMaxID(action, minMessageID: mess[0].id, maxMessageID: mess.last!.id)
-        
-        self.messagesToController(mess, newMessages: mess, action: action.userAction)
-      }
-    }
-    print("created operation")
+    operation.delegate = self
     queue.messageToTableCell.addOperation(operation)
   }
-  let queue = Queue()
+  
+  //MARK: URLToMessagesArrayDelegate
+  func messageArraysDidFinish(action: Action, newMessages: [Message]) {
+    dispatch_async(dispatch_get_main_queue()) {
+      if newMessages.isEmpty {
+        self.delegate?.didFetchMessages()
+        return
+      }
+      //update message markers
+      self.writeMinMaxID(action, minMessageID: newMessages[0].id, maxMessageID: newMessages.last!.id)
+      let action = self.readMinMaxID(action)
+      
+      let operation = MessageArrayToTableCellArray(action: action, newMessages: newMessages, oldTableCells: self.oldTableCells)
+      operation.delegate = self
+      self.queue.messageToTableCell.addOperation(operation)
+    }
+  }
+  
+  //MARL: MessageArrayToTableCellArrayDelegate
+  func tableCellsDidFinish(deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], tableCells: [[TableCell]]) {
+    dispatch_async(dispatch_get_main_queue()) {
+      self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
+      self.oldTableCells = tableCells
+    }
+  }
   
   private func readMinMaxID(action: Action) -> Action {
     var returnAction = action
@@ -200,134 +164,6 @@ class StreamController {
     else {
       self.homeMessageRange = (min(self.homeMessageRange.0, minMessageID), max(self.homeMessageRange.1, maxMessageID))
     }
-  }
-
-  //only called if server sends new messages
-  private func messagesToController(allMessages: [Message], newMessages: [Message], action: UserAction) {
-    print("in messagesToController")
-    let newTableCells = self.messageToTableCell(allMessages)
-    let (deletedSections, insertedSections, insertedRows) = self.findTableUpdates(newTableCells, newMessages: newMessages, action: action)
-    self.delegate?.didFetchMessages(newTableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
-    self.oldTableCells = newTableCells
-  }
-  
-  private func findTableUpdates(newTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
-    print("allMessages Section Count: \(newTableCells.count)")
-    
-    let newMessageTableCells = self.messageToTableCell(newMessages)
-    
-    print("newMessages Section Count: \(newMessageTableCells.count)")
-    let flatNewMessageTableCells = newMessageTableCells.flatMap {$0}
-    let flatOldTableCells = oldTableCells.flatMap {$0}
-    
-    var deletedSections = NSRange()
-    var insertedSections = NSRange()
-    var insertedRows = [NSIndexPath]()
-    
-    print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(newTableCells.reduce(0, combine: {$0 + $1.count}))")
-    
-    switch action {
-    case .Focus:
-      deletedSections = NSMakeRange(0, oldTableCells.count)
-      insertedSections = NSMakeRange(0, newTableCells.count)
-      insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
-      
-    case .ScrollUp:
-      insertedSections = NSMakeRange(0, newTableCells.count - oldTableCells.count)
-      insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
-      
-    case .Refresh:
-      let lastOldTableCell = flatOldTableCells.last!
-      let rangeLength = newTableCells.count - oldTableCells.count
-      if rangeLength > 0 {
-        insertedSections = NSMakeRange(lastOldTableCell.section + 1, rangeLength)
-      }
-      let newMessageCount = newMessages.count
-      let flatNewTableCells = newTableCells.flatMap {$0}
-      for index in (flatNewTableCells.count - newMessageCount)..<flatNewTableCells.count {
-        insertedRows.append(NSIndexPath(forRow: flatNewTableCells[index].row, inSection: flatNewTableCells[index].section))
-      }
-    }
-    
-    return (deletedSections, insertedSections, insertedRows)
-  }
-  
-  private func compareTableCells(tc1: TableCell, _ tc2: TableCell) -> Bool {
-    if tc1.display_recipient == tc2.display_recipient && tc1.subject == tc2.subject {
-      return true
-    }
-    return false
-  }
-  
-  //MARK: Prepare messages for table view
-  private func messageToTableCell(messages: [Message]) -> [[TableCell]] {
-    var previous = TableCell()
-    var result = [[TableCell]()]
-    var sectionCounter = 0
-    var rowCounter = 0
-    
-    for message in messages {
-      var cell = TableCell(message)
-      let messageContent = message.content
-      let attributedContent = processMarkdown(messageContent)
-      cell.attributedContent = attributedContent
-      
-      if previous.isEmpty {
-        result[sectionCounter].append(cell)
-        previous = cell
-        continue
-      }
-      
-      if previous.display_recipient != cell.display_recipient ||
-        previous.subject != cell.subject ||
-        previous.type != cell.type {
-          
-          sectionCounter++
-          rowCounter = 0
-          cell.section = sectionCounter
-          cell.row = rowCounter
-          result.append([cell])
-      }
-      else {
-        if previous.sender_full_name == cell.sender_full_name {
-          cell.cellType = CellTypes.ExtendedCell
-        }
-        
-        rowCounter++
-        cell.section = sectionCounter
-        cell.row = rowCounter
-        result[sectionCounter].append(cell)
-      }
-      previous = cell
-    }
-    
-    return result
-  }
-  
-  private func processMarkdown(text: String) -> NSAttributedString! {
-    //Swift adds an extra "\n" to paragraph tags so we replace with span.
-    var text = text.stringByReplacingOccurrencesOfString("<p>", withString: "<span>")
-    text = text.stringByReplacingOccurrencesOfString("</p>", withString: "</span>")
-    //Stolen from the original zulip-ios project
-    let style = ["<style>",
-      "body{font-family:\"SourceSansPro-Regular\";font-size:17px;line-height:17px;}",
-      "span.user-mention {padding: 2px 4px; background-color: #F2F2F2; border: 1px solid #e1e1e8;}",
-      ".hll{background-color:#ffc}{background:#f8f8f8} .c{color:#408080;font-style:italic} .err{border:1px solid #f00} .k{color:#008000;font-weight:bold} .o{color:#666} .cm{color:#408080;font-style:italic} .cp{color:#bc7a00} .c1{color:#408080;font-style:italic} .cs{color:#408080;font-style:italic} .gd{color:#a00000} .ge{font-style:italic} .gr{color:#f00} .gh{color:#000080;font-weight:bold} .gi{color:#00a000} .go{color:#808080} .gp{color:#000080;font-weight:bold} .gs{font-weight:bold} .gu{color:#800080;font-weight:bold} .gt{color:#0040d0} .kc{color:#008000;font-weight:bold} .kd{color:#008000;font-weight:bold} .kn{color:#008000;font-weight:bold} span.kp{color:#008000} .kr{color:#008000;font-weight:bold} .kt{color:#b00040} .m{color:#666} .s{color:#ba2121} .na{color:#7d9029} .nb{color:#008000} .nc{color:#00f;font-weight:bold} .no{color:#800} .nd{color:#a2f} .ni{color:#999;font-weight:bold} .ne{color:#d2413a;font-weight:bold} .nf{color:#00f} .nl{color:#a0a000} .nn{color:#00f;font-weight:bold} .nt{color:#008000;font-weight:bold} .nv{color:#19177c} .ow{color:#a2f;font-weight:bold} .w{color:#bbb} .mf{color:#666} .mh{color:#666} .mi{color:#666} .mo{color:#666} .sb{color:#ba2121} .sc{color:#ba2121} .sd{color:#ba2121;font-style:italic} .s2{color:#ba2121} .se{color:#b62;font-weight:bold} .sh{color:#ba2121} .si{color:#b68;font-weight:bold} .sx{color:#008000} .sr{color:#b68} .s1{color:#ba2121} .ss{color:#19177c} .bp{color:#008000} .vc{color:#19177c} .vg{color:#19177c} .vi{color:#19177c} .il{color:#666}",
-      "blockquote {border-left-color: #dddddd;border-left-style: solid;border-left: 5px;}",
-      "a {color:0088cc}",
-      "code {padding: 2px 4px;color: #d14;background-color: #F5F5F5;border: 1px solid #e1e1e8;}",
-      "img {max-height: 200px}",
-      "</style>"].reduce("",combine: +)
-    text += style
-    let htmlString: NSAttributedString?
-    let htmlData = text.dataUsingEncoding(NSUTF16StringEncoding, allowLossyConversion: false)
-    
-    do {
-      htmlString = try NSAttributedString(data: htmlData!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType], documentAttributes: nil)
-    } catch _ {
-      htmlString = nil
-    }
-    return htmlString
   }
   
   //MARK: Register

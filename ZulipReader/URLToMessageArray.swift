@@ -11,6 +11,10 @@ import Alamofire
 import RealmSwift
 import SwiftyJSON
 
+protocol URLToMessageArrayDelegate: class {
+  func messageArraysDidFinish(action: Action, newMessages: [Message])
+}
+
 class URLToMessageArray: NSOperation {
   
   //override executing and finished to be KVO compliant because of networking call
@@ -41,6 +45,8 @@ class URLToMessageArray: NSOperation {
       }
     }
   }
+  
+  weak var delegate: URLToMessageArrayDelegate?
 
   let action: Action
   let realm: Realm
@@ -62,9 +68,6 @@ class URLToMessageArray: NSOperation {
     }
     
     realmMessages = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-    
-    print("realm messages: \(realmMessages)")
-    print("realmMessages accessed")
   }
   
   override func main() {
@@ -76,21 +79,23 @@ class URLToMessageArray: NSOperation {
       
       switch result {
       case .Success(let box):
-        print("main - success")
         let messages = box.unbox
-        print("about to save to realm")
         self.messagesToRealm(messages)
-        self.finished = true
-        self.executing = false
+        self.delegate?.messageArraysDidFinish(self.action, newMessages: messages)
+        self.complete()
         
       case .Error(let box):
         print("main - error")
         let error = box.unbox
         print("error: \(error)")
-        self.finished = true
-        self.executing = false
+        self.complete()
       }
     }
+  }
+  
+  private func complete() {
+    self.finished = true
+    self.executing = false
   }
   
   private func messagePipeline(action: Action) -> Future<[Message], ZulipErrorDomain> {

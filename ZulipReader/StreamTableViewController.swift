@@ -60,7 +60,7 @@ class StreamTableViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
-    timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: false)
+    timer = NSTimer(timeInterval: 5.0, target: self, selector: #selector(StreamTableViewController.autoRefresh(_:)), userInfo: nil, repeats: false)
     self.loadData()
   }
   
@@ -225,17 +225,17 @@ class StreamTableViewController: SLKTextViewController {
     let tableViewController = UITableViewController()
     tableViewController.tableView = self.tableView
     let refresh = UIRefreshControl()
-    refresh.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    refresh.addTarget(self, action: #selector(StreamTableViewController.refresh(_:)), forControlEvents: .ValueChanged)
     tableViewController.refreshControl = refresh
     
     //Navigation Bar
     //Sticky headers follow the scrolling of the navbar
     self.navigationController?.navigationBar.translucent = false
-    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
+    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: #selector(StreamTableViewController.homeButtonDidTouch(_:)))
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
     //SWRevealViewController
-    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
+    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)))
     let sideMenuNavController = UINavigationController(rootViewController: self.sideMenuTableViewController!)
     self.revealViewController().rearViewController = sideMenuNavController
     self.navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)

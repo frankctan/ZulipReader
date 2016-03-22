@@ -1,73 +1,90 @@
 //
-//  MessageOperations.swift
+//  MessageArrayToTableCellArray.swift
 //  ZulipReader
 //
-//  Created by Frank Tan on 3/18/16.
+//  Created by Frank Tan on 3/22/16.
 //  Copyright © 2016 Frank Tan. All rights reserved.
 //
 
 import Foundation
 import RealmSwift
 
-class Queue {
-  lazy var realmToMessageArray: NSOperationQueue = {
-    var queue = NSOperationQueue()
-    queue.name = "Realm To Message Array"
-    queue.maxConcurrentOperationCount = 1
-    return queue
-  }()
-
-  lazy var messageToTableCell: NSOperationQueue = {
-    var queue = NSOperationQueue()
-    queue.name = "Message To Table Cell"
-    queue.maxConcurrentOperationCount = 1
-    return queue
-  }()
+protocol MessageArrayToTableCellArrayDelegate: class {
+  func tableCellsDidFinish(deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], tableCells: [[TableCell]])
 }
 
-protocol RealmToMessage: class {
-  func realmToMessageDidFinish(message: [Message])
-}
-
-class RealmToMessageArray: NSOperation {
+class MessageArrayToTableCellArray: NSOperation {
   
-  let action: Action
-  let realm: Realm
-  weak var delegate: RealmToMessage?
+  weak var delegate: MessageArrayToTableCellArrayDelegate?
   
-  init(action: Action) {
+  private let newMessages: [Message]
+  private let action: Action
+  private let oldTableCells: [[TableCell]]
+  
+  init(action: Action, newMessages: [Message], oldTableCells: [[TableCell]]) {
+    self.action = action
+    self.newMessages = newMessages
+    self.oldTableCells = oldTableCells
+  }
+  
+  override func main() {
+    print("in main")
+    let realm: Realm
     do {
       realm = try Realm()
-    } catch let error as NSError {
-      fatalError(String(error))
+    } catch {fatalError()}
+    print("initialized realm")
+    
+    let realmMessages = NSArray(array: realm.objects(Message).sorted("id", ascending: true).map {$0})
+    let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+
+    let realmTableCells = self.messageToTableCell(allFilteredMessages)
+    let (deletedSections, insertedSections, insertedRows) = self.findTableUpdates(realmTableCells, newMessages: newMessages, action: action.userAction)
+    delegate?.tableCellsDidFinish(deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, tableCells: realmTableCells)
+  }
+  
+  private func findTableUpdates(realmTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+    print("allMessages Section Count: \(realmTableCells.count)")
+    
+    let newMessageTableCells = self.messageToTableCell(newMessages)
+    
+    print("newMessages Section Count: \(newMessageTableCells.count)")
+    let flatNewMessageTableCells = newMessageTableCells.flatMap {$0}
+    let flatOldTableCells = oldTableCells.flatMap {$0}
+    
+    var deletedSections = NSRange()
+    var insertedSections = NSRange()
+    var insertedRows = [NSIndexPath]()
+    
+    print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(realmTableCells.reduce(0, combine: {$0 + $1.count}))")
+    
+    switch action {
+    case .Focus:
+      deletedSections = NSMakeRange(0, oldTableCells.count)
+      insertedSections = NSMakeRange(0, realmTableCells.count)
+      insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
+      
+    case .ScrollUp:
+      insertedSections = NSMakeRange(0, realmTableCells.count - oldTableCells.count)
+      insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
+      
+    case .Refresh:
+      let lastOldTableCell = flatOldTableCells.last!
+      let rangeLength = realmTableCells.count - oldTableCells.count
+      if rangeLength > 0 {
+        insertedSections = NSMakeRange(lastOldTableCell.section + 1, rangeLength)
+      }
+      let newMessageCount = newMessages.count
+      let flatrealmTableCells = realmTableCells.flatMap {$0}
+      for index in (flatrealmTableCells.count - newMessageCount)..<flatrealmTableCells.count {
+        insertedRows.append(NSIndexPath(forRow: flatrealmTableCells[index].row, inSection: flatrealmTableCells[index].section))
+      }
     }
     
-    self.action = action
-    super.init()
+    return (deletedSections, insertedSections, insertedRows)
   }
-  
-  override func main() {
-    let realmMessages: NSArray = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-    let messages = realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-    delegate?.realmToMessageDidFinish(messages)
-  }
-}
 
-protocol MessageToTableCell: class {
-  func messagestoTableCellDidFinish(tableCells: [[TableCell]])
-}
-
-class MessageArrayToTableCellArray1: NSOperation {
-  let messages: [Message]
-  weak var delegate: MessageToTableCell?
-  
-  
-  init(messages: [Message]) {
-    self.messages = messages
-    super.init()
-  }
-  
-  override func main() {
+  private func messageToTableCell(messages: [Message]) -> [[TableCell]] {
     var previous = TableCell()
     var result = [[TableCell]()]
     var sectionCounter = 0
@@ -88,12 +105,12 @@ class MessageArrayToTableCellArray1: NSOperation {
       if previous.display_recipient != cell.display_recipient ||
         previous.subject != cell.subject ||
         previous.type != cell.type {
-          
-          sectionCounter += 1
-          rowCounter = 0
-          cell.section = sectionCounter
-          cell.row = rowCounter
-          result.append([cell])
+        
+        sectionCounter += 1
+        rowCounter = 0
+        cell.section = sectionCounter
+        cell.row = rowCounter
+        result.append([cell])
       }
       else {
         if previous.sender_full_name == cell.sender_full_name {
@@ -106,15 +123,16 @@ class MessageArrayToTableCellArray1: NSOperation {
         result[sectionCounter].append(cell)
       }
       previous = cell
-      delegate?.messagestoTableCellDidFinish(result)
     }
+    
+    return result
   }
   
   private func processMarkdown(text: String) -> NSAttributedString! {
     //Swift adds an extra "\n" to paragraph tags so we replace with span.
     var text = text.stringByReplacingOccurrencesOfString("<p>", withString: "<span>")
     text = text.stringByReplacingOccurrencesOfString("</p>", withString: "</span>")
-    //Stolen from the original zulip-ios project
+    //CSS from the original zulip-ios project
     let style = ["<style>",
       "body{font-family:\"SourceSansPro-Regular\";font-size:17px;line-height:17px;}",
       "span.user-mention {padding: 2px 4px; background-color: #F2F2F2; border: 1px solid #e1e1e8;}",
@@ -126,6 +144,7 @@ class MessageArrayToTableCellArray1: NSOperation {
       "</style>"].reduce("",combine: +)
     text += style
     let htmlString: NSAttributedString?
+    //8 bit enoding caused text to be interpreted incorrectly
     let htmlData = text.dataUsingEncoding(NSUTF16StringEncoding, allowLossyConversion: false)
     
     do {
@@ -135,37 +154,5 @@ class MessageArrayToTableCellArray1: NSOperation {
     }
     return htmlString
   }
-}
 
-
-class MessagesArrayToRealm: NSOperation {
-  let messages: [Message]
-  let realm: Realm
-  let currentMessageIDs: [Int]
-  
-  init(messages: [Message]) {
-    do {
-      realm = try Realm()
-    } catch let error as NSError {
-      fatalError(String(error))
-    }
-    self.messages = messages
-    self.currentMessageIDs = self.realm.objects(Message).sorted("id", ascending: true)
-      .map {$0.id}
-    
-    super.init()
-  }
-  
-  override func main() {
-    for message in messages {
-      if !currentMessageIDs.contains(message.id) {
-        do {
-          try realm.write {
-            realm.add(message)
-          }
-        }
-        catch {fatalError("could not write to realm")}
-      }
-    }
-  }
 }
