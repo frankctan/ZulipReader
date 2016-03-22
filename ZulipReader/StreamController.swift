@@ -30,8 +30,8 @@ class StreamController {
   private var subscription: [String:String] = [:]
   private var registration = Registration()
   private var oldTableCells = [[TableCell]]()
-  private var minimumStreamMessageID = Int.max
-  private var maximimumStreamMessageID = Int.min
+  
+  private var homeMessageRange = (Int.max, Int.min)
   private var streamMessageRange = [String: (Int, Int)]()
   
   init() {
@@ -157,6 +157,9 @@ class StreamController {
       dispatch_async(dispatch_get_main_queue()) {
         let toController = NSArray(array: self.realm.objects(Message).sorted("id", ascending: true).map {$0})
         let mess = toController.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+        
+        self.writeMinMaxID(action, minMessageID: mess[0].id, maxMessageID: mess.last!.id)
+        
         self.messagesToController(mess, newMessages: mess, action: action.userAction)
       }
     }
@@ -165,44 +168,40 @@ class StreamController {
   }
   let queue = Queue()
   
-  //  private func readMinMaxID(action: Action) -> Action {
-  //    var returnAction = action
-  //    if let narrowString = action.narrow.narrowString,
-  //      let messageRange = self.streamMessageRange[narrowString] {
-  //        let minID = messageRange.0
-  //        let maxID = messageRange.1
-  //        returnAction.narrow.setMinMaxID(minID, maxID: maxID)
-  //    }
-  //    else {
-  //      returnAction.narrow.setMinMaxID(Int.min, maxID: Int.max)
-  //    }
-  //  }
-  //
-  //  else {
-  //  returnAction.narrow.setMinMaxID(self.minimumStreamMessageID, maxID: self.maximimumStreamMessageID)
-  //  }
-  //  return returnAction
-  //}
-//  
-//  private func writeMinMaxID(action: Action, minMessageID: Int, maxMessageID: Int) {
-//    if let narrowString = action.narrow.narrowString,
-//      let messageRange = self.streamMessageRange[narrowString] {
-//        let minID = messageRange.0
-//        let maxID = messageRange.1{
-//          self.streamMessageRange[narrowString].0 = min(minID, minMessageID)
-//          self.streamMessageRange[narrowString].1 = max(maxID, maxMessageID)
-//        }
-//        else {
-//          self.streamMessageRange[narrowString] = minMessageID
-//          self.streamMessageRange[narrowString] = maxMessageID
-//        }
-//    }
-//    else {
-//      self.minimumStreamMessageID = min(self.minimumStreamMessageID, minMessageID)
-//      self.maximimumStreamMessageID = max(self.maximimumStreamMessageID, maxMessageID)
-//    }
-//  }
-  
+  private func readMinMaxID(action: Action) -> Action {
+    var returnAction = action
+    //checks home or narrowed topic
+    if let narrowString = action.narrow.narrowString {
+      //checks if first time being narrowed to
+      if let messageRange = self.streamMessageRange[narrowString] {
+        let minID = messageRange.0
+        let maxID = messageRange.1
+        returnAction.narrow.setMinMaxID(minID, maxID: maxID)
+      }
+      else {
+        returnAction.narrow.setMinMaxID(Int.min, maxID: Int.max)
+      }
+    }
+    else {
+      returnAction.narrow.setMinMaxID(self.homeMessageRange.0, maxID: self.homeMessageRange.1)
+    }
+    return returnAction
+  }
+
+  private func writeMinMaxID(action: Action, minMessageID: Int, maxMessageID: Int) {
+    if let narrowString = action.narrow.narrowString {
+      if let messageRange = self.streamMessageRange[narrowString] {
+        self.streamMessageRange[narrowString] = (min(messageRange.0, minMessageID), max(messageRange.1, maxMessageID))
+      }
+        else {
+          self.streamMessageRange[narrowString] = (minMessageID, maxMessageID)
+        }
+    }
+    else {
+      self.homeMessageRange = (min(self.homeMessageRange.0, minMessageID), max(self.homeMessageRange.1, maxMessageID))
+    }
+  }
+
   //only called if server sends new messages
   private func messagesToController(allMessages: [Message], newMessages: [Message], action: UserAction) {
     print("in messagesToController")
@@ -259,24 +258,6 @@ class StreamController {
     }
     return false
   }
-  
-  //checks for uniqueness based on dateTime, saves whether the message was obtained while narrowed
-//  private func messagesToRealm(messages: [Message]) {
-//    print("writing messages...")
-//    print("save path: \(realm.path)")
-//    let currentMessages = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
-//    let currentMessageID = currentMessages.map {$0.id}
-//    for message in messages {
-//      if !currentMessageID.contains(message.id) {
-//        do {
-//          try realm.write {
-//            realm.add(message)
-//          }
-//        } catch { fatalError("msgs: could not write to realm") }
-//      }
-//    }
-//    print("finished writing")
-//  }
   
   //MARK: Prepare messages for table view
   private func messageToTableCell(messages: [Message]) -> [[TableCell]] {

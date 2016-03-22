@@ -13,6 +13,7 @@ import SwiftyJSON
 
 class URLToMessageArray: NSOperation {
   
+  //override executing and finished to be KVO compliant because of networking call
   private var _executing: Bool = false
   override var executing: Bool {
     get {
@@ -86,6 +87,8 @@ class URLToMessageArray: NSOperation {
         print("main - error")
         let error = box.unbox
         print("error: \(error)")
+        self.finished = true
+        self.executing = false
       }
     }
   }
@@ -122,6 +125,8 @@ class URLToMessageArray: NSOperation {
   private func getAnchor() -> (min: Int, max: Int) {
     var realmMaxID = 0
     print("in get anchor")
+    
+    //TODO: for some reason, I need to redeclare realm here, but dont't need to in messagesToRealm
     let realm1: Realm
     do {
       realm1 = try Realm()
@@ -129,7 +134,7 @@ class URLToMessageArray: NSOperation {
     } catch let error as NSError {
       fatalError(String(error))
     }
-//    print("realm messages: \(self.realmMessages)")
+
     let realmMessages1 = realm1.objects(Message).sorted("id", ascending: true).map {$0}
 
     let narrowedMessages: [Message] = ((realmMessages1 as NSArray).filteredArrayUsingPredicate(self.action.narrow.predicate())) as! [Message]
@@ -229,64 +234,6 @@ class URLToMessageArray: NSOperation {
     print("finished writing")
   }
 }
-
-class ConcurrentOperation : NSOperation {
-  
-  override var asynchronous: Bool {
-    return true
-  }
-  
-  private var _executing: Bool = false
-  override var executing: Bool {
-    get {
-      return _executing
-    }
-    set {
-      if (_executing != newValue) {
-        self.willChangeValueForKey("isExecuting")
-        _executing = newValue
-        self.didChangeValueForKey("isExecuting")
-      }
-    }
-  }
-  
-  private var _finished: Bool = false;
-  override var finished: Bool {
-    get {
-      return _finished
-    }
-    set {
-      if (_finished != newValue) {
-        self.willChangeValueForKey("isFinished")
-        _finished = newValue
-        self.didChangeValueForKey("isFinished")
-      }
-    }
-  }
-  
-  /// Complete the operation
-  ///
-  /// This will result in the appropriate KVN of isFinished and isExecuting
-  
-  func completeOperation() {
-    executing = false
-    finished  = true
-  }
-  
-  override func start() {
-    if (cancelled) {
-      finished = true
-      return
-    }
-    
-    executing = true
-    
-    main()
-  }
-}
-
-
-
 
 
 
