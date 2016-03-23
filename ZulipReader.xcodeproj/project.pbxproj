@@ -43,7 +43,6 @@
 		67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */; };
 		67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */; };
 		67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */; };
-		67B46E211C9C7B39006EBF11 /* MessageOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B46E201C9C7B39006EBF11 /* MessageOperations.swift */; };
 		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
 		67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67C582B01C8B452E005D0C47 /* LoginView.xib */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
@@ -103,7 +102,6 @@
 		67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTableViewController.swift; sourceTree = "<group>"; };
 		67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuCell.swift; sourceTree = "<group>"; };
-		67B46E201C9C7B39006EBF11 /* MessageOperations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageOperations.swift; sourceTree = "<group>"; };
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
 		67C582B01C8B452E005D0C47 /* LoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -266,7 +264,6 @@
 				673251741C0A5D85009A546C /* DataController.swift */,
 				673251761C0A7154009A546C /* StreamController.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
-				67B46E201C9C7B39006EBF11 /* MessageOperations.swift */,
 				67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
 				6785E7A51C6D0909008ED151 /* MyPlayground.playground */,
@@ -472,7 +469,6 @@
 				67195EA61CA073C80079C4D5 /* URLToMessageArray.swift in Sources */,
 				677F6AEF1C752D04005EB84E /* Futures.swift in Sources */,
 				673251751C0A5D85009A546C /* DataController.swift in Sources */,
-				67B46E211C9C7B39006EBF11 /* MessageOperations.swift in Sources */,
 				6785E7A41C6D05CD008ED151 /* Message.swift in Sources */,
 				67F9565A1C6D3B3100A2EB85 /* Subscription.swift in Sources */,
 				670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */,

@@ -47,18 +47,22 @@ class URLToMessageArray: NSOperation {
   }
   
   weak var delegate: URLToMessageArrayDelegate?
-
+  
   let action: Action
   let realm: Realm
   let realmMessages: [Message]
   let subscription: [String: String]
   let registrationMaxID: Int
+  let homeMessageRange: (Int, Int)
+  let streamMessageRange: [String: (Int,Int)]
   
-  init(action: Action, subscription: [String: String], registrationMax: Int) {
+  init(action: Action, subscription: [String: String], registrationMax: Int, homeMessageRange: (Int,Int), streamMessageRange: [String: (Int, Int)]) {
     print("initializing URLToMessageArray")
     self.action = action
     self.subscription = subscription
     self.registrationMaxID = registrationMax
+    self.homeMessageRange = homeMessageRange
+    self.streamMessageRange = streamMessageRange
     
     do {
       realm = try Realm()
@@ -128,30 +132,16 @@ class URLToMessageArray: NSOperation {
   }
   
   private func getAnchor() -> (min: Int, max: Int) {
-    var realmMaxID = 0
-    print("in get anchor")
-    
-    //TODO: for some reason, I need to redeclare realm here, but dont't need to in messagesToRealm
-    let realm1: Realm
-    do {
-      realm1 = try Realm()
-      print("realm initialized")
-    } catch let error as NSError {
-      fatalError(String(error))
-    }
 
-    let realmMessages1 = realm1.objects(Message).sorted("id", ascending: true).map {$0}
-
-    let narrowedMessages: [Message] = ((realmMessages1 as NSArray).filteredArrayUsingPredicate(self.action.narrow.predicate())) as! [Message]
-    print("narrowed realm")
-    if let last = narrowedMessages.last {
-      realmMaxID = last.id
-    }
-    
-    //minID only used to scroll up
-    var realmMinID = 0
-    if let first = narrowedMessages.first {
-      realmMinID = first.id
+    let realmMinID: Int
+    let realmMaxID: Int
+    if let narrow = action.narrow.narrowString,
+      let messageRange = self.streamMessageRange[narrow] {
+      realmMinID = messageRange.0
+      realmMaxID = messageRange.1
+    } else {
+      realmMinID = self.homeMessageRange.0
+      realmMaxID = self.homeMessageRange.1
     }
     
     //offset by 1 to reduce duplicates
@@ -201,17 +191,21 @@ class URLToMessageArray: NSOperation {
         //assigns streamColor
         if msg.type == "private",
           let privateRecipients = message["display_recipient"].array {
-            msg.display_recipient = privateRecipients.map {$0["email"].stringValue}
-            
-            msg.privateFullName = privateRecipients
-              .filter {if $0["email"].stringValue == ownEmail {return false}; return true}
-              .map {$0["full_name"].stringValue}
-            
-            var pmWithSet = Set(msg.display_recipient + [msg.sender_email])
+          msg.display_recipient = privateRecipients.map {$0["email"].stringValue}
+          
+          msg.privateFullName = privateRecipients
+            .filter {if $0["email"].stringValue == ownEmail {return false}; return true}
+            .map {$0["full_name"].stringValue}
+          
+          var pmWithSet = Set(msg.display_recipient + [msg.sender_email])
+          
+          //allows PM's with yourself.
+          if pmWithSet.count > 1 {
             pmWithSet.remove(ownEmail)
-            msg.pmWith = Array(pmWithSet)
-            
-            msg.streamColor = "none"
+          }
+          msg.pmWith = Array(pmWithSet)
+          
+          msg.streamColor = "none"
         }
         
         if msg.type == "stream",let streamRecipient = message["display_recipient"].string {

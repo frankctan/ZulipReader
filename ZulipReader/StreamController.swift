@@ -21,6 +21,23 @@ protocol SubscriptionDelegate: class {
   func didFetchSubscriptions(subscriptions: [String: String])
 }
 
+class Queue {
+  lazy var realmToMessageArray: NSOperationQueue = {
+    var queue = NSOperationQueue()
+    queue.name = "Realm To Message Array"
+    queue.maxConcurrentOperationCount = 1
+    return queue
+  }()
+  
+  lazy var messageToTableCell: NSOperationQueue = {
+    var queue = NSOperationQueue()
+    queue.name = "Message To Table Cell"
+    queue.maxConcurrentOperationCount = 1
+    return queue
+  }()
+}
+
+
 class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayDelegate {
   
   weak var delegate: StreamControllerDelegate?
@@ -102,7 +119,14 @@ class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayD
     print("loading Stream Messages")
     print("action: \(action.userAction)")
     
-    let operation = URLToMessageArray(action: action, subscription: self.subscription, registrationMax: self.registration.maxMessageID)
+    //TODO: Need to reference the dictionary.
+    if !oldTableCells.isEmpty {
+      let loadMessagesFromRealmOperation = MessageArrayToTableCellArray(action: action, newMessages: [], oldTableCells: oldTableCells)
+      loadMessagesFromRealmOperation.delegate = self
+      queue.messageToTableCell.addOperation(loadMessagesFromRealmOperation)
+    }
+    
+    let operation = URLToMessageArray(action: action, subscription: self.subscription, registrationMax: self.registration.maxMessageID, homeMessageRange: self.homeMessageRange, streamMessageRange: self.streamMessageRange)
     operation.delegate = self
     queue.messageToTableCell.addOperation(operation)
   }
@@ -127,8 +151,12 @@ class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayD
   //MARL: MessageArrayToTableCellArrayDelegate
   func tableCellsDidFinish(deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], tableCells: [[TableCell]]) {
     dispatch_async(dispatch_get_main_queue()) {
+      if tableCells[0].isEmpty {
+        return
+      }
       self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
       self.oldTableCells = tableCells
+      print("tableCellsDidFinish")
     }
   }
   
@@ -143,7 +171,7 @@ class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayD
         returnAction.narrow.setMinMaxID(minID, maxID: maxID)
       }
       else {
-        returnAction.narrow.setMinMaxID(Int.min, maxID: Int.max)
+        returnAction.narrow.setMinMaxID(Int.max, maxID: Int.min)
       }
     }
     else {

@@ -18,7 +18,8 @@ try! realm.write {
 }
 
 let realmObjects = realm.objects(Person).sorted("age", ascending: false)
-realmObjects[1]
+realmObjects[1].name
+
 
 1+1
 
@@ -27,11 +28,12 @@ let personPredicate = NSPredicate(format: "age == %d", 2)
 
 let filteredObjects = realm.objects(Person).filter(personPredicate)
 
-filteredObjects[0]
+filteredObjects[0].name
+
+let a:[[String]] = [[]]
+
+a[0].isEmpty
 
 
-1 == 1
-
-2 == 3
 
 

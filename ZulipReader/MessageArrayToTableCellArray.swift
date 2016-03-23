@@ -17,7 +17,7 @@ class MessageArrayToTableCellArray: NSOperation {
   
   weak var delegate: MessageArrayToTableCellArrayDelegate?
   
-  private let newMessages: [Message]
+  private var newMessages: [Message]
   private let action: Action
   private let oldTableCells: [[TableCell]]
   
@@ -39,11 +39,15 @@ class MessageArrayToTableCellArray: NSOperation {
     let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
 
     let realmTableCells = self.messageToTableCell(allFilteredMessages)
+    if newMessages.isEmpty {
+      self.newMessages = allFilteredMessages
+    }
     let (deletedSections, insertedSections, insertedRows) = self.findTableUpdates(realmTableCells, newMessages: newMessages, action: action.userAction)
     delegate?.tableCellsDidFinish(deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, tableCells: realmTableCells)
   }
   
   private func findTableUpdates(realmTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+    
     print("allMessages Section Count: \(realmTableCells.count)")
     
     let newMessageTableCells = self.messageToTableCell(newMessages)
