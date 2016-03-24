@@ -11,71 +11,27 @@ import Alamofire
 import RealmSwift
 import SwiftyJSON
 
-protocol URLToMessageArrayDelegate: class {
-  func messageArraysDidFinish(action: Action, newMessages: [Message])
-}
-
-class URLToMessageArray: NSOperation {
-  
-  //override executing and finished to be KVO compliant because of networking call
-  private var _executing: Bool = false
-  override var executing: Bool {
-    get {
-      return _executing
-    }
-    set {
-      if (_executing != newValue) {
-        self.willChangeValueForKey("isExecuting")
-        _executing = newValue
-        self.didChangeValueForKey("isExecuting")
-      }
-    }
-  }
-  
-  private var _finished: Bool = false;
-  override var finished: Bool {
-    get {
-      return _finished
-    }
-    set {
-      if (_finished != newValue) {
-        self.willChangeValueForKey("isFinished")
-        _finished = newValue
-        self.didChangeValueForKey("isFinished")
-      }
-    }
-  }
-  
-  weak var delegate: URLToMessageArrayDelegate?
+class URLToMessageArray: NetworkOperation {
   
   let action: Action
-  let realm: Realm
-  let realmMessages: [Message]
   let subscription: [String: String]
-  let registrationMaxID: Int
-  let homeMessageRange: (Int, Int)
-  let streamMessageRange: [String: (Int,Int)]
+  let maxId: Int
+  let homeMinId: Int
+  let streamMinId: [String: Int]
   
-  init(action: Action, subscription: [String: String], registrationMax: Int, homeMessageRange: (Int,Int), streamMessageRange: [String: (Int, Int)]) {
+  var messages = [Message]()
+  
+  init(action: Action, subscription: [String: String], maxId: Int, homeMinId: Int, streamMinId: [String: Int]) {
     print("initializing URLToMessageArray")
     self.action = action
     self.subscription = subscription
-    self.registrationMaxID = registrationMax
-    self.homeMessageRange = homeMessageRange
-    self.streamMessageRange = streamMessageRange
+    self.maxId = maxId
+    self.homeMinId = homeMinId
+    self.streamMinId = streamMinId
     
-    do {
-      realm = try Realm()
-      print("realm initialized")
-    } catch let error as NSError {
-      fatalError(String(error))
-    }
-    
-    realmMessages = self.realm.objects(Message).sorted("id", ascending: true).map {$0}
   }
   
   override func main() {
-    print("in main")
     self.messagePipeline(self.action).start {result in
       if self.cancelled {
         return
@@ -83,23 +39,20 @@ class URLToMessageArray: NSOperation {
       
       switch result {
       case .Success(let box):
-        let messages = box.unbox
-        self.messagesToRealm(messages)
-        self.delegate?.messageArraysDidFinish(self.action, newMessages: messages)
-        self.complete()
+        self.messages = box.unbox
+        self.messagesToRealm(self.messages)
         
       case .Error(let box):
-        print("main - error")
         let error = box.unbox
         print("error: \(error)")
-        self.complete()
       }
+      
+      self.complete()
     }
   }
   
-  private func complete() {
-    self.finished = true
-    self.executing = false
+  func getNewMessages() -> [Message] {
+    return self.messages
   }
   
   private func messagePipeline(action: Action) -> Future<[Message], ZulipErrorDomain> {
@@ -117,35 +70,31 @@ class URLToMessageArray: NSOperation {
   
   private func createRequestParameters(action: Action) -> Future<MessageRequestParameters, ZulipErrorDomain> {
     var params = MessageRequestParameters()
-    let (minAnchor, maxAnchor) = getAnchor()
-    print("getAnchor results: \(minAnchor, maxAnchor)")
+    let minAnchor = getMinAnchor()
     
     switch action.userAction {
     case .Focus:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 20, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: self.maxId, before: 20, after: 50, narrow: action.narrow.narrowString)
     case .Refresh:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: self.maxId, before: 0, after: 50, narrow: action.narrow.narrowString)
     case .ScrollUp:
       params = MessageRequestParameters(anchor: minAnchor, before: 20, after: 0, narrow: action.narrow.narrowString)
     }
     return Future<MessageRequestParameters, ZulipErrorDomain>(value: params)
   }
   
-  private func getAnchor() -> (min: Int, max: Int) {
-
-    let realmMinID: Int
-    let realmMaxID: Int
-    if let narrow = action.narrow.narrowString,
-      let messageRange = self.streamMessageRange[narrow] {
-      realmMinID = messageRange.0
-      realmMaxID = messageRange.1
-    } else {
-      realmMinID = self.homeMessageRange.0
-      realmMaxID = self.homeMessageRange.1
-    }
+  private func getMinAnchor() -> Int {
+    let minId: Int
     
-    //offset by 1 to reduce duplicates
-    return (realmMinID-1, max(realmMaxID, self.registrationMaxID)+1)
+    if let narrow = action.narrow.narrowString,
+      let narrowMinId = self.streamMinId[narrow] {
+      minId = narrowMinId
+      print("narrow MinId: \(minId)")
+    } else {
+      minId = self.homeMinId
+      print("home MinId: \(minId)")
+    }
+    return minId
   }
   
   private func processResponse(response: JSON) -> Future<[Message], ZulipErrorDomain> {
@@ -220,6 +169,14 @@ class URLToMessageArray: NSOperation {
   }
   
   private func messagesToRealm(messages: [Message]) {
+    let realm: Realm
+    do {
+      realm = try Realm()
+    } catch let error as NSError {
+      fatalError(String(error))
+    }
+    let realmMessages = realm.objects(Message).sorted("id", ascending: true).map {$0}
+
     print("writing messages...")
     print("save path: \(realm.path)")
     let currentMessageID = realmMessages.map {$0.id}
@@ -229,7 +186,7 @@ class URLToMessageArray: NSOperation {
         realm.create(Message.self, value: message)
       }
     }
-    do { try self.realm.commitWrite()} catch {fatalError()}
+    do { try realm.commitWrite()} catch {fatalError()}
     print("finished writing")
   }
 }

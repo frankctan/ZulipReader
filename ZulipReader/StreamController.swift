@@ -38,18 +38,18 @@ class Queue {
 }
 
 
-class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayDelegate {
+class StreamController {
   
   weak var delegate: StreamControllerDelegate?
   weak var subscriptionDelegate: SubscriptionDelegate?
   
   private let realm: Realm
   private var subscription: [String:String] = [:]
-  private var registration = Registration()
   private var oldTableCells = [[TableCell]]()
   
-  private var homeMessageRange = (Int.max, Int.min)
-  private var streamMessageRange = [String: (Int, Int)]()
+  private var maxId = Int.min
+  private var homeMinId = Int.max
+  private var streamMinId = [String: Int]()
   
   init() {
     do {
@@ -85,6 +85,21 @@ class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayD
     NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
   }
   
+  func register() {
+    print("registering")
+    let registration = RegistrationOperation()
+    registration.completionBlock = {
+      dispatch_async(dispatch_get_main_queue()) {
+        let registrationResults = registration.getSubscriptionAndMaxID()
+        self.subscription = registrationResults.0
+        self.maxId = max(self.maxId, registrationResults.1)
+        print("finished registration: \(self.maxId)")
+        self.loadStreamMessages(Action())
+      }
+    }
+    queue.messageToTableCell.addOperation(registration)
+  }
+  
   //MARK: Post Messages
   func createPostRequest(message: MessagePost) -> Future<URLRequestConvertible, ZulipErrorDomain> {
     let recipient: String
@@ -113,180 +128,75 @@ class StreamController: URLToMessageArrayDelegate, MessageArrayToTableCellArrayD
     }
   }
   
+  func messagesFromNetwork(action: Action) -> NSOperation {
+    let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription, maxId: self.maxId, homeMinId: self.homeMinId, streamMinId: self.streamMinId)
+    urlToMessagesArray.completionBlock = {
+      let newMessages = urlToMessagesArray.getNewMessages()
+      dispatch_async(dispatch_get_main_queue()){
+        if newMessages.isEmpty {
+          self.delegate?.didFetchMessages()
+          return
+        }
+        self.saveMinMaxId(action, newMessages: newMessages)
+      }
+    }
+    return urlToMessagesArray
+  }
+  
+  func tableCellsFromRealm(action: Action, newMessages: [Message]) -> NSOperation {
+    let action = setActionMinMaxId(action)
+    let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, newMessages: newMessages, oldTableCells: self.oldTableCells)
+    messageArrayToTableCellArray.completionBlock = {
+      dispatch_async(dispatch_get_main_queue()) {
+        let (tableCells, deletedSections, insertedSections, insertedRows) = messageArrayToTableCellArray.getTableCells()
+        if tableCells[0].isEmpty {
+          self.delegate?.didFetchMessages()
+          return
+        }
+        self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
+        self.oldTableCells = tableCells
+      }
+    }
+    return messageArrayToTableCellArray
+  }
+  
   let queue = Queue()
   //MARK: Get Stream Messages
   func loadStreamMessages(action: Action) {
-    print("loading Stream Messages")
-    print("action: \(action.userAction)")
+    let messagesFromNetworkOperation = self.messagesFromNetwork(action)
+    let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, newMessages: <#T##[Message]#>)
     
-    //TODO: Need to reference the dictionary.
-    if !oldTableCells.isEmpty {
-      let loadMessagesFromRealmOperation = MessageArrayToTableCellArray(action: action, newMessages: [], oldTableCells: oldTableCells)
-      loadMessagesFromRealmOperation.delegate = self
-      queue.messageToTableCell.addOperation(loadMessagesFromRealmOperation)
-    }
-    
-    let operation = URLToMessageArray(action: action, subscription: self.subscription, registrationMax: self.registration.maxMessageID, homeMessageRange: self.homeMessageRange, streamMessageRange: self.streamMessageRange)
-    operation.delegate = self
-    queue.messageToTableCell.addOperation(operation)
   }
   
-  //MARK: URLToMessagesArrayDelegate
-  func messageArraysDidFinish(action: Action, newMessages: [Message]) {
-    dispatch_async(dispatch_get_main_queue()) {
-      if newMessages.isEmpty {
-        self.delegate?.didFetchMessages()
-        return
-      }
-      //update message markers
-      self.writeMinMaxID(action, minMessageID: newMessages[0].id, maxMessageID: newMessages.last!.id)
-      let action = self.readMinMaxID(action)
-      
-      let operation = MessageArrayToTableCellArray(action: action, newMessages: newMessages, oldTableCells: self.oldTableCells)
-      operation.delegate = self
-      self.queue.messageToTableCell.addOperation(operation)
-    }
-  }
-  
-  //MARL: MessageArrayToTableCellArrayDelegate
-  func tableCellsDidFinish(deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], tableCells: [[TableCell]]) {
-    dispatch_async(dispatch_get_main_queue()) {
-      if tableCells[0].isEmpty {
-        return
-      }
-      self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
-      self.oldTableCells = tableCells
-      print("tableCellsDidFinish")
-    }
-  }
-  
-  private func readMinMaxID(action: Action) -> Action {
+  private func setActionMinMaxId(action: Action) -> Action {
     var returnAction = action
-    //checks home or narrowed topic
+    let minId: Int
+    
     if let narrowString = action.narrow.narrowString {
-      //checks if first time being narrowed to
-      if let messageRange = self.streamMessageRange[narrowString] {
-        let minID = messageRange.0
-        let maxID = messageRange.1
-        returnAction.narrow.setMinMaxID(minID, maxID: maxID)
-      }
-      else {
-        returnAction.narrow.setMinMaxID(Int.max, maxID: Int.min)
-      }
+      if let streamMinId = self.streamMinId[narrowString] { minId = streamMinId }
+      else { minId = Int.max }
     }
-    else {
-      returnAction.narrow.setMinMaxID(self.homeMessageRange.0, maxID: self.homeMessageRange.1)
-    }
+    else { minId = self.homeMinId }
+    
+    returnAction.narrow.setMinMaxID(minId, maxID: self.maxId)
+    
     return returnAction
   }
 
-  private func writeMinMaxID(action: Action, minMessageID: Int, maxMessageID: Int) {
+  private func saveMinMaxId(action: Action, newMessages: [Message]) {
+    let minMessageId = newMessages[0].id
+    let maxMessageId = newMessages.last!.id
     if let narrowString = action.narrow.narrowString {
-      if let messageRange = self.streamMessageRange[narrowString] {
-        self.streamMessageRange[narrowString] = (min(messageRange.0, minMessageID), max(messageRange.1, maxMessageID))
+      if let minId = self.streamMinId[narrowString] {
+        self.streamMinId[narrowString] = min(minId, minMessageId)
       }
         else {
-          self.streamMessageRange[narrowString] = (minMessageID, maxMessageID)
+          self.streamMinId[narrowString] = minMessageId
         }
     }
     else {
-      self.homeMessageRange = (min(self.homeMessageRange.0, minMessageID), max(self.homeMessageRange.1, maxMessageID))
-    }
-  }
-  
-  //MARK: Register
-  
-  private struct Registration {
-    var pointer = Int()
-    var maxMessageID = Int()
-    var queueID = String()
-    var eventID = Int()
-    var subscription = [JSON]()
-    
-    let numBefore = 50
-    let numAfter = 50
-    
-    init() {}
-    
-    init(_ pointer: Int, _ maxMessageID: Int, _ queueID: String, _ eventID: Int, _ subscription: [JSON]) {
-      self.pointer = pointer
-      self.maxMessageID = maxMessageID
-      self.queueID = queueID
-      self.eventID = eventID
-      self.subscription = subscription
-    }
-  }
-  
-  func register() {
-    registrationPipeline()
-      .start { result in
-        switch result {
-          
-        case .Success(let boxedReg):
-          let reg = boxedReg.unbox
-          self.recordRegistration(reg)
-          self.loadStreamMessages(Action(narrow: Narrow(), action: .Focus))
-          
-        case .Error(let boxedError):
-          let error = boxedError.unbox
-          print("registration error: \(error)")
-        }
-    }
-  }
-  
-  private func registrationPipeline() -> Future<Registration, ZulipErrorDomain> {
-    return createRegistrationRequest()
-      .andThen(AlamofireRequest)
-      .andThen(getStreamAndAchor)
-  }
-  
-  private func createRegistrationRequest() -> Future<URLRequestConvertible, ZulipErrorDomain> {
-    let urlRequest = Router.Register
-    return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
-  }
-  
-  private func getStreamAndAchor(response: JSON) -> Future<Registration, ZulipErrorDomain> {
-    return Future<Registration, ZulipErrorDomain>(operation: { completion in
-      let result: Result<Registration, ZulipErrorDomain>
-      
-      if let pointer = response["pointer"].int,
-        let maxID = response["max_message_id"].int,
-        let queueID = response["queue_id"].string,
-        let eventID = response["last_event_id"].int,
-        let subs = response["subscriptions"].array {
-          
-          let registration = Registration(pointer, maxID, queueID, eventID, subs)
-          result = Result.Success(Box(registration))
-      }
-      else {
-        result = Result.Error(Box(ZulipErrorDomain.ZulipRequestFailure(message: "unable to assign registration")))
-      }
-      completion(result)
-    })
-  }
-  
-  //writes subscription dictionary, realm persistence, sends subscription colors to sideMenuDelegate
-  private func recordRegistration(registration: Registration) {
-    print("registration saved")
-    for sub in registration.subscription {
-      self.subscription[sub["name"].stringValue] = sub["color"].stringValue
-    }
-    self.subscriptionDelegate?.didFetchSubscriptions(self.subscription)
-    subscriptionsToRealm(registration.subscription)
-    self.registration = registration
-  }
-  
-  private func subscriptionsToRealm(subscriptions: [JSON]) {
-    print("writing subscriptions")
-//    print("save path: \(realm.path)")
-    for subscription in subscriptions {
-      let subDict = subscription.dictionaryObject
-      let sub = Subscription(value: subDict!)
-      do {
-        try realm.write {
-          realm.add(sub)
-        }
-      } catch { fatalError("subs: could not write to realm") }
+      self.homeMinId = min(homeMinId, minMessageId)
+      self.maxId = max(self.maxId, maxMessageId)
     }
   }
 }

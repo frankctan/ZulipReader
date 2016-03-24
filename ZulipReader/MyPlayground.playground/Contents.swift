@@ -34,6 +34,9 @@ let a:[[String]] = [[]]
 
 a[0].isEmpty
 
+let range = NSMakeRange(0, 3)
+range.
+
 
 
 
