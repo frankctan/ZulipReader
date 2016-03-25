@@ -81,7 +81,7 @@ class MessageArrayToTableCellArray: NSOperation {
       let firstSection = lastOldTableCell.section
       let lastSection = firstSection + rangeLength
       
-      for section in firstSection..<lastSection {
+      for section in firstSection...lastSection {
         for tableCell in realmTableCells[section] {
           if !oldTableCellsId.contains(tableCell.id) {
             insertedRows.append(NSIndexPath(forRow: tableCell.row, inSection: section))

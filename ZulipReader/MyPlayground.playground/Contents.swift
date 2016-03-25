@@ -35,7 +35,7 @@ let a:[[String]] = [[]]
 a[0].isEmpty
 
 
-for i in 0...0 {
+for i in 0..<0 {
   print(i)
 }
 

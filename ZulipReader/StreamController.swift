@@ -197,6 +197,12 @@ class StreamController: URLToMessageArrayDelegate {
   private func saveMinMaxId(action: Action, newMessages: [Message]) {
     let minMessageId = newMessages[0].id
     let maxMessageId = newMessages.last!.id
+    
+    if maxMessageId > self.maxId {
+      print("self.maxId has increased!")
+    }
+    self.maxId = max(self.maxId, maxMessageId)
+
     if let narrowString = action.narrow.narrowString {
       if let minId = self.streamMinId[narrowString] {
         self.streamMinId[narrowString] = min(minId, minMessageId)
@@ -208,7 +214,6 @@ class StreamController: URLToMessageArrayDelegate {
     }
     else {
       self.homeMinId = min(homeMinId, minMessageId)
-      self.maxId = max(self.maxId, maxMessageId)
       print("homeMindId: \(self.homeMinId)")
     }
     print("saved minMaxId!")
