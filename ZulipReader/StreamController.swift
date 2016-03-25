@@ -138,12 +138,12 @@ class StreamController: URLToMessageArrayDelegate {
   //MARK: URLToMessagesArrayDelegate
   func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
     print("in URLToMessagesArrayDelegate!")
-    self.saveMinMaxId(action, newMessages: messages)
-    dispatch_async(dispatch_get_main_queue()){
-      if messages.isEmpty {
+    if messages.isEmpty {
+      dispatch_async(dispatch_get_main_queue()){
         self.delegate?.didFetchMessages()
-        return
       }
+    } else {
+      self.saveMinMaxId(action, newMessages: messages)
     }
   }
   
