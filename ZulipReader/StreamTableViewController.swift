@@ -61,10 +61,11 @@ class StreamTableViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
-    timer = NSTimer(timeInterval: 5.0, target: self, selector: #selector(StreamTableViewController.autoRefresh(_:)), userInfo: nil, repeats: false)
+    timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
     self.loadData()
   }
   
+  //this function works because MessagesArrayToTableCellArray.findTableUpdates relies on predicates and oldTableCell
   func autoRefresh(timer: NSTimer) {
     print("shots fired")
     guard let data = data else {fatalError()}
