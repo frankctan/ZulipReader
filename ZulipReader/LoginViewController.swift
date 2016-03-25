@@ -20,7 +20,7 @@ class LoginViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     data.delegate = self
-    let panGestureRecognizer = UIPanGestureRecognizer.init(target: self, action: "viewDidPan:")
+    let panGestureRecognizer = UIPanGestureRecognizer.init(target: self, action: #selector(LoginViewController.viewDidPan(_:)))
     view.addGestureRecognizer(panGestureRecognizer)
     usernameTextField.delegate = self
     passwordTextField.delegate = self

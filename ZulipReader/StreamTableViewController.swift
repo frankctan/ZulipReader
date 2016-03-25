@@ -24,9 +24,9 @@ class StreamTableViewController: SLKTextViewController {
       default:
         self.setTextInputbarHidden(true, animated: true)
       }
-      
     }
   }
+  
   var data: StreamController?
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
@@ -36,6 +36,7 @@ class StreamTableViewController: SLKTextViewController {
       print(action)
     }
   }
+  
   var refreshControl: UIRefreshControl?
   
   override func viewDidLoad() {
@@ -60,7 +61,7 @@ class StreamTableViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     print("in streamTableViewController:viewDidAppear")
-    timer = NSTimer(timeInterval: 5.0, target: self, selector: "autoRefresh:", userInfo: nil, repeats: false)
+    timer = NSTimer(timeInterval: 5.0, target: self, selector: #selector(StreamTableViewController.autoRefresh(_:)), userInfo: nil, repeats: false)
     self.loadData()
   }
   
@@ -119,7 +120,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 500
+    return 1000
   }
   
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -182,7 +183,7 @@ class StreamTableViewController: SLKTextViewController {
     
     //Either pmWith or stream will be empty []
     let pmWith = self.action.narrow.pmWith
-    let stream = self.action.narrow.recipient
+    let stream = self.action.narrow.stream
     let recipient = pmWith + stream
     
     let subject = self.action.narrow.subject
@@ -225,17 +226,17 @@ class StreamTableViewController: SLKTextViewController {
     let tableViewController = UITableViewController()
     tableViewController.tableView = self.tableView
     let refresh = UIRefreshControl()
-    refresh.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    refresh.addTarget(self, action: #selector(StreamTableViewController.refresh(_:)), forControlEvents: .ValueChanged)
     tableViewController.refreshControl = refresh
     
     //Navigation Bar
     //Sticky headers follow the scrolling of the navbar
     self.navigationController?.navigationBar.translucent = false
-    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: "homeButtonDidTouch:")
+    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: #selector(StreamTableViewController.homeButtonDidTouch(_:)))
     navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
     
     //SWRevealViewController
-    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: "revealToggle:")
+    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)))
     let sideMenuNavController = UINavigationController(rootViewController: self.sideMenuTableViewController!)
     self.revealViewController().rearViewController = sideMenuNavController
     self.navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
@@ -260,7 +261,7 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
-    tableView.hideLoading()
+    
     print("# of old sections: \(self.messages.count)")
     self.messages = messages
     self.refreshControl?.endRefreshing()
@@ -270,13 +271,14 @@ extension StreamTableViewController: StreamControllerDelegate {
     
     UIView.animateWithDuration(0.01, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
       self.tableView.beginUpdates()
-      self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
-      self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
-      self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
+      self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
+      self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
+      self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
       self.tableView.endUpdates()
       }, completion: {
         if $0 {
-            self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+          self.tableView.hideLoading()
+          self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
         }
     })
   }
