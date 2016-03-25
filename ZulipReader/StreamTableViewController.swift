@@ -31,11 +31,7 @@ class StreamTableViewController: SLKTextViewController {
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
   var timer = NSTimer()
-  var action = Action() {
-    didSet {
-      print(action)
-    }
-  }
+  var action = Action()
   
   var refreshControl: UIRefreshControl?
   
@@ -60,7 +56,6 @@ class StreamTableViewController: SLKTextViewController {
     }
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
-    print("in streamTableViewController:viewDidAppear")
     timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
     self.loadData()
   }
@@ -152,7 +147,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   func refresh(refreshControl: UIRefreshControl) {
-    print("refreshing!")
+    print("in tableViewController.refresh!")
     self.refreshControl = refreshControl
     guard let data = data else {fatalError()}
     self.action.userAction = .ScrollUp

@@ -65,13 +65,11 @@ class LoginController {
   }
   
   private func saveDefaults(email: String) {
-    print("saving email to defaults")
     let defaults = NSUserDefaults.standardUserDefaults()
     defaults.setValue(email, forKey: "email")
   }
   
   private func setRouterHeader(header: String) {
     Router.basicAuth = header
-    print("set Router Header!")
   }
 }

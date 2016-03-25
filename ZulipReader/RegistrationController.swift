@@ -34,7 +34,6 @@ class RegistrationOperation: NetworkOperation {
   private var registration = Registration()
 
   override func main() {
-    print("in registration main")
     registrationPipeline()
       .start { result in
         switch result {

@@ -54,7 +54,6 @@ enum Router: URLRequestConvertible {
           //Private
           postParams = ["type": type, "content": content, "to": recipient]
         }
-        print("postParams: \(postParams)")
         return("/messages", postParams)
         
       case .GetSubscriptions:
@@ -72,7 +71,8 @@ enum Router: URLRequestConvertible {
       }
     }()
     
-    print("result.parameters: \(result.parameters)")
+    
+    
     let URL = NSURL(string: Router.baseURL)!
     let URLRequest = NSMutableURLRequest(URL: URL.URLByAppendingPathComponent(result.path))
     URLRequest.HTTPMethod = method.rawValue
@@ -82,7 +82,9 @@ enum Router: URLRequestConvertible {
     }
     
     let encoding = Alamofire.ParameterEncoding.URLEncodedInURL
-    print(encoding.encode(URLRequest, parameters: result.parameters).0)
-    return encoding.encode(URLRequest, parameters: result.parameters).0
+    let encodedURLRequest = encoding.encode(URLRequest, parameters: result.parameters).0
+    print("result.parameters: \(result.parameters)")
+    print("URL Request: \(encodedURLRequest)")
+    return encodedURLRequest
   }
 }

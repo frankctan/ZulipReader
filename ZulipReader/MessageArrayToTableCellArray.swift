@@ -21,13 +21,11 @@ class MessageArrayToTableCellArray: NSOperation {
   private var insertedRows = [NSIndexPath]()
   
   init(action: Action, oldTableCells: [[TableCell]]) {
-    print("in MessageArraytoTableCellArray")
     self.action = action
     self.oldTableCells = oldTableCells
   }
   
   override func main() {
-    print("in MessageArrayToTableCellArray - main")
     let realm: Realm
     do {
       realm = try Realm()

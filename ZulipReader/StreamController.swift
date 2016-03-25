@@ -86,7 +86,6 @@ class StreamController: URLToMessageArrayDelegate {
   }
   
   func register() {
-    print("registering")
     let registration = RegistrationOperation()
     registration.completionBlock = {
       dispatch_async(dispatch_get_main_queue()) {
@@ -109,8 +108,6 @@ class StreamController: URLToMessageArrayDelegate {
     } else {
       recipient = message.recipient[0]
     }
-    
-    print("post url request:")
     let urlRequest: URLRequestConvertible = Router.PostMessage(type: message.type.description, content: message.content, to: recipient, subject: message.subject)
     return Future<URLRequestConvertible, ZulipErrorDomain>(value: urlRequest)
   }
@@ -201,6 +198,7 @@ class StreamController: URLToMessageArrayDelegate {
     if maxMessageId > self.maxId {
       print("self.maxId has increased!")
     }
+    
     self.maxId = max(self.maxId, maxMessageId)
 
     if let narrowString = action.narrow.narrowString {
@@ -210,11 +208,9 @@ class StreamController: URLToMessageArrayDelegate {
         else {
           self.streamMinId[narrowString] = minMessageId
         }
-      print("streamMinId: \(self.streamMinId)")
     }
     else {
       self.homeMinId = min(homeMinId, minMessageId)
-      print("homeMindId: \(self.homeMinId)")
     }
     print("saved minMaxId!")
   }

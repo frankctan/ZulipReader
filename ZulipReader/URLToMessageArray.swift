@@ -28,7 +28,6 @@ class URLToMessageArray: NetworkOperation {
   weak var delegate: URLToMessageArrayDelegate?
   
   init(action: Action, subscription: [String: String], maxId: Int, homeMinId: Int, streamMinId: [String: Int]) {
-    print("in URLToMessageArray")
     self.action = action
     self.subscription = subscription
     self.maxId = maxId
@@ -37,7 +36,6 @@ class URLToMessageArray: NetworkOperation {
   }
   
   override func main() {
-    print("in URLToMessageArray - main")
     self.messagePipeline(self.action).start {result in
       if self.cancelled {
         return
@@ -189,7 +187,6 @@ class URLToMessageArray: NetworkOperation {
       }
     }
     do { try realm.commitWrite()} catch {fatalError()}
-    print("finished writing")
     print("save path: \(realm.path)")
   }
 }

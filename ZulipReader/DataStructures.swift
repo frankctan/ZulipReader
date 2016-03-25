@@ -55,7 +55,6 @@ public struct Narrow {
   private(set) var type: Type = .Stream {
     didSet {
       self.typePredicate = NSPredicate(format: "type = %@", type.description)
-      print("type Predicate: \(typePredicate)")
     }
   }
   
@@ -146,7 +145,7 @@ public struct Narrow {
     let arr = [typePredicate, streamPredicate, subjectPredicate, mentionedPredicate, minimumIDPredicate, maximumIDPredicate, pmWithPredicate]
     let predicateArray = arr.filter {if $0 == nil {return false}; return true}.map {$0!}
     let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
-    print("new predicate: \(compoundPredicate)")
+    print("action predicate: \(compoundPredicate)")
     return compoundPredicate
   }
 }
