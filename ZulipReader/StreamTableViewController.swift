@@ -60,7 +60,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   //this function works because MessagesArrayToTableCellArray.findTableUpdates relies on predicates and oldTableCell
-  //TODO: Move this to the stream controller. calling this here blocks the main thread.
+  //TODO: Move this to the stream controller. calling this here blocks the main thread. Maybe this needs to be added on a different queue?
   func autoRefresh(timer: NSTimer) {
     print("shots fired")
     guard let data = data else {fatalError()}
