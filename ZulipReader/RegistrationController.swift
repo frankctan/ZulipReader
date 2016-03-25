@@ -95,7 +95,6 @@ class RegistrationOperation: NetworkOperation {
     for sub in registration.subscriptionJSON {
       self.subscription[sub["name"].stringValue] = sub["color"].stringValue
     }
-//    self.subscriptionDelegate?.didFetchSubscriptions(self.subscription)
     self.registration = registration
   }
 }

@@ -34,9 +34,18 @@ let a:[[String]] = [[]]
 
 a[0].isEmpty
 
-let range = NSMakeRange(0, 3)
-range.
 
+for i in 0..<0 {
+  print(i)
+}
+
+var q = 4
+add(q)
+func add(x: Int) -> Int {
+  return x + 2
+}
+
+q = 7
 
 
 
