@@ -21,6 +21,7 @@ protocol SubscriptionDelegate: class {
   func didFetchSubscriptions(subscriptions: [String: String])
 }
 
+//TODO: rethink these queues.
 class Queue {
   lazy var realmToMessageArray: NSOperationQueue = {
     var queue = NSOperationQueue()
@@ -36,7 +37,6 @@ class Queue {
     return queue
   }()
 }
-
 
 class StreamController: URLToMessageArrayDelegate {
   
@@ -66,6 +66,7 @@ class StreamController: URLToMessageArrayDelegate {
   
   //GCD so refreshing doesn't block the main thread.
   //TODO: why do I need @objc?
+  //should autoRefresh be in a different queue?
   @objc private func autoRefresh(timer: NSTimer) {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
       if !self.oldTableCells.isEmpty {
@@ -185,6 +186,12 @@ class StreamController: URLToMessageArrayDelegate {
   
   let queue = Queue()
   //MARK: Get Stream Messages
+  //TODO: load messages from Realm first, if they're not their then do a network call
+  //TODO: We're not going to delete Realm messages anymore
+  //TODO: load XX messages from Realm at a time so we don't display a million rows at the same time
+  //TODO: when client is closed or whatever, re-register and then load all the messages up to the new maxMessageID
+  //TODO: how do i acknowledge when messages come in? Still get emails for missed private messages that I've read on ZulipReader
+  //TODO: if no connection, I want to be able to read all the messages still available on Realm
   func loadStreamMessages(action: Action) {
     self.action = action
     let messagesFromNetworkOperation = self.messagesFromNetwork(action)
