@@ -11,6 +11,10 @@ import Alamofire
 import RealmSwift
 import SwiftyJSON
 
+protocol URLToMessageArrayDelegate: class {
+  func urlToMessageArrayDidFinish(action: Action, messages: [Message])
+}
+
 class URLToMessageArray: NetworkOperation {
   
   let action: Action
@@ -21,17 +25,19 @@ class URLToMessageArray: NetworkOperation {
   
   var messages = [Message]()
   
+  weak var delegate: URLToMessageArrayDelegate?
+  
   init(action: Action, subscription: [String: String], maxId: Int, homeMinId: Int, streamMinId: [String: Int]) {
-    print("initializing URLToMessageArray")
+    print("in URLToMessageArray")
     self.action = action
     self.subscription = subscription
     self.maxId = maxId
     self.homeMinId = homeMinId
     self.streamMinId = streamMinId
-    
   }
   
   override func main() {
+    print("in URLToMessageArray - main")
     self.messagePipeline(self.action).start {result in
       if self.cancelled {
         return
@@ -41,13 +47,14 @@ class URLToMessageArray: NetworkOperation {
       case .Success(let box):
         self.messages = box.unbox
         self.messagesToRealm(self.messages)
+        self.delegate?.urlToMessageArrayDidFinish(self.action, messages: self.messages)
+        self.complete()
         
       case .Error(let box):
         let error = box.unbox
         print("error: \(error)")
+        self.complete()
       }
-      
-      self.complete()
     }
   }
   
@@ -56,7 +63,6 @@ class URLToMessageArray: NetworkOperation {
   }
   
   private func messagePipeline(action: Action) -> Future<[Message], ZulipErrorDomain> {
-    print("in message pipeline")
     return createRequestParameters(action)
       .andThen(createMessageRequest)
       .andThen(AlamofireRequest)
@@ -83,29 +89,26 @@ class URLToMessageArray: NetworkOperation {
     return Future<MessageRequestParameters, ZulipErrorDomain>(value: params)
   }
   
+  //returns the minimum of a narrowString or the home minimum ID
   private func getMinAnchor() -> Int {
     let minId: Int
     
     if let narrow = action.narrow.narrowString,
       let narrowMinId = self.streamMinId[narrow] {
       minId = narrowMinId
-      print("narrow MinId: \(minId)")
     } else {
       minId = self.homeMinId
-      print("home MinId: \(minId)")
     }
     return minId
   }
   
   private func processResponse(response: JSON) -> Future<[Message], ZulipErrorDomain> {
-    print("processing JSON response")
     return parseMessageRequest(response)
       .andThen(createMessageObject)
   }
   
   private func parseMessageRequest(response: JSON) -> Future<[JSON], ZulipErrorDomain> {
     return Future<[JSON], ZulipErrorDomain>(operation: {completion in
-      print("parsing message request")
       let result: Result<[JSON], ZulipErrorDomain>
       if let responseArray = response["messages"].array {
         result = Result.Success(Box(responseArray))
@@ -175,11 +178,10 @@ class URLToMessageArray: NetworkOperation {
     } catch let error as NSError {
       fatalError(String(error))
     }
+    
     let realmMessages = realm.objects(Message).sorted("id", ascending: true).map {$0}
-
-    print("writing messages...")
-    print("save path: \(realm.path)")
     let currentMessageID = realmMessages.map {$0.id}
+    
     realm.beginWrite()
     for message in messages {
       if !currentMessageID.contains(message.id) {
@@ -188,6 +190,7 @@ class URLToMessageArray: NetworkOperation {
     }
     do { try realm.commitWrite()} catch {fatalError()}
     print("finished writing")
+    print("save path: \(realm.path)")
   }
 }
 

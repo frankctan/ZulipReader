@@ -38,7 +38,7 @@ class Queue {
 }
 
 
-class StreamController {
+class StreamController: URLToMessageArrayDelegate {
   
   weak var delegate: StreamControllerDelegate?
   weak var subscriptionDelegate: SubscriptionDelegate?
@@ -94,6 +94,7 @@ class StreamController {
         self.subscription = registrationResults.0
         self.maxId = max(self.maxId, registrationResults.1)
         print("finished registration: \(self.maxId)")
+        self.subscriptionDelegate?.didFetchSubscriptions(self.subscription)
         self.loadStreamMessages(Action())
       }
     }
@@ -130,31 +131,36 @@ class StreamController {
   
   func messagesFromNetwork(action: Action) -> NSOperation {
     let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription, maxId: self.maxId, homeMinId: self.homeMinId, streamMinId: self.streamMinId)
-    urlToMessagesArray.completionBlock = {
-      let newMessages = urlToMessagesArray.getNewMessages()
-      dispatch_async(dispatch_get_main_queue()){
-        if newMessages.isEmpty {
-          self.delegate?.didFetchMessages()
-          return
-        }
-        self.saveMinMaxId(action, newMessages: newMessages)
-      }
-    }
+    urlToMessagesArray.delegate = self
     return urlToMessagesArray
   }
   
-  func tableCellsFromRealm(action: Action, newMessages: [Message]) -> NSOperation {
+  //MARK: URLToMessagesArrayDelegate
+  func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
+    print("in URLToMessagesArrayDelegate!")
+    self.saveMinMaxId(action, newMessages: messages)
+    dispatch_async(dispatch_get_main_queue()){
+      if messages.isEmpty {
+        self.delegate?.didFetchMessages()
+        return
+      }
+    }
+  }
+  
+  func tableCellsFromRealm(action: Action) -> NSOperation {
+    //setActionMinMaxId(_:) modifies narrow.min/max ID
     let action = setActionMinMaxId(action)
-    let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, newMessages: newMessages, oldTableCells: self.oldTableCells)
+    let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells)
     messageArrayToTableCellArray.completionBlock = {
+      let (tableCells, deletedSections, insertedSections, insertedRows) = messageArrayToTableCellArray.getTableCells()
+      self.oldTableCells = tableCells
       dispatch_async(dispatch_get_main_queue()) {
-        let (tableCells, deletedSections, insertedSections, insertedRows) = messageArrayToTableCellArray.getTableCells()
-        if tableCells[0].isEmpty {
+        if insertedRows.isEmpty {
           self.delegate?.didFetchMessages()
           return
         }
+        print("table Cells From Realm - Sending to controller!")
         self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
-        self.oldTableCells = tableCells
       }
     }
     return messageArrayToTableCellArray
@@ -164,8 +170,13 @@ class StreamController {
   //MARK: Get Stream Messages
   func loadStreamMessages(action: Action) {
     let messagesFromNetworkOperation = self.messagesFromNetwork(action)
-    let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, newMessages: <#T##[Message]#>)
     
+    messagesFromNetworkOperation.completionBlock = {
+      let tableCellsFromRealmOperation = self.tableCellsFromRealm(action)
+      self.queue.messageToTableCell.addOperation(tableCellsFromRealmOperation)
+    }
+    
+    queue.messageToTableCell.addOperation(messagesFromNetworkOperation)
   }
   
   private func setActionMinMaxId(action: Action) -> Action {
@@ -174,7 +185,7 @@ class StreamController {
     
     if let narrowString = action.narrow.narrowString {
       if let streamMinId = self.streamMinId[narrowString] { minId = streamMinId }
-      else { minId = Int.max }
+      else { minId = self.homeMinId }
     }
     else { minId = self.homeMinId }
     
@@ -193,10 +204,13 @@ class StreamController {
         else {
           self.streamMinId[narrowString] = minMessageId
         }
+      print("streamMinId: \(self.streamMinId)")
     }
     else {
       self.homeMinId = min(homeMinId, minMessageId)
       self.maxId = max(self.maxId, maxMessageId)
+      print("homeMindId: \(self.homeMinId)")
     }
+    print("saved minMaxId!")
   }
 }

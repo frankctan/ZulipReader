@@ -11,7 +11,6 @@ import RealmSwift
 
 class MessageArrayToTableCellArray: NSOperation {
   
-  private var newMessages: [Message]
   private let action: Action
   private let oldTableCells: [[TableCell]]
   
@@ -21,81 +20,82 @@ class MessageArrayToTableCellArray: NSOperation {
   private var insertedSections = NSRange()
   private var insertedRows = [NSIndexPath]()
   
-  init(action: Action, newMessages: [Message], oldTableCells: [[TableCell]]) {
+  init(action: Action, oldTableCells: [[TableCell]]) {
+    print("in MessageArraytoTableCellArray")
     self.action = action
-    self.newMessages = newMessages
     self.oldTableCells = oldTableCells
   }
   
   override func main() {
-    print("in main")
+    print("in MessageArrayToTableCellArray - main")
     let realm: Realm
     do {
       realm = try Realm()
     } catch {fatalError()}
-    print("initialized realm")
     
     let realmMessages = NSArray(array: realm.objects(Message).sorted("id", ascending: true).map {$0})
     let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-
+    
     let realmTableCells = self.messageToTableCell(allFilteredMessages)
-    if newMessages.isEmpty {
-      self.newMessages = allFilteredMessages
-    }
-    (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, newMessages: newMessages, action: action.userAction)
     self.tableCells = realmTableCells
+    (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: action.userAction)
+    
   }
   
   func getTableCells() -> ([[TableCell]], NSRange, NSRange, [NSIndexPath]) {
     return (self.tableCells, self.deletedSections, self.insertedSections, self.insertedRows)
   }
   
-  private func findTableUpdates(realmTableCells: [[TableCell]], newMessages: [Message], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
-    
-    print("allMessages Section Count: \(realmTableCells.count)")
-    
-    let newMessageTableCells = self.messageToTableCell(newMessages)
-    
-    print("newMessages Section Count: \(newMessageTableCells.count)")
-    let flatNewMessageTableCells = newMessageTableCells.flatMap {$0}
-    let flatOldTableCells = oldTableCells.flatMap {$0}
+  private func findTableUpdates(realmTableCells: [[TableCell]], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     
     var deletedSections = NSRange()
     var insertedSections = NSRange()
     var insertedRows = [NSIndexPath]()
     
-    print("flatOld#: \(flatOldTableCells.count) + flatNew#: \(flatNewMessageTableCells.count) = newMessage#: \(realmTableCells.reduce(0, combine: {$0 + $1.count}))")
+    let flatRealmTableCells = realmTableCells.flatMap {$0}
     
     switch action {
     case .Focus:
       deletedSections = NSMakeRange(0, oldTableCells.count)
       insertedSections = NSMakeRange(0, realmTableCells.count)
-//      insertedRows = realmTableCells.flatMap {$0}.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
+      insertedRows = flatRealmTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
     case .ScrollUp:
+      let oldTableCellsId = self.oldTableCells.flatMap {$0}.map {$0.id}
       insertedSections = NSMakeRange(0, realmTableCells.count - oldTableCells.count)
-      for section in insertedSections.location...(insertedSections.location+insertedSections.length) {
-        for tableCells in realmTableCells[section] {
-          
+      for section in 0...insertedSections.length {
+        for tableCell in realmTableCells[section] {
+          if !oldTableCellsId.contains(tableCell.id) {
+            insertedRows.append(NSIndexPath(forRow: tableCell.row, inSection: section))
+          }
         }
       }
-//      insertedRows = flatNewMessageTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
     case .Refresh:
-      let lastOldTableCell = flatOldTableCells.last!
+      let oldTableCellsId = self.oldTableCells.flatMap {$0}.map {$0.id}
+      let lastOldTableCell = oldTableCells.flatMap {$0}.last!
       let rangeLength = realmTableCells.count - oldTableCells.count
-        insertedSections = NSMakeRange(lastOldTableCell.section + 1, rangeLength)
+      
+      insertedSections = NSMakeRange(lastOldTableCell.section + 1, rangeLength)
+      
+      let firstSection = lastOldTableCell.section
+      let lastSection = firstSection + insertedSections.length
+      for section in firstSection..<lastSection {
+        for tableCell in realmTableCells[section] {
+          if !oldTableCellsId.contains(tableCell.id) {
+            insertedRows.append(NSIndexPath(forRow: tableCell.row, inSection: section))
+          }
+        }
       }
-//      let newMessageCount = newMessages.count
-//      let flatrealmTableCells = realmTableCells.flatMap {$0}
-//      for index in (flatrealmTableCells.count - newMessageCount)..<flatrealmTableCells.count {
-//        insertedRows.append(NSIndexPath(forRow: flatrealmTableCells[index].row, inSection: flatrealmTableCells[index].section))
-//      }
     }
     
+    print("action: \(action)")
+    print("deletedSections: \(deletedSections)")
+    print("insertedSections: \(insertedSections)")
+    print("insertedRows: \(insertedRows.count)")
     return (deletedSections, insertedSections, insertedRows)
   }
-
+  
   private func messageToTableCell(messages: [Message]) -> [[TableCell]] {
     var previous = TableCell()
     var result = [[TableCell]()]
@@ -166,5 +166,5 @@ class MessageArrayToTableCellArray: NSOperation {
     }
     return htmlString
   }
-
+  
 }

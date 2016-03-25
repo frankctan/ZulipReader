@@ -24,9 +24,9 @@ class StreamTableViewController: SLKTextViewController {
       default:
         self.setTextInputbarHidden(true, animated: true)
       }
-      
     }
   }
+  
   var data: StreamController?
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
@@ -36,6 +36,7 @@ class StreamTableViewController: SLKTextViewController {
       print(action)
     }
   }
+  
   var refreshControl: UIRefreshControl?
   
   override func viewDidLoad() {
@@ -119,7 +120,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 500
+    return 1000
   }
   
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -260,7 +261,7 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
-    tableView.hideLoading()
+    
     print("# of old sections: \(self.messages.count)")
     self.messages = messages
     self.refreshControl?.endRefreshing()
@@ -276,7 +277,8 @@ extension StreamTableViewController: StreamControllerDelegate {
       self.tableView.endUpdates()
       }, completion: {
         if $0 {
-            self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
+          self.tableView.hideLoading()
+          self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
         }
     })
   }
