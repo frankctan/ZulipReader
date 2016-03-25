@@ -64,14 +64,15 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
-  //this function works because MessagesArrayToTableCellArray.findTableUpdates relies on predicates and oldTableCell
-  //TODO: why do I need @objc? #selector?
-  //So... what are my options here? I need to make action an instance variable. I can link the action with didSet, but then I can't be certain when didSet fires... better just to "sync" table.action with streamController.action when there's a UI action. cool.
+  //GCD so refreshing doesn't block the main thread.
+  //TODO: why do I need @objc?
   @objc private func autoRefresh(timer: NSTimer) {
-    if !oldTableCells.isEmpty {
-      print("shots fired!")
-      self.action.userAction = .Refresh
-      self.loadStreamMessages(self.action)
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+      if !self.oldTableCells.isEmpty {
+        print("shots fired!")
+        self.action.userAction = .Refresh
+        self.loadStreamMessages(self.action)
+      }
     }
   }
   
