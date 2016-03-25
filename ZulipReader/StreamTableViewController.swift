@@ -30,7 +30,6 @@ class StreamTableViewController: SLKTextViewController {
   var data: StreamController?
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
-//  var timer = NSTimer()
   var action = Action()
   
   var refreshControl: UIRefreshControl?
@@ -59,15 +58,6 @@ class StreamTableViewController: SLKTextViewController {
     self.loadData()
   }
   
-  //this function works because MessagesArrayToTableCellArray.findTableUpdates relies on predicates and oldTableCell
-  //TODO: Move this to the stream controller. calling this here blocks the main thread. Maybe this needs to be added on a different queue?
-  func autoRefresh(timer: NSTimer) {
-    print("shots fired")
-    guard let data = data else {fatalError()}
-    self.action.userAction = .Refresh
-    data.loadStreamMessages(self.action)
-  }
-  
   func loadData() {
     guard let data = data else {fatalError()}
     if !data.isLoggedIn() {
@@ -78,7 +68,6 @@ class StreamTableViewController: SLKTextViewController {
     else {
       tableView.showLoading()
       data.register()
-//      timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
     }
   }
   
@@ -158,8 +147,6 @@ class StreamTableViewController: SLKTextViewController {
   func logout() {
     guard let data = data else {fatalError()}
     data.clearDefaults()
-    self.timer.invalidate()
-    self.timer = NSTimer()
     self.data = nil
     self.sideMenuTableViewController = nil
     self.refreshControl = nil

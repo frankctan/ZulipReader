@@ -47,11 +47,14 @@ class StreamController: URLToMessageArrayDelegate {
   private var subscription: [String:String] = [:]
   private var oldTableCells = [[TableCell]]()
   
-  private let timer: NSTimer
+  private var timer = NSTimer()
   
   private var maxId = Int.min
   private var homeMinId = Int.max
   private var streamMinId = [String: Int]()
+  
+  //we make this an instance variable beacause refresh needs to be aware of narrow
+  private var action = Action()
   
   init() {
     do {
@@ -59,24 +62,31 @@ class StreamController: URLToMessageArrayDelegate {
     } catch let error as NSError {
       fatalError(String(error))
     }
-    
-//    self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
   }
   
-//  @objc private func autoRefresh(timer: NSTimer) {
-//    
-//  }
+  //this function works because MessagesArrayToTableCellArray.findTableUpdates relies on predicates and oldTableCell
+  //TODO: why do I need @objc? #selector?
+  //So... what are my options here? I need to make action an instance variable. I can link the action with didSet, but then I can't be certain when didSet fires... better just to "sync" table.action with streamController.action when there's a UI action. cool.
+  @objc private func autoRefresh(timer: NSTimer) {
+    if !oldTableCells.isEmpty {
+      print("shots fired!")
+      self.action.userAction = .Refresh
+      self.loadStreamMessages(self.action)
+    }
+  }
   
   func isLoggedIn() -> Bool {
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
-        Router.basicAuth = authHead
+      Router.basicAuth = authHead
+      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
         return true
     }
     return false
   }
   
   func clearDefaults() {
+    timer.invalidate()
     do {
       try realm.write {
         print("deleting realm")
@@ -109,7 +119,7 @@ class StreamController: URLToMessageArrayDelegate {
   }
   
   //MARK: Post Messages
-  func createPostRequest(message: MessagePost) -> Future<URLRequestConvertible, ZulipErrorDomain> {
+  private func createPostRequest(message: MessagePost) -> Future<URLRequestConvertible, ZulipErrorDomain> {
     let recipient: String
     if message.type == .Private {
       recipient = message.recipient.joinWithSeparator(",")
@@ -121,6 +131,7 @@ class StreamController: URLToMessageArrayDelegate {
   }
   
   func postMessage(message: MessagePost, action: Action) {
+    self.action = action
     createPostRequest(message)
       .andThen(AlamofireRequest)
       .start {result in
@@ -134,14 +145,14 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
-  func messagesFromNetwork(action: Action) -> NSOperation {
+  private func messagesFromNetwork(action: Action) -> NSOperation {
     let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription, maxId: self.maxId, homeMinId: self.homeMinId, streamMinId: self.streamMinId)
     urlToMessagesArray.delegate = self
     return urlToMessagesArray
   }
   
   //MARK: URLToMessagesArrayDelegate
-  func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
+  internal func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
     print("in URLToMessagesArrayDelegate!")
     if messages.isEmpty {
       dispatch_async(dispatch_get_main_queue()){
@@ -152,7 +163,7 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
-  func tableCellsFromRealm(action: Action) -> NSOperation {
+  private func tableCellsFromRealm(action: Action) -> NSOperation {
     //setActionMinMaxId(_:) modifies narrow.min/max ID
     let action = setActionMinMaxId(action)
     let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells)
@@ -174,6 +185,7 @@ class StreamController: URLToMessageArrayDelegate {
   let queue = Queue()
   //MARK: Get Stream Messages
   func loadStreamMessages(action: Action) {
+    self.action = action
     let messagesFromNetworkOperation = self.messagesFromNetwork(action)
     
     messagesFromNetworkOperation.completionBlock = {
