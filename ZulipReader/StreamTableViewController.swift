@@ -60,6 +60,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   //this function works because MessagesArrayToTableCellArray.findTableUpdates relies on predicates and oldTableCell
+  //TODO: Move this to the stream controller. calling this here blocks the main thread.
   func autoRefresh(timer: NSTimer) {
     print("shots fired")
     guard let data = data else {fatalError()}
@@ -265,6 +266,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("inserted sections: \(insertedSections)")
     print("deleted sections: \(deletedSections)")
     
+    //TODO: Add some animations here and figure out the hide loading crap. Add UIActivityAnimator in the toolbar.
     UIView.animateWithDuration(0.01, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
       self.tableView.beginUpdates()
       self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
