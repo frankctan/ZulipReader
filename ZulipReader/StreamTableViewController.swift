@@ -30,7 +30,7 @@ class StreamTableViewController: SLKTextViewController {
   var data: StreamController?
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
-  var timer = NSTimer()
+//  var timer = NSTimer()
   var action = Action()
   
   var refreshControl: UIRefreshControl?
@@ -78,7 +78,7 @@ class StreamTableViewController: SLKTextViewController {
     else {
       tableView.showLoading()
       data.register()
-      timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
+//      timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
     }
   }
   

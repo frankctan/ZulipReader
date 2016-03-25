@@ -47,6 +47,8 @@ class StreamController: URLToMessageArrayDelegate {
   private var subscription: [String:String] = [:]
   private var oldTableCells = [[TableCell]]()
   
+  private let timer: NSTimer
+  
   private var maxId = Int.min
   private var homeMinId = Int.max
   private var streamMinId = [String: Int]()
@@ -57,7 +59,13 @@ class StreamController: URLToMessageArrayDelegate {
     } catch let error as NSError {
       fatalError(String(error))
     }
+    
+//    self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
   }
+  
+//  @objc private func autoRefresh(timer: NSTimer) {
+//    
+//  }
   
   func isLoggedIn() -> Bool {
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
