@@ -21,6 +21,7 @@ protocol SubscriptionDelegate: class {
   func didFetchSubscriptions(subscriptions: [String: String])
 }
 
+//TODO: rethink these queues.
 class Queue {
   lazy var realmToMessageArray: NSOperationQueue = {
     var queue = NSOperationQueue()
@@ -37,7 +38,6 @@ class Queue {
   }()
 }
 
-
 class StreamController: URLToMessageArrayDelegate {
   
   weak var delegate: StreamControllerDelegate?
@@ -47,9 +47,14 @@ class StreamController: URLToMessageArrayDelegate {
   private var subscription: [String:String] = [:]
   private var oldTableCells = [[TableCell]]()
   
+  private var timer = NSTimer()
+  
   private var maxId = Int.min
   private var homeMinId = Int.max
   private var streamMinId = [String: Int]()
+  
+  //we make this an instance variable beacause refresh needs to be aware of narrow
+  private var action = Action()
   
   init() {
     do {
@@ -59,16 +64,31 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
+  //GCD so refreshing doesn't block the main thread.
+  //TODO: why do I need @objc?
+  //should autoRefresh be in a different queue?
+  @objc private func autoRefresh(timer: NSTimer) {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+      if !self.oldTableCells.isEmpty {
+        print("shots fired!")
+        self.action.userAction = .Refresh
+        self.loadStreamMessages(self.action)
+      }
+    }
+  }
+  
   func isLoggedIn() -> Bool {
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
-        Router.basicAuth = authHead
+      Router.basicAuth = authHead
+      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
         return true
     }
     return false
   }
   
   func clearDefaults() {
+    timer.invalidate()
     do {
       try realm.write {
         print("deleting realm")
@@ -101,7 +121,7 @@ class StreamController: URLToMessageArrayDelegate {
   }
   
   //MARK: Post Messages
-  func createPostRequest(message: MessagePost) -> Future<URLRequestConvertible, ZulipErrorDomain> {
+  private func createPostRequest(message: MessagePost) -> Future<URLRequestConvertible, ZulipErrorDomain> {
     let recipient: String
     if message.type == .Private {
       recipient = message.recipient.joinWithSeparator(",")
@@ -113,6 +133,7 @@ class StreamController: URLToMessageArrayDelegate {
   }
   
   func postMessage(message: MessagePost, action: Action) {
+    self.action = action
     createPostRequest(message)
       .andThen(AlamofireRequest)
       .start {result in
@@ -126,14 +147,14 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
-  func messagesFromNetwork(action: Action) -> NSOperation {
+  private func messagesFromNetwork(action: Action) -> NSOperation {
     let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription, maxId: self.maxId, homeMinId: self.homeMinId, streamMinId: self.streamMinId)
     urlToMessagesArray.delegate = self
     return urlToMessagesArray
   }
   
   //MARK: URLToMessagesArrayDelegate
-  func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
+  internal func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
     print("in URLToMessagesArrayDelegate!")
     if messages.isEmpty {
       dispatch_async(dispatch_get_main_queue()){
@@ -144,7 +165,7 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
-  func tableCellsFromRealm(action: Action) -> NSOperation {
+  private func tableCellsFromRealm(action: Action) -> NSOperation {
     //setActionMinMaxId(_:) modifies narrow.min/max ID
     let action = setActionMinMaxId(action)
     let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells)
@@ -165,7 +186,14 @@ class StreamController: URLToMessageArrayDelegate {
   
   let queue = Queue()
   //MARK: Get Stream Messages
+  //TODO: load messages from Realm first, if they're not their then do a network call
+  //TODO: We're not going to delete Realm messages anymore
+  //TODO: load XX messages from Realm at a time so we don't display a million rows at the same time
+  //TODO: when client is closed or whatever, re-register and then load all the messages up to the new maxMessageID
+  //TODO: how do i acknowledge when messages come in? Still get emails for missed private messages that I've read on ZulipReader
+  //TODO: if no connection, I want to be able to read all the messages still available on Realm
   func loadStreamMessages(action: Action) {
+    self.action = action
     let messagesFromNetworkOperation = self.messagesFromNetwork(action)
     
     messagesFromNetworkOperation.completionBlock = {
