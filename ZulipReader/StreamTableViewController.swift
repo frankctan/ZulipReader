@@ -56,6 +56,32 @@ class StreamTableViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     self.loadData()
+    
+    //MARK: notification trial!!!
+    //TODO: Learn about KVO
+    guard let navigationController = self.navigationController else {return}
+    let navBarFrame = navigationController.navigationBar.frame.height
+    let statusBarFrame = UIApplication.sharedApplication().statusBarFrame.height
+    print(navBarFrame)
+    print(statusBarFrame)
+    let tableViewWidth = tableView.frame.width
+    let tableViewHeight = tableView.frame.height
+    let notificationSize = CGSize(width: tableViewWidth, height: navBarFrame)
+    let origin = CGPoint(x: 0.0, y: -navBarFrame)
+    print("origin: \(origin)")
+    let notification = UIView(frame: CGRect(origin: origin, size: notificationSize))
+
+    notification.backgroundColor = UIColor.yellowColor()
+    self.tableView.superview!.addSubview(notification)
+    
+    UIView.animateWithDuration(0.5, delay: 2.0, options: .AllowUserInteraction, animations: {
+//      notification.frame.origin.y = tableViewHeight - 200
+      self.tableView.superview!.frame.origin.y += navBarFrame
+      }, completion: {_ in
+        UIView.animateWithDuration(0.5, delay: 4.0, options: .AllowUserInteraction, animations: {
+          self.tableView.superview!.frame.origin.y -= navBarFrame
+          }, completion: nil)
+    })
   }
   
   func loadData() {
@@ -240,32 +266,38 @@ extension StreamTableViewController {
 //MARK: StreamControllerDelegate
 extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMessages() {
-    tableView.hideLoading()
-    self.refreshControl?.endRefreshing()
+    if let refresh = self.refreshControl {
+      if refresh.refreshing {
+      self.refreshControl!.endRefreshing()
+      }
+    }
+    
+    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
-    
+    self.tableView.hideLoading()
     print("# of old sections: \(self.messages.count)")
     self.messages = messages
-    self.refreshControl?.endRefreshing()
+    
     print("# of new sections: \(self.messages.count)")
     print("inserted sections: \(insertedSections)")
     print("deleted sections: \(deletedSections)")
+
+    self.tableView.beginUpdates()
+    self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
+    self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
+    self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
+    self.tableView.endUpdates()
     
-    //TODO: Add some animations here and figure out the hide loading crap. Add UIActivityAnimator in the toolbar.
-    UIView.animateWithDuration(0.01, delay: 0.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
-      self.tableView.beginUpdates()
-      self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
-      self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
-      self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
-      self.tableView.endUpdates()
-      }, completion: {
-        if $0 {
-          self.tableView.hideLoading()
-          self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
-        }
-    })
+    if let refresh = self.refreshControl  {
+      if refresh.refreshing {
+        self.refreshControl!.endRefreshing()
+      }
+    }
+    
+    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
   }
 }
 
@@ -282,7 +314,7 @@ extension StreamTableViewController {
     self.action = Action(narrow: narrow, action: .Focus)
     guard let data = data else {fatalError()}
     data.loadStreamMessages(self.action)
-    tableView.showLoading()
+    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
   }
 }
 
@@ -343,11 +375,9 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
     let pmWith = message.pmWith.sort()
     let emailString = pmWith.joinWithSeparator(",")
     let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
-    
     let narrow = Narrow(narrowString: narrowString, pmWith: pmWith)
-    self.action = Action(narrow: narrow, action: .Focus)
-    guard let data = data else {fatalError()}
-    data.loadStreamMessages(action)
-    tableView.showLoading()
+    self.navigationController?.navigationBar.topItem?.title = "Private Messages"
+    
+    self.focusAction(narrow)
   }
 }

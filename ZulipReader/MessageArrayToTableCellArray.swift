@@ -70,8 +70,10 @@ class MessageArrayToTableCellArray: NSOperation {
       }
       
     case .Refresh:
-      let oldTableCellsId = self.oldTableCells.flatMap {$0}.map {$0.id}
-      let lastOldTableCell = self.oldTableCells.flatMap {$0}.last!
+      let flatOldTableCells = self.oldTableCells.flatMap {$0}
+      let oldTableCellsId = flatOldTableCells.map {$0.id}
+      guard let lastOldTableCell = flatOldTableCells.last else {break}
+      
       let rangeLength = realmTableCells.count - oldTableCells.count
       
       insertedSections = NSMakeRange(lastOldTableCell.section + 1, rangeLength)
