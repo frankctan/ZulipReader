@@ -31,17 +31,47 @@ class MessageArrayToTableCellArray: NSOperation {
       realm = try Realm()
     } catch {fatalError()}
     
-    let realmMessages = NSArray(array: realm.objects(Message).sorted("id", ascending: true).map {$0})
-    let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+    let narrowPredicate = action.narrow.predicate()
+    let userAction = action.userAction
+    let idPredicate = minMaxPredicate()
+    
+    let realmMessages = NSArray(array: realm.objects(Message)
+      .filter(idPredicate)
+      .sorted("id", ascending: true)
+      .map {$0})
+    
+    let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(narrowPredicate) as! [Message]
     
     let realmTableCells = self.messageToTableCell(allFilteredMessages)
     self.tableCells = realmTableCells
-    (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: action.userAction)
+    (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
     
   }
   
   func getTableCells() -> ([[TableCell]], NSRange, NSRange, [NSIndexPath]) {
     return (self.tableCells, self.deletedSections, self.insertedSections, self.insertedRows)
+  }
+  
+  func minMaxPredicate() -> NSPredicate {
+    let defaults = NSUserDefaults.standardUserDefaults()
+    
+    //homeMin and homeMax should be defined by now.
+    let homeMinId = defaults.integerForKey("homeMin")
+    let homeMaxId = defaults.integerForKey("homeMax")
+    
+    var minId = homeMinId
+    if let narrowString = self.action.narrow.narrowString {
+      minId = defaults.integerForKey(narrowString)
+    }
+    
+    //debug
+    if minId == 0 || homeMaxId == 0 {fatalError("min/max Id's")}
+    
+    //make predicates
+    let minIdPredicate = NSPredicate(format: "id >= %d", minId)
+    let maxIdPredicate = NSPredicate(format: "id <= %d", homeMaxId)
+    
+    return NSCompoundPredicate(andPredicateWithSubpredicates: [minIdPredicate, maxIdPredicate])
   }
   
   private func findTableUpdates(realmTableCells: [[TableCell]], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {

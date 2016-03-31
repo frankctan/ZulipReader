@@ -64,8 +64,6 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
-
-  
   func isLoggedIn() -> Bool {
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
@@ -112,8 +110,7 @@ class StreamController: URLToMessageArrayDelegate {
       dispatch_async(dispatch_get_main_queue()) {
         let registrationResults = registration.getSubscriptionAndMaxID()
         self.subscription = registrationResults.0
-        self.maxId = max(self.maxId, registrationResults.1)
-        print("finished registration: \(self.maxId)")
+        NSUserDefaults.standardUserDefaults().setInteger(registrationResults.1, forKey: "homeMax")
         self.subscriptionDelegate?.didFetchSubscriptions(self.subscription)
         self.loadStreamMessages(Action())
       }
@@ -149,7 +146,7 @@ class StreamController: URLToMessageArrayDelegate {
   }
   
   private func messagesFromNetwork(action: Action) -> NSOperation {
-    let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription, maxId: self.maxId, homeMinId: self.homeMinId, streamMinId: self.streamMinId)
+    let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription)
     urlToMessagesArray.delegate = self
     return urlToMessagesArray
   }
@@ -159,22 +156,20 @@ class StreamController: URLToMessageArrayDelegate {
     print("in URLToMessagesArrayDelegate!")
     if messages.isEmpty {
       dispatch_async(dispatch_get_main_queue()){
+        //no new messages? pause activity indicators
         self.delegate?.didFetchMessages()
       }
-    } else {
-      self.saveMinMaxId(action, newMessages: messages)
     }
   }
   
   private func tableCellsFromRealm(action: Action) -> NSOperation {
-    //setActionMinMaxId(_:) modifies narrow.min/max ID
-    let action = setActionMinMaxId(action)
     let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells)
     messageArrayToTableCellArray.completionBlock = {
       let (tableCells, deletedSections, insertedSections, insertedRows) = messageArrayToTableCellArray.getTableCells()
       self.oldTableCells = tableCells
       dispatch_async(dispatch_get_main_queue()) {
         if insertedRows.isEmpty {
+          //no new messages? pause activity indicators
           self.delegate?.didFetchMessages()
           return
         }
@@ -197,44 +192,5 @@ class StreamController: URLToMessageArrayDelegate {
     }
     
     queue.messageToTableCell.addOperation(messagesFromNetworkOperation)
-  }
-  
-  private func setActionMinMaxId(action: Action) -> Action {
-    var returnAction = action
-    let minId: Int
-    
-    if let narrowString = action.narrow.narrowString {
-      if let streamMinId = self.streamMinId[narrowString] { minId = streamMinId }
-      else { minId = self.homeMinId }
-    }
-    else { minId = self.homeMinId }
-    
-    returnAction.narrow.setMinMaxID(minId, maxID: self.maxId)
-    
-    return returnAction
-  }
-
-  private func saveMinMaxId(action: Action, newMessages: [Message]) {
-    let minMessageId = newMessages[0].id
-    let maxMessageId = newMessages.last!.id
-    
-    if maxMessageId > self.maxId {
-      print("self.maxId has increased!")
-    }
-    
-    self.maxId = max(self.maxId, maxMessageId)
-
-    if let narrowString = action.narrow.narrowString {
-      if let minId = self.streamMinId[narrowString] {
-        self.streamMinId[narrowString] = min(minId, minMessageId)
-      }
-        else {
-          self.streamMinId[narrowString] = minMessageId
-        }
-    }
-    else {
-      self.homeMinId = min(homeMinId, minMessageId)
-    }
-    print("saved minMaxId!")
   }
 }

@@ -1,51 +1,21 @@
+
 import Foundation
-import RealmSwift
+
+//NSUserDefaults.standardUserDefaults().integerForKey("none")
+
+NSUserDefaults.standardUserDefaults().setInteger(100, forKey: "100")
+
+NSUserDefaults.standardUserDefaults().integerForKey("100")
 
 
-class Person: Object {
-  dynamic var name  = ""
-  dynamic var age = 0
+let a: Int? = 4
+
+if let b = a where b > 3 {
+  print("HAHA!")
 }
 
-let realm = try! Realm()
-
-let person1 = Person(value: ["name": "Job", "age": 2])
-let person2 = Person(value: ["name": "Bill", "age": 10])
-
-try! realm.write {
-  realm.add(person1)
-  realm.add(person2)
+if let b = a where b > 6 {
+  print("HAHA!")
+} else {
+  print("boohoo")
 }
-
-let realmObjects = realm.objects(Person).sorted("age", ascending: false)
-realmObjects[1].name
-
-
-1+1
-
-
-let personPredicate = NSPredicate(format: "age == %d", 2)
-
-let filteredObjects = realm.objects(Person).filter(personPredicate)
-
-filteredObjects[0].name
-
-let a:[[String]] = [[]]
-
-a[0].isEmpty
-
-
-for i in 0..<0 {
-  print(i)
-}
-
-var q = 4
-add(q)
-func add(x: Int) -> Int {
-  return x + 2
-}
-
-q = 7
-
-
-

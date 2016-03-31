@@ -19,20 +19,13 @@ class URLToMessageArray: NetworkOperation {
   
   let action: Action
   let subscription: [String: String]
-  let maxId: Int
-  let homeMinId: Int
-  let streamMinId: [String: Int]
-  
   var messages = [Message]()
   
   weak var delegate: URLToMessageArrayDelegate?
   
-  init(action: Action, subscription: [String: String], maxId: Int, homeMinId: Int, streamMinId: [String: Int]) {
+  init(action: Action, subscription: [String: String]) {
     self.action = action
     self.subscription = subscription
-    self.maxId = maxId
-    self.homeMinId = homeMinId
-    self.streamMinId = streamMinId
   }
   
   override func main() {
@@ -44,8 +37,11 @@ class URLToMessageArray: NetworkOperation {
       switch result {
       case .Success(let box):
         self.messages = box.unbox
-        self.messagesToRealm(self.messages)
-        self.delegate?.urlToMessageArrayDidFinish(self.action, messages: self.messages)
+        if !self.messages.isEmpty {
+          self.messagesToRealm(self.messages)
+          self.saveMinMaxId(self.messages)
+          self.delegate?.urlToMessageArrayDidFinish(self.action, messages: self.messages)
+        }
         self.complete()
         
       case .Error(let box):
@@ -74,13 +70,13 @@ class URLToMessageArray: NetworkOperation {
   
   private func createRequestParameters(action: Action) -> Future<MessageRequestParameters, ZulipErrorDomain> {
     var params = MessageRequestParameters()
-    let minAnchor = getMinAnchor()
+    let (minAnchor, maxAnchor) = getAnchor()
     
     switch action.userAction {
     case .Focus:
-      params = MessageRequestParameters(anchor: self.maxId, before: 20, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 20, after: 50, narrow: action.narrow.narrowString)
     case .Refresh:
-      params = MessageRequestParameters(anchor: self.maxId, before: 0, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
     case .ScrollUp:
       params = MessageRequestParameters(anchor: minAnchor, before: 20, after: 0, narrow: action.narrow.narrowString)
     }
@@ -88,16 +84,25 @@ class URLToMessageArray: NetworkOperation {
   }
   
   //returns the minimum of a narrowString or the home minimum ID
-  private func getMinAnchor() -> Int {
-    let minId: Int
-    
-    if let narrow = action.narrow.narrowString,
-      let narrowMinId = self.streamMinId[narrow] {
-      minId = narrowMinId
+  private func getAnchor() -> (Int, Int) {
+    let defaults = NSUserDefaults.standardUserDefaults()
+    let homeMaxId = defaults.integerForKey("homeMax")
+    let homeMinId: Int
+    if let minId = defaults.objectForKey("homeMin") {
+      homeMinId = minId as! Int
     } else {
-      minId = self.homeMinId
+      homeMinId = Int.max
     }
-    return minId
+    
+    var minId = homeMinId
+    if let narrowString = self.action.narrow.narrowString {
+      let streamMinId = defaults.objectForKey(narrowString)
+      if streamMinId != nil {
+        minId = streamMinId as! Int
+      }
+    }
+    
+    return (minId, homeMaxId)
   }
   
   private func processResponse(response: JSON) -> Future<[Message], ZulipErrorDomain> {
@@ -188,6 +193,30 @@ class URLToMessageArray: NetworkOperation {
     }
     do { try realm.commitWrite()} catch {fatalError()}
     print("save path: \(realm.path)")
+  }
+  
+  private func saveMinMaxId(messages: [Message]) {
+    let defaults = NSUserDefaults.standardUserDefaults()
+    let currentMinId = messages[0].id
+    let currentMaxId = messages.last!.id
+    
+    if let narrowString = action.narrow.narrowString {
+      let defaultNarrowMinId = defaults.objectForKey(narrowString)
+      if defaultNarrowMinId == nil || currentMinId < (defaultNarrowMinId as! Int) {
+        defaults.setInteger(currentMinId, forKey: narrowString)
+      }
+    }
+    else {
+      let defaultHomeMinId = defaults.objectForKey("homeMin")
+      if defaultHomeMinId == nil || currentMinId < (defaultHomeMinId as! Int) {
+        defaults.setInteger(currentMinId, forKey: "homeMin")
+      }
+    }
+    
+    let defaultMaxId = defaults.objectForKey("homeMax")
+      if defaultMaxId == nil || currentMaxId > (defaultMaxId as! Int) {
+      defaults.setInteger(currentMaxId, forKey: "homeMax")
+    }
   }
 }
 
