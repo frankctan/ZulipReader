@@ -16,17 +16,7 @@ class StreamTableViewController: SLKTextViewController {
     case Home, Stream, Subject
   }
   
-  var state: State = .Home {
-    didSet {
-      switch state {
-      case .Subject:
-        self.setTextInputbarHidden(false, animated: true)
-      default:
-        self.setTextInputbarHidden(true, animated: true)
-      }
-    }
-  }
-  
+  var state: State = .Home
   var data: StreamController?
   var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
@@ -59,27 +49,23 @@ class StreamTableViewController: SLKTextViewController {
     
     //MARK: notification trial!!!
     //TODO: Learn about KVO
-    guard let navigationController = self.navigationController else {return}
-    let navBarFrame = navigationController.navigationBar.frame.height
-    let statusBarFrame = UIApplication.sharedApplication().statusBarFrame.height
-    print(navBarFrame)
-    print(statusBarFrame)
-    let tableViewWidth = tableView.frame.width
-    let tableViewHeight = tableView.frame.height
-    let notificationSize = CGSize(width: tableViewWidth, height: navBarFrame)
-    let origin = CGPoint(x: 0.0, y: -navBarFrame)
-    print("origin: \(origin)")
+    //How to add badge to the home icon to indicate unread messages?
+    let superView = self.view
+    guard let navController = self.navigationController else {fatalError()}
+    let navBarHeight = navController.navigationBar.frame.height
+    let viewWidth = superView.frame.width
+    let notificationSize = CGSize(width: viewWidth, height: navBarHeight)
+    let origin = CGPoint(x: 0.0, y: -navBarHeight)
     let notification = UIView(frame: CGRect(origin: origin, size: notificationSize))
-
-    notification.backgroundColor = UIColor.yellowColor()
-    self.tableView.superview!.addSubview(notification)
     
-    UIView.animateWithDuration(0.5, delay: 2.0, options: .AllowUserInteraction, animations: {
-//      notification.frame.origin.y = tableViewHeight - 200
-      self.tableView.superview!.frame.origin.y += navBarFrame
+    notification.backgroundColor = UIColor.yellowColor()
+    superView.addSubview(notification)
+    
+    UIView.animateWithDuration(0.5, delay: 2.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
+      superView.frame.origin.y += navBarHeight
       }, completion: {_ in
-        UIView.animateWithDuration(0.5, delay: 4.0, options: .AllowUserInteraction, animations: {
-          self.tableView.superview!.frame.origin.y -= navBarFrame
+        UIView.animateWithDuration(0.5, delay: 4.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
+          superView.frame.origin.y -= navBarHeight
           }, completion: nil)
     })
   }
@@ -268,10 +254,9 @@ extension StreamTableViewController: StreamControllerDelegate {
   func didFetchMessages() {
     if let refresh = self.refreshControl {
       if refresh.refreshing {
-      self.refreshControl!.endRefreshing()
+        self.refreshControl!.endRefreshing()
       }
     }
-    
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
   }
   
@@ -283,7 +268,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("# of new sections: \(self.messages.count)")
     print("inserted sections: \(insertedSections)")
     print("deleted sections: \(deletedSections)")
-
+    
     self.tableView.beginUpdates()
     self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
     self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
@@ -298,6 +283,13 @@ extension StreamTableViewController: StreamControllerDelegate {
     
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
+    
+    switch self.state {
+    case .Subject:
+      self.setTextInputbarHidden(false, animated: true)
+    default:
+      self.setTextInputbarHidden(true, animated: true)
+    }
   }
 }
 

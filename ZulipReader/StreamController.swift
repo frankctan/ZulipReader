@@ -64,9 +64,21 @@ class StreamController: URLToMessageArrayDelegate {
     }
   }
   
+
+  
+  func isLoggedIn() -> Bool {
+    if let basicAuth = Locksmith.loadDataForUserAccount("default"),
+      let authHead = basicAuth["Authorization"] as? String {
+      Router.basicAuth = authHead
+      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.refreshData(_:)), userInfo: nil, repeats: true)
+        return true
+    }
+    return false
+  }
+  
   //TODO: why do I need @objc?
   //TODO: put autorefresh networking onto a different queue, use a generic local variable. Always load messages from Realm from the Action instance variable
-  @objc private func autoRefresh(timer: NSTimer) {
+  @objc private func refreshData(timer: NSTimer) {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
       if !self.oldTableCells.isEmpty {
         print("shots fired!")
@@ -74,16 +86,6 @@ class StreamController: URLToMessageArrayDelegate {
         self.loadStreamMessages(self.action)
       }
     }
-  }
-  
-  func isLoggedIn() -> Bool {
-    if let basicAuth = Locksmith.loadDataForUserAccount("default"),
-      let authHead = basicAuth["Authorization"] as? String {
-      Router.basicAuth = authHead
-      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
-        return true
-    }
-    return false
   }
   
   func clearDefaults() {
