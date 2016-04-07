@@ -75,11 +75,11 @@ class URLToMessageArray: NetworkOperation {
     
     switch action.userAction {
     case .Focus:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 20, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50, narrow: action.narrow.narrowString)
     case .Refresh:
       params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
     case .ScrollUp:
-      params = MessageRequestParameters(anchor: minAnchor, before: 20, after: 0, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0, narrow: action.narrow.narrowString)
     }
     return Future<MessageRequestParameters, ZulipErrorDomain>(value: params)
   }

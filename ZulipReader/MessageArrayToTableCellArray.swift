@@ -60,7 +60,7 @@ class MessageArrayToTableCellArray: NSOperation {
     
     //minMessageThreshold triggers a network call if thres isn't met
     //thres is set purposefully low so app doesn't endlessly call for new msgs
-    var minimumMessageThreshold = 10
+    var minimumMessageThreshold = 30
     if userAction == .ScrollUp {
       minimumMessageThreshold += Array(oldTableCells.flatten()).count
     }
