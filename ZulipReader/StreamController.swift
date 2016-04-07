@@ -23,22 +23,22 @@ protocol SubscriptionDelegate: class {
 
 //TODO: rethink these queues.
 class Queue {
-  lazy var realmToMessageArray: NSOperationQueue = {
+  lazy var refreshQueue: NSOperationQueue = {
     var queue = NSOperationQueue()
-    queue.name = "Realm To Message Array"
+    queue.name = "refreshQueue"
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
   
-  lazy var messageToTableCell: NSOperationQueue = {
+  lazy var messageQueue: NSOperationQueue = {
     var queue = NSOperationQueue()
-    queue.name = "Message To Table Cell"
+    queue.name = "messageQueue"
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
 }
 
-class StreamController: URLToMessageArrayDelegate {
+class StreamController {
   
   weak var delegate: StreamControllerDelegate?
   weak var subscriptionDelegate: SubscriptionDelegate?
@@ -46,12 +46,12 @@ class StreamController: URLToMessageArrayDelegate {
   private let realm: Realm
   private var subscription: [String:String] = [:]
   private var oldTableCells = [[TableCell]]()
-  
   private var timer = NSTimer()
   
   private var maxId = Int.min
   private var homeMinId = Int.max
   private var streamMinId = [String: Int]()
+  private var realmNotification = NotificationToken()
   
   //we make this an instance variable beacause refresh needs to be aware of narrow
   private var action = Action()
@@ -62,14 +62,24 @@ class StreamController: URLToMessageArrayDelegate {
     } catch let error as NSError {
       fatalError(String(error))
     }
+    self.realmNotification = realm.objects(Message).addNotificationBlock {result, _ in
+      if let result = result where result.count > 0 {
+        print("realmNotificationBlock")
+        let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action)
+        self.queue.messageQueue.addOperation(tableCellsFromRealmOperation)
+      }
+    }
+    //FOR DEBUGGING PURPOSES
+//    clearDefaults()
   }
   
   func isLoggedIn() -> Bool {
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
       Router.basicAuth = authHead
-      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.refreshData(_:)), userInfo: nil, repeats: true)
-        return true
+      
+      //      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.refreshData(_:)), userInfo: nil, repeats: true)
+      return true
     }
     return false
   }
@@ -79,29 +89,40 @@ class StreamController: URLToMessageArrayDelegate {
   @objc private func refreshData(timer: NSTimer) {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
       if !self.oldTableCells.isEmpty {
-        print("shots fired!")
-        self.action.userAction = .Refresh
-        self.loadStreamMessages(self.action)
+        print("refreshData:")
+        self.refreshStreamMessages(Action())
       }
     }
   }
   
+  private func refreshStreamMessages(localAction: Action) {
+//    let messagesFromNetworkOperation = self.messagesFromNetwork(localAction)
+//    messagesFromNetworkOperation.completionBlock = {
+//      self.action.userAction = .Refresh
+//      let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action)
+//      self.queue.refreshQueue.addOperation(tableCellsFromRealmOperation)
+//    }
+//    self.queue.refreshQueue.addOperation(messagesFromNetworkOperation)
+  }
+  
   func clearDefaults() {
     timer.invalidate()
+    for key in NSUserDefaults.standardUserDefaults().dictionaryRepresentation().keys {
+      NSUserDefaults.standardUserDefaults().removeObjectForKey(key)
+    }
     do {
       try realm.write {
-        print("deleting realm")
+        print("clearDefaults: deleting realm")
         realm.deleteAll()
       }
     }
     catch{print("could not clear realm")}
-    print("deleting keychain")
+    print("clearDefaults: deleting keychain")
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }
     catch {print("unable to clear locksmith")}
     Router.basicAuth = nil
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
   }
   
   func register() {
@@ -115,7 +136,7 @@ class StreamController: URLToMessageArrayDelegate {
         self.loadStreamMessages(Action())
       }
     }
-    queue.messageToTableCell.addOperation(registration)
+    queue.messageQueue.addOperation(registration)
   }
   
   //MARK: Post Messages
@@ -140,7 +161,7 @@ class StreamController: URLToMessageArrayDelegate {
           self.loadStreamMessages(action)
         case .Error(let boxedError):
           let error = boxedError.unbox
-          print(error)
+          print("PostMessage: \(error)")
         }
     }
   }
@@ -151,46 +172,57 @@ class StreamController: URLToMessageArrayDelegate {
     return urlToMessagesArray
   }
   
-  //MARK: URLToMessagesArrayDelegate
-  internal func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
-    print("in URLToMessagesArrayDelegate!")
-    if messages.isEmpty {
-      dispatch_async(dispatch_get_main_queue()){
-        //no new messages? pause activity indicators
-        self.delegate?.didFetchMessages()
-      }
-    }
-  }
-  
   private func tableCellsFromRealm(action: Action) -> NSOperation {
     let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells)
-    messageArrayToTableCellArray.completionBlock = {
-      let (tableCells, deletedSections, insertedSections, insertedRows) = messageArrayToTableCellArray.getTableCells()
-      self.oldTableCells = tableCells
-      dispatch_async(dispatch_get_main_queue()) {
-        if insertedRows.isEmpty {
-          //no new messages? pause activity indicators
-          self.delegate?.didFetchMessages()
-          return
-        }
-        print("table Cells From Realm - Sending to controller!")
-        self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
-      }
-    }
+    messageArrayToTableCellArray.delegate = self
     return messageArrayToTableCellArray
   }
   
   let queue = Queue()
   //MARK: Get Stream Messages
   func loadStreamMessages(action: Action) {
+    print("\n==== NEW MSG LOAD ====")
     self.action = action
-    let messagesFromNetworkOperation = self.messagesFromNetwork(action)
-    
-    messagesFromNetworkOperation.completionBlock = {
-      let tableCellsFromRealmOperation = self.tableCellsFromRealm(action)
-      self.queue.messageToTableCell.addOperation(tableCellsFromRealmOperation)
-    }
-    
-    queue.messageToTableCell.addOperation(messagesFromNetworkOperation)
+    let tableCellsFromRealmOperation = self.tableCellsFromRealm(action)
+    self.queue.messageQueue.addOperation(tableCellsFromRealmOperation)
   }
 }
+
+//MARK: URLToMessagesArrayDelegate
+extension StreamController: URLToMessageArrayDelegate {
+  internal func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
+    if messages.isEmpty {
+      dispatch_async(dispatch_get_main_queue()){
+        self.delegate?.didFetchMessages()
+      }
+    }
+  }
+}
+
+//MARK: MessagesArrayToTableCellArrayDelegate
+extension StreamController: MessageArrayToTableCellArrayDelegate {
+  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+    
+    //double check if there are new messages
+    if insertedRows.isEmpty {
+      print("TableCell Delegate: insertedRows is empty")
+      dispatch_async(dispatch_get_main_queue()) {
+        self.delegate?.didFetchMessages()
+        return
+      }
+    }
+    else {
+      self.oldTableCells = tableCells
+      print("TableCell Delegate: TC's to TableView")
+      dispatch_async(dispatch_get_main_queue()) {
+        self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
+      }
+    }
+  }
+  
+  func realmNeedsMoreMessages() {
+    let messagesFromNetworkOperation = self.messagesFromNetwork(self.action)
+    self.queue.messageQueue.addOperation(messagesFromNetworkOperation)
+  }
+}
+

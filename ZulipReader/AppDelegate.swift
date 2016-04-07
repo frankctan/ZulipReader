@@ -17,12 +17,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     
-    //THIS DELETES REALM FILES.
+    var realm: Realm {
+      do {
+        return try Realm()
+      } catch let error as NSError {
+        fatalError("AppDelegate Error: \(error)")
+      }
+    }
+    
+    //Delete persisted files everytime app is launched
+    //For v2, we can do a better job persisting messages instead of reloading every session
     do {
-    try NSFileManager.defaultManager().removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
+      try NSFileManager.defaultManager().removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
     }
     catch {print("could not delete")}
-    print("deleted realm files")
+    print("AppDelegate: deleted realm files")
+    
+    //delete NSUserDefaults
+    for key in NSUserDefaults.standardUserDefaults().dictionaryRepresentation().keys {
+      //we need email to process messages. Everything else should be deleted
+      if key != "email" {
+        NSUserDefaults.standardUserDefaults().removeObjectForKey(key)
+      }
+    }
+
     
     let frame = UIScreen.mainScreen().bounds
     window = UIWindow(frame: frame)
@@ -44,12 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func applicationDidEnterBackground(application: UIApplication) {
-    //THIS DELETES REALM FILES.
-    do {
-      try NSFileManager.defaultManager().removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
-    }
-    catch {print("could not delete")}
-    print("deleted realm files")
   }
   
   func applicationWillEnterForeground(application: UIApplication) {
@@ -64,4 +76,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
 }
+
+//    let realmMessages = realm.objects(Message).sorted("id", ascending: true)
+//    let realmCount = realmMessages.count
+//    //TODO: CHANGE THIS TO BE LARGER LATER.
+//    let realmThres = 10
+//
+//    if realmCount > realmThres {
+//      print("realm Messages Stored: \(realmCount)")
+//      let maxDelete = realmCount - realmThres
+//      realm.beginWrite()
+//      for index in 0 ..< maxDelete {
+//        realm.delete(realmMessages[index])
+//      }
+//      do { try realm.commitWrite()}
+//      catch let error as NSError {print("AppDelegate Error: could not delete - \(error)")
+//    }
+//      print("after Deletion: \(realmCount)")
+//
 

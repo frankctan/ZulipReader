@@ -83,8 +83,8 @@ enum Router: URLRequestConvertible {
     
     let encoding = Alamofire.ParameterEncoding.URLEncodedInURL
     let encodedURLRequest = encoding.encode(URLRequest, parameters: result.parameters).0
-    print("result.parameters: \(result.parameters)")
-    print("URL Request: \(encodedURLRequest)")
+    print("router: \(result.parameters)")
+    print("router: \(encodedURLRequest)")
     return encodedURLRequest
   }
 }

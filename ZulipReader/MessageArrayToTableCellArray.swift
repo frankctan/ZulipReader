@@ -9,13 +9,20 @@
 import Foundation
 import RealmSwift
 
+protocol MessageArrayToTableCellArrayDelegate: class {
+  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
+  
+  func realmNeedsMoreMessages()
+}
+
 class MessageArrayToTableCellArray: NSOperation {
   
+  weak var delegate: MessageArrayToTableCellArrayDelegate?
   private let action: Action
-  private let oldTableCells: [[TableCell]]
+  private var oldTableCells = [[TableCell]]()
   
   //output
-  private var tableCells = [[TableCell]()]
+  private var tableCells = [[TableCell]]()
   private var deletedSections = NSRange()
   private var insertedSections = NSRange()
   private var insertedRows = [NSIndexPath]()
@@ -33,6 +40,7 @@ class MessageArrayToTableCellArray: NSOperation {
     
     let narrowPredicate = action.narrow.predicate()
     let userAction = action.userAction
+    //returns predicate based on current table max and narrow min
     let idPredicate = minMaxPredicate()
     
     let realmMessages = NSArray(array: realm.objects(Message)
@@ -40,42 +48,72 @@ class MessageArrayToTableCellArray: NSOperation {
       .sorted("id", ascending: true)
       .map {$0})
     
+    if realmMessages.count == 0 {
+      self.delegate?.realmNeedsMoreMessages()
+      print("TC NSOp: no realm messages")
+      return
+    }
+    
+    //This second layer of filtering is necessary because Realm can't recognize "ALL"
+    //This approach is inefficient because we're not taking advantage of realm's lazy initiation but what can we do...
     let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(narrowPredicate) as! [Message]
     
-    let realmTableCells = self.messageToTableCell(allFilteredMessages)
+    //minMessageThreshold triggers a network call if thres isn't met
+    //thres is set purposefully low so app doesn't endlessly call for new msgs
+    var minimumMessageThreshold = 10
+    if userAction == .ScrollUp {
+      minimumMessageThreshold += Array(oldTableCells.flatten()).count
+    }
+    
+    //potential race condition - we load messages we have then ask network for more messages and then rerun this NSOperation
+    //many topics have less than 20 messages so we can't just return, and queue concurrent operations count is limited to 1
+    if allFilteredMessages.count < minimumMessageThreshold {
+      self.delegate?.realmNeedsMoreMessages()
+      print("TCOp: MessageArrayToTableCellArray: less than \(minimumMessageThreshold) msgs")
+    }
+    
+    let allReversedMessages = Array(allFilteredMessages.reverse())
+    var _tableCellMessages = [Message]()
+    for counter in 0 ..< min(minimumMessageThreshold, allFilteredMessages.count) {
+      _tableCellMessages.append(allReversedMessages[counter])
+    }
+    
+    let tableCellMessages = Array(_tableCellMessages.reverse())
+    
+    let realmTableCells = self.messageToTableCell(tableCellMessages)
+
     self.tableCells = realmTableCells
     (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
     
-  }
-  
-  func getTableCells() -> ([[TableCell]], NSRange, NSRange, [NSIndexPath]) {
-    return (self.tableCells, self.deletedSections, self.insertedSections, self.insertedRows)
+    self.delegate?.messageToTableCellArrayDidFinish(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
   }
   
   func minMaxPredicate() -> NSPredicate {
+    //min & max message indices are stored in NSUserDefaults
     let defaults = NSUserDefaults.standardUserDefaults()
     
-    //homeMin and homeMax should be defined by now.
+    //network delegate called if id's are 0
     let homeMinId = defaults.integerForKey("homeMin")
     let homeMaxId = defaults.integerForKey("homeMax")
     
     var minId = homeMinId
+    let maxId = homeMaxId
+    
     if let narrowString = self.action.narrow.narrowString {
       minId = defaults.integerForKey(narrowString)
     }
     
-    //debug
-    if minId == 0 || homeMaxId == 0 {fatalError("min/max Id's")}
-    
     //make predicates
     let minIdPredicate = NSPredicate(format: "id >= %d", minId)
-    let maxIdPredicate = NSPredicate(format: "id <= %d", homeMaxId)
-    
-    return NSCompoundPredicate(andPredicateWithSubpredicates: [minIdPredicate, maxIdPredicate])
+    let maxIdPredicate = NSPredicate(format: "id <= %d", maxId)
+    let andPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [minIdPredicate, maxIdPredicate])
+    print("TCOp: MessageArrayToTableCell Array idPredicate: \(andPredicate)")
+    return andPredicate
   }
   
   private func findTableUpdates(realmTableCells: [[TableCell]], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     
+    //find the differences between oldTableCells and the new messages to be loaded
     var deletedSections = NSRange()
     var insertedSections = NSRange()
     var insertedRows = [NSIndexPath]()
@@ -120,10 +158,10 @@ class MessageArrayToTableCellArray: NSOperation {
       }
     }
     
-    print("action: \(action)")
-    print("deletedSections: \(deletedSections)")
-    print("insertedSections: \(insertedSections)")
-    print("insertedRows: \(insertedRows.count)")
+    print("TCOp: action: \(action)")
+    print("TCOp: deletedSections: \(deletedSections)")
+    print("TCOp: insertedSections: \(insertedSections)")
+    print("TCOp: insertedRows: \(insertedRows.count)")
     return (deletedSections, insertedSections, insertedRows)
   }
   
@@ -187,7 +225,7 @@ class MessageArrayToTableCellArray: NSOperation {
       "</style>"].reduce("",combine: +)
     text += style
     let htmlString: NSAttributedString?
-    //8 bit enoding caused text to be interpreted incorrectly
+    //8bit enoding caused text to be interpreted incorrectly, using 16bit
     let htmlData = text.dataUsingEncoding(NSUTF16StringEncoding, allowLossyConversion: false)
     
     do {

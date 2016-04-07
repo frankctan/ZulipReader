@@ -48,7 +48,6 @@ class StreamTableViewController: SLKTextViewController {
     self.loadData()
     
     //MARK: notification trial!!!
-    //TODO: Learn about KVO
     //How to add badge to the home icon to indicate unread messages?
     let superView = self.view
     guard let navController = self.navigationController else {fatalError()}
@@ -73,7 +72,6 @@ class StreamTableViewController: SLKTextViewController {
   func loadData() {
     guard let data = data else {fatalError()}
     if !data.isLoggedIn() {
-      print("showing login screen")
       let controller = LoginViewController()
       presentViewController(controller, animated: true, completion: nil)
     }
@@ -149,7 +147,6 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   func refresh(refreshControl: UIRefreshControl) {
-    print("in tableViewController.refresh!")
     self.refreshControl = refreshControl
     guard let data = data else {fatalError()}
     self.action.userAction = .ScrollUp
@@ -262,12 +259,12 @@ extension StreamTableViewController: StreamControllerDelegate {
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     self.tableView.hideLoading()
-    print("# of old sections: \(self.messages.count)")
+    print("UITVC: old sections: \(self.messages.count)")
     self.messages = messages
     
-    print("# of new sections: \(self.messages.count)")
-    print("inserted sections: \(insertedSections)")
-    print("deleted sections: \(deletedSections)")
+    print("UITVC: new sections: \(self.messages.count)")
+    print("UITVC: inserted sections: \(insertedSections)")
+    print("UITVC: deleted sections: \(deletedSections)")
     
     self.tableView.beginUpdates()
     self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
@@ -282,7 +279,9 @@ extension StreamTableViewController: StreamControllerDelegate {
     }
     
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Bottom, animated: true)
+    
+    print("\n# of tableView Mesages: \(self.messages.flatten().count)")
+    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
     
     switch self.state {
     case .Subject:
@@ -339,6 +338,7 @@ extension StreamTableViewController: SideMenuDelegate {
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {
   func narrowStream(stream: String) {
+    print("tapped!")
     state = .Stream
     
     let narrowString = "[[\"stream\", \"\(stream)\"]]"

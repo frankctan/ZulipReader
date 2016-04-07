@@ -42,6 +42,7 @@ class URLToMessageArray: NetworkOperation {
           self.saveMinMaxId(self.messages)
           self.delegate?.urlToMessageArrayDidFinish(self.action, messages: self.messages)
         }
+        print("URLToMessageArray Completed")
         self.complete()
         
       case .Error(let box):
@@ -125,7 +126,6 @@ class URLToMessageArray: NetworkOperation {
   
   private func createMessageObject(messages: [JSON]) -> Future<[Message], ZulipErrorDomain> {
     return Future<[Message], ZulipErrorDomain>(operation: {completion in
-      print("creating message object")
       let result: Result<[Message], ZulipErrorDomain>
       var results = [Message]()
       guard let ownEmail = NSUserDefaults.standardUserDefaults().stringForKey("email") else {fatalError()}
@@ -185,14 +185,17 @@ class URLToMessageArray: NetworkOperation {
     let realmMessages = realm.objects(Message).sorted("id", ascending: true).map {$0}
     let currentMessageID = realmMessages.map {$0.id}
     
+    var messageCounter = 0
     realm.beginWrite()
     for message in messages {
       if !currentMessageID.contains(message.id) {
         realm.create(Message.self, value: message)
+        messageCounter += 1
       }
     }
     do { try realm.commitWrite()} catch {fatalError()}
     print("save path: \(realm.path)")
+    print("URLToMessage: saved \(messageCounter) message(s)")
   }
   
   private func saveMinMaxId(messages: [Message]) {
@@ -204,18 +207,21 @@ class URLToMessageArray: NetworkOperation {
       let defaultNarrowMinId = defaults.objectForKey(narrowString)
       if defaultNarrowMinId == nil || currentMinId < (defaultNarrowMinId as! Int) {
         defaults.setInteger(currentMinId, forKey: narrowString)
+        print("URLToMessage: new minId - \(narrowString): \(currentMinId)")
       }
     }
     else {
       let defaultHomeMinId = defaults.objectForKey("homeMin")
       if defaultHomeMinId == nil || currentMinId < (defaultHomeMinId as! Int) {
         defaults.setInteger(currentMinId, forKey: "homeMin")
+        print("URLToMessage: new homeMin - \(currentMinId)")
       }
     }
     
     let defaultMaxId = defaults.objectForKey("homeMax")
       if defaultMaxId == nil || currentMaxId > (defaultMaxId as! Int) {
       defaults.setInteger(currentMaxId, forKey: "homeMax")
+        print("URLToMessage: new homeMax -  \(currentMinId)")
     }
   }
 }

@@ -59,7 +59,7 @@ class LoginController {
   private func saveInKeychain(header: String) {
     do {
       try Locksmith.saveData(["Authorization": header], forUserAccount: "default")
-      print("auth header saved header to keychain!")
+      print("Login: auth header saved header to keychain!")
     }
     catch {fatalError("keychain can't be set")}
   }

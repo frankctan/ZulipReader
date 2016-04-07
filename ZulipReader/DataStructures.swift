@@ -126,7 +126,7 @@ public struct Narrow {
     let arr = [typePredicate, streamPredicate, subjectPredicate, mentionedPredicate, pmWithPredicate]
     let predicateArray = arr.filter {if $0 == nil {return false}; return true}.map {$0!}
     let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicateArray)
-    print("action predicate: \(compoundPredicate)")
+    print("NarrowStruct: \(compoundPredicate)")
     return compoundPredicate
   }
 }

@@ -1,21 +1,14 @@
 
 import Foundation
 
-//NSUserDefaults.standardUserDefaults().integerForKey("none")
+let ab = [[String]()]
 
-NSUserDefaults.standardUserDefaults().setInteger(100, forKey: "100")
-
-NSUserDefaults.standardUserDefaults().integerForKey("100")
+ab[0].count
 
 
-let a: Int? = 4
+let q = [[1,2,3],[4]]
 
-if let b = a where b > 3 {
-  print("HAHA!")
-}
+q.isEmpty
 
-if let b = a where b > 6 {
-  print("HAHA!")
-} else {
-  print("boohoo")
-}
+Array(q.flatten())
+
