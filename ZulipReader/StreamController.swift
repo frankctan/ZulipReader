@@ -23,19 +23,32 @@ protocol SubscriptionDelegate: class {
 
 //TODO: rethink these queues.
 class Queue {
-  lazy var refreshQueue: NSOperationQueue = {
+  lazy var refreshNetworkQueue: NSOperationQueue = {
     var queue = NSOperationQueue()
-    queue.name = "refreshQueue"
+    queue.name = "refreshNetworkQueue"
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
   
-  lazy var messageQueue: NSOperationQueue = {
+  lazy var userNetworkQueue: NSOperationQueue = {
     var queue = NSOperationQueue()
-    queue.name = "messageQueue"
+    queue.name = "userNetworkQueue"
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
+  
+  lazy var prepQueue: NSOperationQueue = {
+    var queue = NSOperationQueue()
+    queue.name = "prepQueue"
+    queue.maxConcurrentOperationCount = 1
+    return queue
+  }()
+  
+  func cancelAll() {
+    refreshNetworkQueue.cancelAllOperations()
+    userNetworkQueue.cancelAllOperations()
+    prepQueue.cancelAllOperations()
+  }
 }
 
 class StreamController {
@@ -47,6 +60,7 @@ class StreamController {
   private var subscription: [String:String] = [:]
   private var oldTableCells = [[TableCell]]()
   private var timer = NSTimer()
+  private let queue = Queue()
   
   private var maxId = Int.min
   private var homeMinId = Int.max
@@ -62,13 +76,14 @@ class StreamController {
     } catch let error as NSError {
       fatalError(String(error))
     }
-    self.realmNotification = realm.objects(Message).addNotificationBlock {result, _ in
-      if let result = result where result.count > 0 {
-        print("realmNotificationBlock")
-        let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action)
-        self.queue.messageQueue.addOperation(tableCellsFromRealmOperation)
-      }
-    }
+//    self.realmNotification = realm.objects(Message).addNotificationBlock {result, _ in
+//      if let result = result where result.count > 0 {
+//        print("realmNotificationBlock")
+//        //tableCellsFromRealmOperation will always be last after a network load
+//        let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action, isLast: true)
+//        self.queue.messageQueue.addOperation(tableCellsFromRealmOperation)
+//      }
+//    }
     //FOR DEBUGGING PURPOSES
 //    clearDefaults()
   }
@@ -78,31 +93,35 @@ class StreamController {
       let authHead = basicAuth["Authorization"] as? String {
       Router.basicAuth = authHead
       
-      //      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.refreshData(_:)), userInfo: nil, repeats: true)
+      self.timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
+      
       return true
     }
     return false
   }
   
+  private func resetTimer() {
+    self.timer.invalidate()
+    self.timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
+  }
+//
+//  func isQueueEmpty() -> Bool {
+//    return self.queue.messageQueue.
+//  }
+  
   //TODO: why do I need @objc?
-  //TODO: put autorefresh networking onto a different queue, use a generic local variable. Always load messages from Realm from the Action instance variable
-  @objc private func refreshData(timer: NSTimer) {
+  //TODO: we're still having some troubles with refreshing correctly.
+  //new messages are loaded on refreshQueue, called by timer
+  @objc private func refreshData() {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+      //we don't refresh until there's something to refresh
       if !self.oldTableCells.isEmpty {
-        print("refreshData:")
-        self.refreshStreamMessages(Action())
+        print("\n===refreshData===")
+        self.action.userAction = .Refresh
+        let messagesFromNetworkOperation = self.messagesFromNetwork(self.action)
+        self.queue.refreshNetworkQueue.addOperation(messagesFromNetworkOperation)
       }
     }
-  }
-  
-  private func refreshStreamMessages(localAction: Action) {
-//    let messagesFromNetworkOperation = self.messagesFromNetwork(localAction)
-//    messagesFromNetworkOperation.completionBlock = {
-//      self.action.userAction = .Refresh
-//      let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action)
-//      self.queue.refreshQueue.addOperation(tableCellsFromRealmOperation)
-//    }
-//    self.queue.refreshQueue.addOperation(messagesFromNetworkOperation)
   }
   
   func clearDefaults() {
@@ -136,7 +155,7 @@ class StreamController {
         self.loadStreamMessages(Action())
       }
     }
-    queue.messageQueue.addOperation(registration)
+    queue.userNetworkQueue.addOperation(registration)
   }
   
   //MARK: Post Messages
@@ -157,8 +176,11 @@ class StreamController {
       .andThen(AlamofireRequest)
       .start {result in
         switch result {
+          
         case .Success(_):
-          self.loadStreamMessages(action)
+          //generic refresh action
+          self.refreshData()
+          
         case .Error(let boxedError):
           let error = boxedError.unbox
           print("PostMessage: \(error)")
@@ -172,29 +194,53 @@ class StreamController {
     return urlToMessagesArray
   }
   
-  private func tableCellsFromRealm(action: Action) -> NSOperation {
-    let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells)
+  private func tableCellsFromRealm(action: Action, isLast: Bool) -> NSOperation {
+    let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells, isLast: isLast)
     messageArrayToTableCellArray.delegate = self
     return messageArrayToTableCellArray
   }
   
-  let queue = Queue()
+  var loading = false
+  
   //MARK: Get Stream Messages
   func loadStreamMessages(action: Action) {
     print("\n==== NEW MSG LOAD ====")
+    if self.loading {
+      return
+    }
+    self.loading = true
     self.action = action
-    let tableCellsFromRealmOperation = self.tableCellsFromRealm(action)
-    self.queue.messageQueue.addOperation(tableCellsFromRealmOperation)
+    
+    //cancel previous operations when user makes a new request
+    self.queue.cancelAll()
+    self.resetTimer()
+    let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, isLast: false)
+    self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
   }
 }
 
 //MARK: URLToMessagesArrayDelegate
 extension StreamController: URLToMessageArrayDelegate {
-  internal func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
-    if messages.isEmpty {
-      dispatch_async(dispatch_get_main_queue()){
-        self.delegate?.didFetchMessages()
+  internal func urlToMessageArrayDidFinish(messages: [Message], userAction: UserAction) {
+    switch userAction {
+    case .Refresh:
+      //if user does not make request and messages are not empty, make changes to tableView
+      if self.queue.prepQueue.operationCount == 0 && queue.userNetworkQueue.operationCount == 0 && !messages.isEmpty {
+        let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, isLast: true)
+        self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
       }
+      
+    default:
+      if messages.isEmpty {
+        dispatch_async(dispatch_get_main_queue()){
+          self.delegate?.didFetchMessages()
+        }
+        self.loading = false
+        return
+      }
+      
+      let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, isLast: true)
+      self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
     }
   }
 }
@@ -202,8 +248,8 @@ extension StreamController: URLToMessageArrayDelegate {
 //MARK: MessagesArrayToTableCellArrayDelegate
 extension StreamController: MessageArrayToTableCellArrayDelegate {
   func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+    self.loading = false
     
-    //double check if there are new messages
     if insertedRows.isEmpty {
       print("TableCell Delegate: insertedRows is empty")
       dispatch_async(dispatch_get_main_queue()) {
@@ -212,6 +258,7 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
       }
     }
     else {
+      //oldTableCells is only reassigned if new messages are loaded
       self.oldTableCells = tableCells
       print("TableCell Delegate: TC's to TableView")
       dispatch_async(dispatch_get_main_queue()) {
@@ -222,7 +269,7 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
   
   func realmNeedsMoreMessages() {
     let messagesFromNetworkOperation = self.messagesFromNetwork(self.action)
-    self.queue.messageQueue.addOperation(messagesFromNetworkOperation)
+    self.queue.userNetworkQueue.addOperation(messagesFromNetworkOperation)
   }
 }
 

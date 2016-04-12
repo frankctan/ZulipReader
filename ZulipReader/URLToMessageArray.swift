@@ -12,7 +12,7 @@ import RealmSwift
 import SwiftyJSON
 
 protocol URLToMessageArrayDelegate: class {
-  func urlToMessageArrayDidFinish(action: Action, messages: [Message])
+  func urlToMessageArrayDidFinish(messages: [Message], userAction: UserAction)
 }
 
 class URLToMessageArray: NetworkOperation {
@@ -31,6 +31,7 @@ class URLToMessageArray: NetworkOperation {
   override func main() {
     self.messagePipeline(self.action).start {result in
       if self.cancelled {
+        self.complete()
         return
       }
       
@@ -40,7 +41,13 @@ class URLToMessageArray: NetworkOperation {
         if !self.messages.isEmpty {
           self.messagesToRealm(self.messages)
           self.saveMinMaxId(self.messages)
-          self.delegate?.urlToMessageArrayDidFinish(self.action, messages: self.messages)
+          
+          if self.cancelled {
+            self.complete()
+            return
+          }
+          
+          self.delegate?.urlToMessageArrayDidFinish(self.messages, userAction: self.action.userAction)
         }
         print("URLToMessageArray Completed")
         self.complete()
@@ -73,11 +80,13 @@ class URLToMessageArray: NetworkOperation {
     var params = MessageRequestParameters()
     let (minAnchor, maxAnchor) = getAnchor()
     
+    //after #'s are comically large to make sure we don't miss any messages. They also don't seem to have any noticeable performance impact.
+    //in v2 - we should add checks to load more messages if new messages exceeds after. For now, 20k should do...
     switch action.userAction {
     case .Focus:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 20000, narrow: action.narrow.narrowString)
     case .Refresh:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 20000, narrow: action.narrow.narrowString)
     case .ScrollUp:
       params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0, narrow: action.narrow.narrowString)
     }
@@ -165,7 +174,12 @@ class URLToMessageArray: NetworkOperation {
         
         if msg.type == "stream",let streamRecipient = message["display_recipient"].string {
           msg.display_recipient = [streamRecipient]
-          msg.streamColor = self.subscription[streamRecipient]!
+          
+          if let streamColor = self.subscription[streamRecipient] {
+            msg.streamColor = streamColor
+          } else {
+            msg.streamColor = "#000000"
+          }
         }
         results.append(msg)
       }
@@ -221,7 +235,7 @@ class URLToMessageArray: NetworkOperation {
     let defaultMaxId = defaults.objectForKey("homeMax")
       if defaultMaxId == nil || currentMaxId > (defaultMaxId as! Int) {
       defaults.setInteger(currentMaxId, forKey: "homeMax")
-        print("URLToMessage: new homeMax -  \(currentMinId)")
+        print("URLToMessage: new homeMax -  \(currentMaxId)")
     }
   }
 }

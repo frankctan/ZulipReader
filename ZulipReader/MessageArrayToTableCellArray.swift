@@ -20,16 +20,18 @@ class MessageArrayToTableCellArray: NSOperation {
   weak var delegate: MessageArrayToTableCellArrayDelegate?
   private let action: Action
   private var oldTableCells = [[TableCell]]()
+  private let isLast: Bool
   
-  //output
+  //NSOperation Output
   private var tableCells = [[TableCell]]()
   private var deletedSections = NSRange()
   private var insertedSections = NSRange()
   private var insertedRows = [NSIndexPath]()
   
-  init(action: Action, oldTableCells: [[TableCell]]) {
+  init(action: Action, oldTableCells: [[TableCell]], isLast: Bool) {
     self.action = action
     self.oldTableCells = oldTableCells
+    self.isLast = isLast
   }
   
   override func main() {
@@ -43,47 +45,86 @@ class MessageArrayToTableCellArray: NSOperation {
     //returns predicate based on current table max and narrow min
     let idPredicate = minMaxPredicate()
     
+    //realm messages returns all the messages
     let realmMessages = NSArray(array: realm.objects(Message)
       .filter(idPredicate)
       .sorted("id", ascending: true)
       .map {$0})
     
-    if realmMessages.count == 0 {
-      self.delegate?.realmNeedsMoreMessages()
-      print("TC NSOp: no realm messages")
+    
+    //This second layer of filtering is necessary because Realm can't recognize "ALL"
+    //This approach is inefficient because we're not taking advantage of realm's lazy initiation...
+    let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(narrowPredicate) as! [Message]
+    
+    let flatOldTableCells = oldTableCells.flatten()
+    //messageThreshold triggers a network call if thres isn't met
+    //Focus case included for clarity
+    var messageThreshold = 30
+    switch userAction {
+    case .Focus:
+      messageThreshold = 30
+    case .ScrollUp:
+      messageThreshold += flatOldTableCells.count
+    case .Refresh:
+      let lastOldTableCellId = flatOldTableCells.last!.id
+      messageThreshold = flatOldTableCells.count +
+        allFilteredMessages.reduce(0, combine: {total, msg in
+        if msg.id > lastOldTableCellId {
+          return total + 1
+        }
+        return total
+      })
+    }
+    
+    if self.cancelled {
       return
     }
     
-    //This second layer of filtering is necessary because Realm can't recognize "ALL"
-    //This approach is inefficient because we're not taking advantage of realm's lazy initiation but what can we do...
-    let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(narrowPredicate) as! [Message]
-    
-    //minMessageThreshold triggers a network call if thres isn't met
-    //thres is set purposefully low so app doesn't endlessly call for new msgs
-    var minimumMessageThreshold = 30
-    if userAction == .ScrollUp {
-      minimumMessageThreshold += Array(oldTableCells.flatten()).count
+    if userAction == .Refresh && messageThreshold == flatOldTableCells.count {
+      print("TCOp: Refresh - no new msgs")
+      return
     }
     
-    //potential race condition - we load messages we have then ask network for more messages and then rerun this NSOperation
-    //many topics have less than 20 messages so we can't just return, and queue concurrent operations count is limited to 1
-    if allFilteredMessages.count < minimumMessageThreshold {
-      self.delegate?.realmNeedsMoreMessages()
-      print("TCOp: MessageArrayToTableCellArray: less than \(minimumMessageThreshold) msgs")
+    if isLast == false {
+      if realmMessages.count == 0 {
+        if userAction == .Refresh {return}
+        self.delegate?.realmNeedsMoreMessages()
+        print("TC NSOp: no realm messages")
+        return
+      }
+        
+      else if allFilteredMessages.count < messageThreshold {
+        self.delegate?.realmNeedsMoreMessages()
+        print("TCOp: MessageArrayToTableCellArray: less than \(messageThreshold) msgs")
+        return
+      }
     }
     
+    print("TCOp: computing realm messages")
     let allReversedMessages = Array(allFilteredMessages.reverse())
     var _tableCellMessages = [Message]()
-    for counter in 0 ..< min(minimumMessageThreshold, allFilteredMessages.count) {
+    for counter in 0 ..< min(messageThreshold, allFilteredMessages.count) {
       _tableCellMessages.append(allReversedMessages[counter])
     }
     
     let tableCellMessages = Array(_tableCellMessages.reverse())
     
+    if self.cancelled {
+      return
+    }
+    
     let realmTableCells = self.messageToTableCell(tableCellMessages)
+    
+    if self.cancelled {
+      return
+    }
 
     self.tableCells = realmTableCells
     (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
+    
+    if self.cancelled {
+      return
+    }
     
     self.delegate?.messageToTableCellArrayDidFinish(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
   }

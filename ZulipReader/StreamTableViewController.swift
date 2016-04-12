@@ -49,25 +49,41 @@ class StreamTableViewController: SLKTextViewController {
     
     //MARK: notification trial!!!
     //How to add badge to the home icon to indicate unread messages?
-    let superView = self.view
+//    let superView = tableView.superview!.superview!
+//    guard let navController = self.navigationController else {fatalError()}
+//    let navBarHeight = navController.navigationBar.frame.height
+//    let viewWidth = superView.frame.width
+//    let notificationSize = CGSize(width: viewWidth, height: navBarHeight)
+//    let origin = CGPoint(x: 0.0, y: -navBarHeight)
+//    let notification = UIView(frame: CGRect(origin: origin, size: notificationSize))
+//    
+//    notification.backgroundColor = UIColor.yellowColor()
+//    superView.addSubview(notification)
+////    tableView.addSubview(notification)
+//    
+//    UIView.animateWithDuration(0.5, delay: 2.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
+//      superView.frame.origin.y += navBarHeight
+//      self.tableView.frame.origin.y += navBarHeight
+//      self.tableView.contentInset.top = navBarHeight
+//      self.tableView.frame.origin.y += navBarHeight * 2
+//      self.tableView.setNeedsLayout()
+//      }, completion: {_ in
+//        UIView.animateWithDuration(0.5, delay: 4.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
+//          superView.frame.origin.y -= navBarHeight
+//          self.tableView.setNeedsLayout()
+//          }, completion: nil)
+//    })
     guard let navController = self.navigationController else {fatalError()}
     let navBarHeight = navController.navigationBar.frame.height
-    let viewWidth = superView.frame.width
-    let notificationSize = CGSize(width: viewWidth, height: navBarHeight)
-    let origin = CGPoint(x: 0.0, y: -navBarHeight)
-    let notification = UIView(frame: CGRect(origin: origin, size: notificationSize))
-    
+    notification.frame.origin = CGPoint(x: 0, y: 0)
+    notification.frame.size = CGSize(width: tableView.frame.width, height: 50.0)
     notification.backgroundColor = UIColor.yellowColor()
-    superView.addSubview(notification)
-    
-    UIView.animateWithDuration(0.5, delay: 2.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
-      superView.frame.origin.y += navBarHeight
-      }, completion: {_ in
-        UIView.animateWithDuration(0.5, delay: 4.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
-          superView.frame.origin.y -= navBarHeight
-          }, completion: nil)
-    })
+    tableView.addSubview(notification)
+    self.tableView.contentInset.top = navBarHeight
+
   }
+  
+  var notification = UIView()
   
   func loadData() {
     guard let data = data else {fatalError()}
@@ -239,10 +255,19 @@ class StreamTableViewController: SLKTextViewController {
 //MARK: ScrollViewControllerDelegate
 extension StreamTableViewController {
   override func scrollViewDidScroll(scrollView: UIScrollView) {
-    //    print("scrollView contentsize: \(scrollView.contentSize)")
-    //    print("tableView contentsize: \(tableView.contentSize)")
-    //    print("scrollView contentOffset: \(scrollView.contentOffset)")
-    //    print("tableView contentOffset: \(tableView.contentOffset)")
+//    print("scrollView contentsize: \(scrollView.contentSize)")
+//    print("tableView contentsize: \(tableView.contentSize)")
+//    print("scrollView contentOffset: \(scrollView.contentOffset)")
+//    print("tableView contentOffset: \(tableView.contentOffset)")
+    guard let navController = self.navigationController else {fatalError()}
+    let navBarHeight = navController.navigationBar.frame.height
+    let origin = CGPoint(x: 0, y: tableView.contentOffset.y + navBarHeight)
+    notification.frame.origin = origin
+    tableView.bringSubviewToFront(notification)
+    tableView.setNeedsLayout()
+    print(tableView.contentOffset.y)
+    notification.backgroundColor = UIColor.yellowColor()
+
   }
 }
 
@@ -281,7 +306,13 @@ extension StreamTableViewController: StreamControllerDelegate {
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     
     print("\n# of tableView Mesages: \(self.messages.flatten().count)")
-    self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+    
+    //we use this rather clunky feature to guarantee scrolling after the tablecell animations.
+
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+//      print("scrolling to bottom")
+//      self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
+//      }
     
     switch self.state {
     case .Subject:
