@@ -81,23 +81,15 @@ class MessageArrayToTableCellArray: NSOperation {
     }
     
     if userAction == .Refresh && messageThreshold == flatOldTableCells.count {
-      print("TCOp: Refresh - no new msgs")
+      print("TCOp: Refresh - no new msgs in current narrow")
+      //TODO: call delegate to add badge to home button
       return
     }
     
-    if isLast == false {
-      if realmMessages.count == 0 {
-        if userAction == .Refresh {return}
-        self.delegate?.realmNeedsMoreMessages()
-        print("TC NSOp: no realm messages")
-        return
-      }
-        
-      else if allFilteredMessages.count < messageThreshold {
-        self.delegate?.realmNeedsMoreMessages()
-        print("TCOp: MessageArrayToTableCellArray: less than \(messageThreshold) msgs")
-        return
-      }
+    if isLast == false && allFilteredMessages.count < messageThreshold {
+      self.delegate?.realmNeedsMoreMessages()
+      print("TCOp: MessageArrayToTableCellArray: less than \(messageThreshold) msgs")
+      return
     }
     
     print("TCOp: computing realm messages")

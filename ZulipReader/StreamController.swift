@@ -14,7 +14,10 @@ import RealmSwift
 
 protocol StreamControllerDelegate: class {
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
+  
   func didFetchMessages()
+  
+  func showHideNotification(type: Notification)
 }
 
 protocol SubscriptionDelegate: class {
@@ -65,7 +68,7 @@ class StreamController {
   private var maxId = Int.min
   private var homeMinId = Int.max
   private var streamMinId = [String: Int]()
-  private var realmNotification = NotificationToken()
+  private var refreshedMessageIds = Set<Int>()
   
   //we make this an instance variable beacause refresh needs to be aware of narrow
   private var action = Action()
@@ -76,14 +79,6 @@ class StreamController {
     } catch let error as NSError {
       fatalError(String(error))
     }
-//    self.realmNotification = realm.objects(Message).addNotificationBlock {result, _ in
-//      if let result = result where result.count > 0 {
-//        print("realmNotificationBlock")
-//        //tableCellsFromRealmOperation will always be last after a network load
-//        let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action, isLast: true)
-//        self.queue.messageQueue.addOperation(tableCellsFromRealmOperation)
-//      }
-//    }
     //FOR DEBUGGING PURPOSES
 //    clearDefaults()
   }
@@ -104,13 +99,8 @@ class StreamController {
     self.timer.invalidate()
     self.timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
   }
-//
-//  func isQueueEmpty() -> Bool {
-//    return self.queue.messageQueue.
-//  }
   
   //TODO: why do I need @objc?
-  //TODO: we're still having some troubles with refreshing correctly.
   //new messages are loaded on refreshQueue, called by timer
   @objc private func refreshData() {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
@@ -224,14 +214,26 @@ extension StreamController: URLToMessageArrayDelegate {
   internal func urlToMessageArrayDidFinish(messages: [Message], userAction: UserAction) {
     switch userAction {
     case .Refresh:
-      //if user does not make request and messages are not empty, make changes to tableView
-      if self.queue.prepQueue.operationCount == 0 && queue.userNetworkQueue.operationCount == 0 && !messages.isEmpty {
-        let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, isLast: true)
-        self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
+      //only load refreshed messages if there are new messages and there's no UI action
+
+      //keep track of new refreshed messages for notifications
+      if !messages.isEmpty {
+        for message in messages {
+          self.refreshedMessageIds.insert(message.id)
+        }
+      }
+      
+      guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 && !messages.isEmpty
+        else {
+          //display home button badge
+          dispatch_async(dispatch_get_main_queue()) {
+            self.delegate?.showHideNotification(.Badge)
+          }
+          return
       }
       
     default:
-      if messages.isEmpty {
+      guard !messages.isEmpty else {
         dispatch_async(dispatch_get_main_queue()){
           self.delegate?.didFetchMessages()
         }
@@ -251,6 +253,7 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
     self.loading = false
     
     if insertedRows.isEmpty {
+      //The following statements run iff isLast = true
       print("TableCell Delegate: insertedRows is empty")
       dispatch_async(dispatch_get_main_queue()) {
         self.delegate?.didFetchMessages()
@@ -261,8 +264,20 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
       //oldTableCells is only reassigned if new messages are loaded
       self.oldTableCells = tableCells
       print("TableCell Delegate: TC's to TableView")
+      
       dispatch_async(dispatch_get_main_queue()) {
         self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
+      }
+      
+      let tableCellIds = tableCells.flatten().map {$0.id}
+      let refreshUnion = self.refreshedMessageIds.union(tableCellIds)
+      if refreshUnion.count > 0 {
+        for union in refreshUnion {
+          self.refreshedMessageIds.remove(union)
+        }
+        dispatch_async(dispatch_get_main_queue()) {
+          self.delegate?.showHideNotification(.Badge)
+        }
       }
     }
   }

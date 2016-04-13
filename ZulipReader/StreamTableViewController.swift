@@ -48,41 +48,41 @@ class StreamTableViewController: SLKTextViewController {
     self.loadData()
     
     //MARK: notification trial!!!
-    //How to add badge to the home icon to indicate unread messages?
-//    let superView = tableView.superview!.superview!
-//    guard let navController = self.navigationController else {fatalError()}
-//    let navBarHeight = navController.navigationBar.frame.height
-//    let viewWidth = superView.frame.width
-//    let notificationSize = CGSize(width: viewWidth, height: navBarHeight)
-//    let origin = CGPoint(x: 0.0, y: -navBarHeight)
-//    let notification = UIView(frame: CGRect(origin: origin, size: notificationSize))
-//    
-//    notification.backgroundColor = UIColor.yellowColor()
-//    superView.addSubview(notification)
-////    tableView.addSubview(notification)
-//    
-//    UIView.animateWithDuration(0.5, delay: 2.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
-//      superView.frame.origin.y += navBarHeight
-//      self.tableView.frame.origin.y += navBarHeight
-//      self.tableView.contentInset.top = navBarHeight
-//      self.tableView.frame.origin.y += navBarHeight * 2
-//      self.tableView.setNeedsLayout()
-//      }, completion: {_ in
-//        UIView.animateWithDuration(0.5, delay: 4.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
-//          superView.frame.origin.y -= navBarHeight
-//          self.tableView.setNeedsLayout()
-//          }, completion: nil)
-//    })
     guard let navController = self.navigationController else {fatalError()}
     let navBarHeight = navController.navigationBar.frame.height
-    notification.frame.origin = CGPoint(x: 0, y: 0)
-    notification.frame.size = CGSize(width: tableView.frame.width, height: 50.0)
+    notification.frame.origin = CGPoint(x: 0, y: -navBarHeight)
+    notification.frame.size = CGSize(width: tableView.frame.width, height: navBarHeight)
     notification.backgroundColor = UIColor.yellowColor()
     tableView.addSubview(notification)
-    self.tableView.contentInset.top = navBarHeight
+  }
+  
+  func toggleNotification() {
+
+    let originY: CGFloat
+    let tableViewInset: CGFloat
+    let notificationHeight = self.notification.frame.height
+    
+    if self.isNotificationDisplayed {
+      //retract notification
+      self.isNotificationDisplayed = false
+      originY = -notificationHeight
+      tableViewInset = 0
+    }
+    else {
+      //display notification
+      self.isNotificationDisplayed = true
+      originY = 0
+      tableViewInset = notificationHeight
+    }
+    
+    UIView.animateWithDuration(0.2, delay: 0.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
+      self.notification.frame.origin.y = originY
+      self.tableView.contentInset.top = tableViewInset
+      }, completion: nil)
 
   }
   
+  var isNotificationDisplayed = false
   var notification = UIView()
   
   func loadData() {
@@ -255,24 +255,35 @@ class StreamTableViewController: SLKTextViewController {
 //MARK: ScrollViewControllerDelegate
 extension StreamTableViewController {
   override func scrollViewDidScroll(scrollView: UIScrollView) {
-//    print("scrollView contentsize: \(scrollView.contentSize)")
-//    print("tableView contentsize: \(tableView.contentSize)")
-//    print("scrollView contentOffset: \(scrollView.contentOffset)")
-//    print("tableView contentOffset: \(tableView.contentOffset)")
-    guard let navController = self.navigationController else {fatalError()}
-    let navBarHeight = navController.navigationBar.frame.height
-    let origin = CGPoint(x: 0, y: tableView.contentOffset.y + navBarHeight)
-    notification.frame.origin = origin
+    let originY: CGFloat
+    
+    if self.isNotificationDisplayed {
+      originY = tableView.contentOffset.y
+    } else {
+      originY = tableView.contentOffset.y - notification.frame.height
+    }
+    
+    notification.frame.origin.y = originY
     tableView.bringSubviewToFront(notification)
     tableView.setNeedsLayout()
-    print(tableView.contentOffset.y)
-    notification.backgroundColor = UIColor.yellowColor()
-
   }
+}
+
+enum Notification {
+  case Error, Badge, NewMessage
 }
 
 //MARK: StreamControllerDelegate
 extension StreamTableViewController: StreamControllerDelegate {
+  func showHideNotification(type: Notification) {
+    print("notification Type: \(type)")
+    self.toggleNotification()
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(2.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+      self.toggleNotification()
+    }
+  }
+  
   func didFetchMessages() {
     if let refresh = self.refreshControl {
       if refresh.refreshing {
