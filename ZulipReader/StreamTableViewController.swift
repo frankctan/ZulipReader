@@ -50,27 +50,30 @@ class StreamTableViewController: SLKTextViewController {
     //MARK: notification trial!!!
     guard let navController = self.navigationController else {fatalError()}
     let navBarHeight = navController.navigationBar.frame.height
-    notification.frame.origin = CGPoint(x: 0, y: -navBarHeight)
-    notification.frame.size = CGSize(width: tableView.frame.width, height: navBarHeight)
-    notification.backgroundColor = UIColor.yellowColor()
+    self.notification = NotificationView()
+    self.notification.delegate = self
+    notification.frame.origin = CGPoint(x: 0, y: -notification.frame.height)
+//    notification.frame.size = CGSize(width: tableView.frame.width, height: navBarHeight)
     tableView.addSubview(notification)
   }
   
+  var notificationDisplayed = false
+  var notification = NotificationView()
+  
   func toggleNotification() {
-
     let originY: CGFloat
     let tableViewInset: CGFloat
     let notificationHeight = self.notification.frame.height
     
-    if self.isNotificationDisplayed {
+    if self.notificationDisplayed {
       //retract notification
-      self.isNotificationDisplayed = false
+      self.notificationDisplayed = false
       originY = -notificationHeight
       tableViewInset = 0
     }
     else {
       //display notification
-      self.isNotificationDisplayed = true
+      self.notificationDisplayed = true
       originY = 0
       tableViewInset = notificationHeight
     }
@@ -79,11 +82,24 @@ class StreamTableViewController: SLKTextViewController {
       self.notification.frame.origin.y = originY
       self.tableView.contentInset.top = tableViewInset
       }, completion: nil)
-
   }
   
-  var isNotificationDisplayed = false
-  var notification = UIView()
+  var navBarBadgeDisplayed = false
+  
+  func showNavBarBadge(flag: Bool) {
+    guard self.navBarBadgeDisplayed != flag else {return}
+    
+    self.navBarBadgeDisplayed = flag
+    let image: UIImage?
+    if self.navBarBadgeDisplayed {
+      image = UIImage(named: "house283-notification")?.imageWithRenderingMode(.AlwaysOriginal)
+    }
+    else {
+      image = UIImage(named: "house283-1")
+    }
+    navigationItem.rightBarButtonItem?.image = image
+  }
+
   
   func loadData() {
     guard let data = data else {fatalError()}
@@ -252,12 +268,24 @@ class StreamTableViewController: SLKTextViewController {
   }
 }
 
+//MARK: NotificationViewDelegate
+extension StreamTableViewController: NotificationViewDelegate {
+  func dismissDidTouch() {
+    self.toggleNotification()
+  }
+  func scrollDownDidTouch() {
+    guard let lastMessage = self.messages.flatten().last else {fatalError()}
+    let lastIndex = NSIndexPath(forRow: lastMessage.row, inSection: lastMessage.section)
+    tableView.scrollToRowAtIndexPath(lastIndex, atScrollPosition: .Middle, animated: true)
+  }
+}
+
 //MARK: ScrollViewControllerDelegate
 extension StreamTableViewController {
   override func scrollViewDidScroll(scrollView: UIScrollView) {
+    //keep notification bar in place during scroll
     let originY: CGFloat
-    
-    if self.isNotificationDisplayed {
+    if self.notificationDisplayed {
       originY = tableView.contentOffset.y
     } else {
       originY = tableView.contentOffset.y - notification.frame.height
@@ -279,7 +307,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("notification Type: \(type)")
     self.toggleNotification()
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(2.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(10.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) {
       self.toggleNotification()
     }
   }
@@ -341,6 +369,8 @@ extension StreamTableViewController {
     let narrow = Narrow()
     self.navigationController?.navigationBar.topItem?.title = "Stream"
     self.focusAction(narrow)
+    
+    self.toggleNotification()
   }
   
   func focusAction(narrow: Narrow) {

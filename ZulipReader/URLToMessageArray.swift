@@ -86,7 +86,7 @@ class URLToMessageArray: NetworkOperation {
     case .Focus:
       params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 20000, narrow: action.narrow.narrowString)
     case .Refresh:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 0, after: 20000, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor+1, before: 0, after: 20000, narrow: action.narrow.narrowString)
     case .ScrollUp:
       params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0, narrow: action.narrow.narrowString)
     }

@@ -65,8 +65,6 @@ class StreamController {
   private var timer = NSTimer()
   private let queue = Queue()
   
-  private var maxId = Int.min
-  private var homeMinId = Int.max
   private var streamMinId = [String: Int]()
   private var refreshedMessageIds = Set<Int>()
   
@@ -107,8 +105,11 @@ class StreamController {
       //we don't refresh until there's something to refresh
       if !self.oldTableCells.isEmpty {
         print("\n===refreshData===")
+        //a generic action is used so we don't miss any new messages
         self.action.userAction = .Refresh
-        let messagesFromNetworkOperation = self.messagesFromNetwork(self.action)
+        var localAction = Action()
+        localAction.userAction = .Refresh
+        let messagesFromNetworkOperation = self.messagesFromNetwork(localAction)
         self.queue.refreshNetworkQueue.addOperation(messagesFromNetworkOperation)
       }
     }
@@ -215,21 +216,34 @@ extension StreamController: URLToMessageArrayDelegate {
     switch userAction {
     case .Refresh:
       //only load refreshed messages if there are new messages and there's no UI action
-
-      //keep track of new refreshed messages for notifications
-      if !messages.isEmpty {
-        for message in messages {
-          self.refreshedMessageIds.insert(message.id)
+      
+      //MARK: Notifications
+      guard !messages.isEmpty else {return}
+      
+      for message in messages {
+        self.refreshedMessageIds.insert(message.id)
+      }
+      
+      let filteredMessages = NSArray(array: messages).filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+      let messageIdIntersect = self.refreshedMessageIds.intersect(filteredMessages.map {$0.id})
+      
+      guard !messageIdIntersect.isEmpty else {return}
+      
+      for messageID in messageIdIntersect {
+        self.refreshedMessageIds.remove(messageID)
+      }
+      
+      if !self.refreshedMessageIds.isEmpty {
+        dispatch_async(dispatch_get_main_queue()){
+          self.delegate?.showHideNotification(.Badge)
         }
       }
       
-      guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 && !messages.isEmpty
-        else {
-          //display home button badge
-          dispatch_async(dispatch_get_main_queue()) {
-            self.delegate?.showHideNotification(.Badge)
-          }
-          return
+      //only load new message notification and new table cells if there's no other user input
+      guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 else {return}
+  
+      dispatch_async(dispatch_get_main_queue()){
+        self.delegate?.showHideNotification(.NewMessage)
       }
       
     default:
@@ -240,10 +254,11 @@ extension StreamController: URLToMessageArrayDelegate {
         self.loading = false
         return
       }
-      
-      let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, isLast: true)
-      self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
     }
+    
+    print("adding tableCellsFromRealmOperation")
+    let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action, isLast: true)
+    self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
   }
 }
 
@@ -267,17 +282,6 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
       
       dispatch_async(dispatch_get_main_queue()) {
         self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
-      }
-      
-      let tableCellIds = tableCells.flatten().map {$0.id}
-      let refreshUnion = self.refreshedMessageIds.union(tableCellIds)
-      if refreshUnion.count > 0 {
-        for union in refreshUnion {
-          self.refreshedMessageIds.remove(union)
-        }
-        dispatch_async(dispatch_get_main_queue()) {
-          self.delegate?.showHideNotification(.Badge)
-        }
       }
     }
   }
