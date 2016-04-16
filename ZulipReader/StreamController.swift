@@ -235,6 +235,8 @@ extension StreamController: URLToMessageArrayDelegate {
       
       if !self.refreshedMessageIds.isEmpty {
         dispatch_async(dispatch_get_main_queue()){
+          //TODO: add a switch statement that will show/hide the badge
+          //TODO: add a notification for error statements
           self.delegate?.showHideNotification(.Badge)
         }
       }
@@ -243,6 +245,7 @@ extension StreamController: URLToMessageArrayDelegate {
       guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 else {return}
   
       dispatch_async(dispatch_get_main_queue()){
+        //TODO: If new message notification is already being shown, don't toggle just keep
         self.delegate?.showHideNotification(.NewMessage)
       }
       

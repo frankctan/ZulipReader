@@ -11,6 +11,7 @@
 		404A0D84BF29236BFE878D35 /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */; };
 		670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamExtendedCell.swift */; };
 		67166ED61CC02969002D0E12 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67166ED51CC02969002D0E12 /* NotificationView.swift */; };
+		67166ED81CC2D0EF002D0E12 /* NotificationNavViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */; };
 		67195EA61CA073C80079C4D5 /* URLToMessageArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */; };
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
 		673251771C0A7154009A546C /* StreamController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251761C0A7154009A546C /* StreamController.swift */; };
@@ -72,6 +73,7 @@
 		41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		670295011C1B65E500314A04 /* StreamExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamExtendedCell.swift; sourceTree = "<group>"; };
 		67166ED51CC02969002D0E12 /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationNavViewController.swift; sourceTree = "<group>"; };
 		67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLToMessageArray.swift; sourceTree = "<group>"; };
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		673251761C0A7154009A546C /* StreamController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamController.swift; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				673251741C0A5D85009A546C /* DataController.swift */,
 				673251761C0A7154009A546C /* StreamController.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
+				67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */,
 				67466D381CC01D8B005883CC /* NotificationView.xib */,
 				67166ED51CC02969002D0E12 /* NotificationView.swift */,
 				67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */,
@@ -498,6 +501,7 @@
 				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,
 				67B91B991CA3595900C87409 /* NetworkOperation.swift in Sources */,
 				67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */,
+				67166ED81CC2D0EF002D0E12 /* NotificationNavViewController.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
 				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,

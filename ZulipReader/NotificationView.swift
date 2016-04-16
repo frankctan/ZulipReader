@@ -9,8 +9,8 @@
 import UIKit
 
 protocol NotificationViewDelegate: class {
-  func dismissDidTouch()
-  func scrollDownDidTouch()
+  func dismissButtonDidTouch()
+  func scrollDownButtonDidTouch()
 }
 
 class NotificationView: UIView {
@@ -26,10 +26,10 @@ class NotificationView: UIView {
   }
   
   @IBAction func dismissButtonDidTouch(sender: AnyObject) {
-    self.delegate?.dismissDidTouch()
+    self.delegate?.dismissButtonDidTouch()
   }
   
   @IBAction func scrollDownButtonDidTouch(sender: AnyObject) {
-    self.delegate?.scrollDownDidTouch()
+    self.delegate?.scrollDownButtonDidTouch()
   }
 }

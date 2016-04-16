@@ -40,21 +40,23 @@ class StreamTableViewController: SLKTextViewController {
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
-    if let navigationController = self.navigationController as? ScrollingNavigationController {
-      navigationController.followScrollView(tableView, delay: 0.0)
-    }
-    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+//    if let navigationController = self.navigationController as? ScrollingNavigationController {
+//      navigationController.followScrollView(tableView, delay: 1.0)
+//    }
+//    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
     
     self.loadData()
     
     //MARK: notification trial!!!
-    guard let navController = self.navigationController else {fatalError()}
-    let navBarHeight = navController.navigationBar.frame.height
-    self.notification = NotificationView()
+    
+    self.notification = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil)[0] as! NotificationView
+    
     self.notification.delegate = self
-    notification.frame.origin = CGPoint(x: 0, y: -notification.frame.height)
-//    notification.frame.size = CGSize(width: tableView.frame.width, height: navBarHeight)
+    notification.frame.size.width = tableView.frame.width
+    //extra pixels so the notification isn't seen when navbar disappears
+    notification.frame.origin = CGPoint(x: 0, y: -notification.frame.height - 20)
     tableView.addSubview(notification)
+    tableView.bringSubviewToFront(notification)
   }
   
   var notificationDisplayed = false
@@ -65,10 +67,11 @@ class StreamTableViewController: SLKTextViewController {
     let tableViewInset: CGFloat
     let notificationHeight = self.notification.frame.height
     
+    print("toggling notification")
     if self.notificationDisplayed {
       //retract notification
       self.notificationDisplayed = false
-      originY = -notificationHeight
+      originY = -notificationHeight - 20
       tableViewInset = 0
     }
     else {
@@ -78,10 +81,14 @@ class StreamTableViewController: SLKTextViewController {
       tableViewInset = notificationHeight
     }
     
+    print("animating notification")
     UIView.animateWithDuration(0.2, delay: 0.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
       self.notification.frame.origin.y = originY
       self.tableView.contentInset.top = tableViewInset
-      }, completion: nil)
+      self.tableView.setNeedsDisplay()
+      }, completion: {_ in
+        self.tableView.setNeedsDisplay()
+    })
   }
   
   var navBarBadgeDisplayed = false
@@ -99,7 +106,6 @@ class StreamTableViewController: SLKTextViewController {
     }
     navigationItem.rightBarButtonItem?.image = image
   }
-
   
   func loadData() {
     guard let data = data else {fatalError()}
@@ -225,8 +231,8 @@ class StreamTableViewController: SLKTextViewController {
     //General tableview settings
     self.navigationController?.navigationBar.topItem?.title = "Stream"
     
-    tableView.estimatedRowHeight = 500
-    tableView.rowHeight = UITableViewAutomaticDimension
+    tableView.estimatedRowHeight = 1000
+//    tableView.rowHeight = UITableViewAutomaticDimension
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     
     //TableView Cells
@@ -257,8 +263,10 @@ class StreamTableViewController: SLKTextViewController {
     //Navigation Bar
     //Sticky headers follow the scrolling of the navbar
     self.navigationController?.navigationBar.translucent = false
-    let rightHomeBarButtonItem = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: #selector(StreamTableViewController.homeButtonDidTouch(_:)))
-    navigationItem.setRightBarButtonItem(rightHomeBarButtonItem, animated: true)
+    let homeBarButton = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: #selector(StreamTableViewController.homeButtonDidTouch(_:)))
+    let scrollDownBarButton = UIBarButtonItem(image: UIImage(named: "DoubleDown - 1"), style: .Plain, target: self, action: #selector(StreamTableViewController.scrollDownDidTouch))
+    
+    navigationItem.setRightBarButtonItems([homeBarButton, scrollDownBarButton], animated: true)
     
     //SWRevealViewController
     let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)))
@@ -270,13 +278,12 @@ class StreamTableViewController: SLKTextViewController {
 
 //MARK: NotificationViewDelegate
 extension StreamTableViewController: NotificationViewDelegate {
-  func dismissDidTouch() {
+  func dismissButtonDidTouch() {
     self.toggleNotification()
   }
-  func scrollDownDidTouch() {
-    guard let lastMessage = self.messages.flatten().last else {fatalError()}
-    let lastIndex = NSIndexPath(forRow: lastMessage.row, inSection: lastMessage.section)
-    tableView.scrollToRowAtIndexPath(lastIndex, atScrollPosition: .Middle, animated: true)
+  func scrollDownButtonDidTouch() {
+    self.scrollDownDidTouch()
+    self.toggleNotification()
   }
 }
 
@@ -288,12 +295,12 @@ extension StreamTableViewController {
     if self.notificationDisplayed {
       originY = tableView.contentOffset.y
     } else {
-      originY = tableView.contentOffset.y - notification.frame.height
+      originY = tableView.contentOffset.y - notification.frame.height - 20
     }
     
     notification.frame.origin.y = originY
     tableView.bringSubviewToFront(notification)
-    tableView.setNeedsLayout()
+    tableView.setNeedsDisplay()
   }
 }
 
@@ -362,13 +369,19 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
 }
 
-//MARK: HomeBarButtonItem Target
+//MARK: NavBar Target
 extension StreamTableViewController {
+  func scrollDownDidTouch() {
+    guard let lastMessage = self.messages.flatten().last else {fatalError()}
+    let lastIndex = NSIndexPath(forRow: lastMessage.row, inSection: lastMessage.section)
+    tableView.scrollToRowAtIndexPath(lastIndex, atScrollPosition: .Middle, animated: true)
+  }
+  
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
     let narrow = Narrow()
-    self.navigationController?.navigationBar.topItem?.title = "Stream"
     self.focusAction(narrow)
+    self.navigationController?.navigationBar.topItem?.title = "Stream"
     
     self.toggleNotification()
   }
