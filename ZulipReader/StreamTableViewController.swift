@@ -10,7 +10,7 @@ import UIKit
 import AMScrollingNavbar
 import SlackTextViewController
 
-class StreamTableViewController: SLKTextViewController {
+class StreamTableViewController: NotificationNavViewController {
   
   enum State {
     case Home, Stream, Subject
@@ -18,7 +18,6 @@ class StreamTableViewController: SLKTextViewController {
   
   var state: State = .Home
   var data: StreamController?
-  var sideMenuTableViewController: SideMenuTableViewController?
   var messages = [[TableCell]]()
   var action = Action()
   
@@ -26,85 +25,27 @@ class StreamTableViewController: SLKTextViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    state = .Home
+    
     self.data = StreamController()
     self.sideMenuTableViewController = SideMenuTableViewController()
+    
+    //optional so streamController can be deallocated on logout
     guard let data = data else {fatalError()}
+    
+    //Set delegates
     data.delegate = self
-    data.subscriptionDelegate = sideMenuTableViewController
-    sideMenuTableViewController?.delegate = self
-    tableViewSettings()
-    state = .Home
-    tableView.scrollsToTop = true
+    self.sideMenuTableViewController?.delegate = self
+    data.subscriptionDelegate = self.sideMenuTableViewController
+    
+    self.refreshSettings()
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
-//    if let navigationController = self.navigationController as? ScrollingNavigationController {
-//      navigationController.followScrollView(tableView, delay: 1.0)
-//    }
-//    self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
-    
     self.loadData()
-    
-    //MARK: notification trial!!!
-    
-    self.notification = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil)[0] as! NotificationView
-    
-    self.notification.delegate = self
-    notification.frame.size.width = tableView.frame.width
-    //extra pixels so the notification isn't seen when navbar disappears
-    notification.frame.origin = CGPoint(x: 0, y: -notification.frame.height - 20)
-    tableView.addSubview(notification)
-    tableView.bringSubviewToFront(notification)
-  }
-  
-  var notificationDisplayed = false
-  var notification = NotificationView()
-  
-  func toggleNotification() {
-    let originY: CGFloat
-    let tableViewInset: CGFloat
-    let notificationHeight = self.notification.frame.height
-    
-    print("toggling notification")
-    if self.notificationDisplayed {
-      //retract notification
-      self.notificationDisplayed = false
-      originY = -notificationHeight - 20
-      tableViewInset = 0
-    }
-    else {
-      //display notification
-      self.notificationDisplayed = true
-      originY = 0
-      tableViewInset = notificationHeight
-    }
-    
-    print("animating notification")
-    UIView.animateWithDuration(0.2, delay: 0.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
-      self.notification.frame.origin.y = originY
-      self.tableView.contentInset.top = tableViewInset
-      self.tableView.setNeedsDisplay()
-      }, completion: {_ in
-        self.tableView.setNeedsDisplay()
-    })
-  }
-  
-  var navBarBadgeDisplayed = false
-  
-  func showNavBarBadge(flag: Bool) {
-    guard self.navBarBadgeDisplayed != flag else {return}
-    
-    self.navBarBadgeDisplayed = flag
-    let image: UIImage?
-    if self.navBarBadgeDisplayed {
-      image = UIImage(named: "house283-notification")?.imageWithRenderingMode(.AlwaysOriginal)
-    }
-    else {
-      image = UIImage(named: "house283-1")
-    }
-    navigationItem.rightBarButtonItem?.image = image
   }
   
   func loadData() {
@@ -117,6 +58,23 @@ class StreamTableViewController: SLKTextViewController {
       tableView.showLoading()
       data.register()
     }
+  }
+  
+  //MARK: Scroll Up RefreshControl
+  func refreshSettings() {
+    let tableViewController = UITableViewController()
+    tableViewController.tableView = self.tableView
+    let refresh = UIRefreshControl()
+    refresh.addTarget(self, action: #selector(StreamTableViewController.refresh(_:)), forControlEvents: .ValueChanged)
+    tableViewController.refreshControl = refresh
+
+  }
+  
+  func refresh(refreshControl: UIRefreshControl) {
+    self.refreshControl = refreshControl
+    guard let data = data else {fatalError()}
+    self.action.userAction = .ScrollUp
+    data.loadStreamMessages(self.action)
   }
   
   //MARK: TableViewDelegate
@@ -154,6 +112,7 @@ class StreamTableViewController: SLKTextViewController {
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    //large number ensures we are always able to scroll to the bottom
     return 1000
   }
   
@@ -183,13 +142,7 @@ class StreamTableViewController: SLKTextViewController {
     cell.configure(message)
     return cell
   }
-  
-  func refresh(refreshControl: UIRefreshControl) {
-    self.refreshControl = refreshControl
-    guard let data = data else {fatalError()}
-    self.action.userAction = .ScrollUp
-    data.loadStreamMessages(self.action)
-  }
+
   
   func logout() {
     guard let data = data else {fatalError()}
@@ -221,105 +174,46 @@ class StreamTableViewController: SLKTextViewController {
     
     let messagePost = MessagePost(content: sentMessage, recipient: recipient, subject: subject)
     
+    //TODO: update this to reflect the latest multitasking changes - self.action.userAction
     self.action.userAction = .Refresh
     guard let data = data else {fatalError()}
     data.postMessage(messagePost, action: self.action)
     super.didPressRightButton(sender)
   }
-  
-  func tableViewSettings() {
-    //General tableview settings
-    self.navigationController?.navigationBar.topItem?.title = "Stream"
-    
-    tableView.estimatedRowHeight = 1000
-//    tableView.rowHeight = UITableViewAutomaticDimension
-    tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-    
-    //TableView Cells
-    tableView.registerNib(UINib(nibName: "StreamHeaderNavCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderNavCell")
-    tableView.registerNib(UINib(nibName: "StreamHeaderPrivateCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderPrivateCell")
-    tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
-    tableView.registerNib(UINib(nibName: "StreamExtendedCell", bundle: nil), forCellReuseIdentifier: "StreamExtendedCell")
-    
-    //SLKTextViewController
-    self.setTextInputbarHidden(true, animated: false)
-    self.bounces = true
-    self.shakeToClearEnabled = true
-    self.keyboardPanningEnabled = true
-    self.inverted = false
-    self.textView.placeholder = "Compose your message here!"
-    self.textView.placeholderColor = UIColor.lightGrayColor()
-    self.textInputbar.autoHideRightButton = true
-    self.typingIndicatorView.canResignByTouch = true
-    self.rightButton.setTitle("Send", forState: UIControlState.Normal)
-    
-    //Pull to Refresh
-    let tableViewController = UITableViewController()
-    tableViewController.tableView = self.tableView
-    let refresh = UIRefreshControl()
-    refresh.addTarget(self, action: #selector(StreamTableViewController.refresh(_:)), forControlEvents: .ValueChanged)
-    tableViewController.refreshControl = refresh
-    
-    //Navigation Bar
-    //Sticky headers follow the scrolling of the navbar
-    self.navigationController?.navigationBar.translucent = false
-    let homeBarButton = UIBarButtonItem(image: UIImage(named: "house283-1"), style: .Plain, target: self, action: #selector(StreamTableViewController.homeButtonDidTouch(_:)))
-    let scrollDownBarButton = UIBarButtonItem(image: UIImage(named: "DoubleDown - 1"), style: .Plain, target: self, action: #selector(StreamTableViewController.scrollDownDidTouch))
-    
-    navigationItem.setRightBarButtonItems([homeBarButton, scrollDownBarButton], animated: true)
-    
-    //SWRevealViewController
-    let leftMenuBarButtonItem = UIBarButtonItem(image: UIImage(named: "menu"), style: .Plain, target: self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)))
-    let sideMenuNavController = UINavigationController(rootViewController: self.sideMenuTableViewController!)
-    self.revealViewController().rearViewController = sideMenuNavController
-    self.navigationItem.setLeftBarButtonItem(leftMenuBarButtonItem, animated: true)
+
+  func focusAction(narrow: Narrow) {
+    self.action = Action(narrow: narrow, action: .Focus)
+    guard let data = data else {fatalError()}
+    data.loadStreamMessages(self.action)
+    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
   }
 }
 
-//MARK: NotificationViewDelegate
-extension StreamTableViewController: NotificationViewDelegate {
-  func dismissButtonDidTouch() {
-    self.toggleNotification()
-  }
-  func scrollDownButtonDidTouch() {
-    self.scrollDownDidTouch()
-    self.toggleNotification()
-  }
-}
-
-//MARK: ScrollViewControllerDelegate
+//MARK: NavBar Target
 extension StreamTableViewController {
-  override func scrollViewDidScroll(scrollView: UIScrollView) {
-    //keep notification bar in place during scroll
-    let originY: CGFloat
-    if self.notificationDisplayed {
-      originY = tableView.contentOffset.y
-    } else {
-      originY = tableView.contentOffset.y - notification.frame.height - 20
-    }
-    
-    notification.frame.origin.y = originY
-    tableView.bringSubviewToFront(notification)
-    tableView.setNeedsDisplay()
+  func homeButtonDidTouch(sender: AnyObject) {
+    state = .Home
+    let narrow = Narrow()
+    self.focusAction(narrow)
+    self.navigationController?.navigationBar.topItem?.title = "Stream"
   }
-}
-
-enum Notification {
-  case Error, Badge, NewMessage
 }
 
 //MARK: StreamControllerDelegate
 extension StreamTableViewController: StreamControllerDelegate {
-  func showHideNotification(type: Notification) {
-    print("notification Type: \(type)")
-    self.toggleNotification()
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(10.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-      self.toggleNotification()
+  func setNotification(notification: Notification, show: Bool) {
+    switch notification {
+    case .Badge:
+      self.showNavBarBadge(show)
+      
+    default:
+      self.notification.configure(notification)
+      self.showNotification(show)
     }
   }
   
   func didFetchMessages() {
+    //called if no new messages are found
     if let refresh = self.refreshControl {
       if refresh.refreshing {
         self.refreshControl!.endRefreshing()
@@ -328,7 +222,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
   }
   
-  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction) {
     self.tableView.hideLoading()
     print("UITVC: old sections: \(self.messages.count)")
     self.messages = messages
@@ -349,48 +243,69 @@ extension StreamTableViewController: StreamControllerDelegate {
       }
     }
     
+    //turn off network activity indicator
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     
-    print("\n# of tableView Mesages: \(self.messages.flatten().count)")
-    
-    //we use this rather clunky feature to guarantee scrolling after the tablecell animations.
-
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(1.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) {
-//      print("scrolling to bottom")
-//      self.tableView.scrollToRowAtIndexPath(insertedRows.last!, atScrollPosition: .Top, animated: true)
-//      }
-    
+    //display keyboard if narrowed
     switch self.state {
     case .Subject:
       self.setTextInputbarHidden(false, animated: true)
     default:
       self.setTextInputbarHidden(true, animated: true)
     }
+    
+    //TODO: only if the action is NOT refresh
+    if userAction != .Refresh {
+      if let lastIndexPath = insertedRows.last {
+        self.tableView.selectRowAtIndexPath(lastIndexPath, animated: true, scrollPosition: .Bottom)
+        self.tableView.deselectRowAtIndexPath(lastIndexPath, animated: true)
+      }
+    }
   }
 }
 
-//MARK: NavBar Target
-extension StreamTableViewController {
-  func scrollDownDidTouch() {
-    guard let lastMessage = self.messages.flatten().last else {fatalError()}
-    let lastIndex = NSIndexPath(forRow: lastMessage.row, inSection: lastMessage.section)
-    tableView.scrollToRowAtIndexPath(lastIndex, atScrollPosition: .Middle, animated: true)
-  }
-  
-  func homeButtonDidTouch(sender: AnyObject) {
-    state = .Home
-    let narrow = Narrow()
-    self.focusAction(narrow)
-    self.navigationController?.navigationBar.topItem?.title = "Stream"
+//TODO: set a loading variable which prohibits user from entering additional actions. 
+//TODO: while loading is true, blur tableview to let user know 
+
+//MARK: StreamHeaderNavCellDelegate
+extension StreamTableViewController: StreamHeaderNavCellDelegate {
+  func narrowStream(stream: String) {
+    state = .Stream
     
-    self.toggleNotification()
+    let narrowString = "[[\"stream\", \"\(stream)\"]]"
+    let narrow = Narrow(narrowString: narrowString, stream: stream)
+    self.navigationController?.navigationBar.topItem?.title = stream
+    
+    self.focusAction(narrow)
   }
   
-  func focusAction(narrow: Narrow) {
-    self.action = Action(narrow: narrow, action: .Focus)
-    guard let data = data else {fatalError()}
-    data.loadStreamMessages(self.action)
-    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+  func narrowSubject(stream: String, subject: String) {
+    state = .Subject
+    
+    let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
+    let narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
+    
+    //TODO: CALayer animate navigation bar title
+    self.navigationController?.navigationBar.topItem?.title = subject
+    
+    self.focusAction(narrow)
+  }
+}
+
+//MARK: StreamHeaderPrivateCellDelegate
+extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
+  func narrowConversation(message: TableCell) {
+    state = .Subject
+    
+    let pmWith = message.pmWith.sort()
+    let emailString = pmWith.joinWithSeparator(",")
+    let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
+    let narrow = Narrow(narrowString: narrowString, pmWith: pmWith)
+    
+    //TODO: CALayer animate navigation bar title
+    self.navigationController?.navigationBar.topItem?.title = "Private Messages"
+    
+    self.focusAction(narrow)
   }
 }
 
@@ -414,46 +329,8 @@ extension StreamTableViewController: SideMenuDelegate {
       narrow = Narrow(narrowString: narrowString, stream: selection)
     }
     
+    //TODO: CALayer animate navigation bar title
     self.navigationController?.navigationBar.topItem?.title = selection
-    
-    self.focusAction(narrow)
-  }
-}
-
-//MARK: StreamHeaderNavCellDelegate
-extension StreamTableViewController: StreamHeaderNavCellDelegate {
-  func narrowStream(stream: String) {
-    print("tapped!")
-    state = .Stream
-    
-    let narrowString = "[[\"stream\", \"\(stream)\"]]"
-    let narrow = Narrow(narrowString: narrowString, stream: stream)
-    self.navigationController?.navigationBar.topItem?.title = stream
-    
-    self.focusAction(narrow)
-  }
-  
-  func narrowSubject(stream: String, subject: String) {
-    state = .Subject
-    
-    let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
-    let narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
-    self.navigationController?.navigationBar.topItem?.title = subject
-    
-    self.focusAction(narrow)
-  }
-}
-
-//MARK: StreamHeaderPrivateCellDelegate
-extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
-  func narrowConversation(message: TableCell) {
-    state = .Subject
-    
-    let pmWith = message.pmWith.sort()
-    let emailString = pmWith.joinWithSeparator(",")
-    let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
-    let narrow = Narrow(narrowString: narrowString, pmWith: pmWith)
-    self.navigationController?.navigationBar.topItem?.title = "Private Messages"
     
     self.focusAction(narrow)
   }

@@ -10,7 +10,7 @@ import Foundation
 import RealmSwift
 
 protocol MessageArrayToTableCellArrayDelegate: class {
-  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
+  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction)
   
   func realmNeedsMoreMessages()
 }
@@ -118,7 +118,7 @@ class MessageArrayToTableCellArray: NSOperation {
       return
     }
     
-    self.delegate?.messageToTableCellArrayDidFinish(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
+    self.delegate?.messageToTableCellArrayDidFinish(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, userAction: self.action.userAction)
   }
   
   func minMaxPredicate() -> NSPredicate {

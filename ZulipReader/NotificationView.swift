@@ -21,7 +21,32 @@ class NotificationView: UIView {
   
   weak var delegate: NotificationViewDelegate?
   
-  func changeLabelTextTo(string: String) {
+  func configure(notification: Notification) {
+    let labelText: String
+    switch notification {
+    case .NewMessage(let count):
+      if count > 1 {
+        labelText = "\(count) new messages"
+      } else {
+        labelText = "new message"
+      }
+      scrollDownButton.hidden = false
+      self.backgroundColor = UIColor.greenColor()
+      
+    case .Error(let errorMessage):
+      labelText = errorMessage
+      scrollDownButton.hidden = true
+      self.backgroundColor = UIColor.redColor()
+      
+    default:
+      labelText = "this shouldn't be here"
+    }
+    
+    print("NotificationView: \(labelText)")
+    self.changeLabelTextTo(labelText)
+  }
+  
+  func changeLabelTextTo(string: String?) {
     notificationLabel.text = string
   }
   

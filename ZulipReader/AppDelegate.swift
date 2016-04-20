@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window = UIWindow(frame: frame)
     self.window?.backgroundColor = UIColor.whiteColor()
     
-    let frontViewController = ScrollingNavigationController(rootViewController: StreamTableViewController())
+    let frontViewController = UINavigationController(rootViewController: StreamTableViewController())
     let revealViewController = SWRevealViewController()
     revealViewController.setFrontViewController(frontViewController, animated: true)
 

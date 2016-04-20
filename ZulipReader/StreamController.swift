@@ -13,11 +13,11 @@ import Locksmith
 import RealmSwift
 
 protocol StreamControllerDelegate: class {
-  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
+  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction)
   
   func didFetchMessages()
   
-  func showHideNotification(type: Notification)
+  func setNotification(notification: Notification, show: Bool)
 }
 
 protocol SubscriptionDelegate: class {
@@ -215,40 +215,12 @@ extension StreamController: URLToMessageArrayDelegate {
   internal func urlToMessageArrayDidFinish(messages: [Message], userAction: UserAction) {
     switch userAction {
     case .Refresh:
-      //only load refreshed messages if there are new messages and there's no UI action
-      
-      //MARK: Notifications
       guard !messages.isEmpty else {return}
       
-      for message in messages {
-        self.refreshedMessageIds.insert(message.id)
-      }
+      self.shouldAddBadge(messages)
       
-      let filteredMessages = NSArray(array: messages).filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
-      let messageIdIntersect = self.refreshedMessageIds.intersect(filteredMessages.map {$0.id})
-      
-      guard !messageIdIntersect.isEmpty else {return}
-      
-      for messageID in messageIdIntersect {
-        self.refreshedMessageIds.remove(messageID)
-      }
-      
-      if !self.refreshedMessageIds.isEmpty {
-        dispatch_async(dispatch_get_main_queue()){
-          //TODO: add a switch statement that will show/hide the badge
-          //TODO: add a notification for error statements
-          self.delegate?.showHideNotification(.Badge)
-        }
-      }
-      
-      //only load new message notification and new table cells if there's no other user input
       guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 else {return}
   
-      dispatch_async(dispatch_get_main_queue()){
-        //TODO: If new message notification is already being shown, don't toggle just keep
-        self.delegate?.showHideNotification(.NewMessage)
-      }
-      
     default:
       guard !messages.isEmpty else {
         dispatch_async(dispatch_get_main_queue()){
@@ -263,29 +235,78 @@ extension StreamController: URLToMessageArrayDelegate {
     let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action, isLast: true)
     self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
   }
+  
+  //perform add badge operation in networking code - UI notifications should always be dependent on messages loaded from db
+  func shouldAddBadge(messages: [Message]) {
+    let allMessagesId = Set(messages.map {$0.id})
+    
+    //all refresh message id's are added into refreshMessageIds and removed when they are loaded into the tableview controller
+    for id in allMessagesId {
+      self.refreshedMessageIds.insert(id)
+    }
+    
+    //we cheat a little by looking into the future to see whether or not these refreshed messages will be loaded into the current view
+    let filteredMessages = NSArray(array: messages).filteredArrayUsingPredicate(self.action.narrow.predicate()) as! [Message]
+    let filteredMessagesId = filteredMessages.map {$0.id}
+    
+    let unloadedMessageIds = allMessagesId.subtract(filteredMessagesId)
+    
+    guard !unloadedMessageIds.isEmpty else {return}
+    
+    self.delegate?.setNotification(.Badge, show: true)
+  }
 }
 
 //MARK: MessagesArrayToTableCellArrayDelegate
 extension StreamController: MessageArrayToTableCellArrayDelegate {
-  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
+  //remove badge here and show new message notifications here
+  func badgeControl(tableCells: [[TableCell]]) {
+    let tableCellIds = tableCells.flatten().map {$0.id}
+    let messageIdIntersect = self.refreshedMessageIds.intersect(tableCellIds)
+    
+    for messageID in messageIdIntersect {
+      self.refreshedMessageIds.remove(messageID)
+    }
+    
+    print("MessagesArrayToTableCellArrayDelegate: # of refreshed messages: \(self.refreshedMessageIds.count)")
+    
+    if self.refreshedMessageIds.isEmpty {
+      dispatch_async(dispatch_get_main_queue()){
+        print("MessagesArrayToTableCellArrayDelegate: badge - false")
+        self.delegate?.setNotification(.Badge, show: false)
+      }
+    }
+    
+    if !messageIdIntersect.isEmpty {
+      dispatch_async(dispatch_get_main_queue()){
+        self.delegate?.setNotification(Notification.NewMessage(messageCount: messageIdIntersect.count), show: true)
+      }
+    }
+  }
+  
+  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction) {
+    
+    //TODO: fix loading instance var - put this on the UI side
     self.loading = false
+    
+    //show/hide badge
+    self.badgeControl(tableCells)
     
     if insertedRows.isEmpty {
       //The following statements run iff isLast = true
-      print("TableCell Delegate: insertedRows is empty")
       dispatch_async(dispatch_get_main_queue()) {
         self.delegate?.didFetchMessages()
-        return
       }
+      print("TableCell Delegate: insertedRows is empty")
+      return
     }
-    else {
-      //oldTableCells is only reassigned if new messages are loaded
-      self.oldTableCells = tableCells
-      print("TableCell Delegate: TC's to TableView")
-      
-      dispatch_async(dispatch_get_main_queue()) {
-        self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
-      }
+    
+    //oldTableCells is only reassigned if new messages are loaded
+    self.oldTableCells = tableCells
+    print("TableCell Delegate: TC's to TableView")
+    
+    dispatch_async(dispatch_get_main_queue()) {
+      self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, userAction: userAction)
     }
   }
   
