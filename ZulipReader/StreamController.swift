@@ -55,7 +55,6 @@ class Queue {
 }
 
 class StreamController {
-  
   weak var delegate: StreamControllerDelegate?
   weak var subscriptionDelegate: SubscriptionDelegate?
   

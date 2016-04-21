@@ -50,6 +50,7 @@
 		67B91B991CA3595900C87409 /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B91B981CA3595900C87409 /* NetworkOperation.swift */; };
 		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
 		67C312841CC8381C00F665C2 /* EmojiDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C312831CC8381C00F665C2 /* EmojiDictionary.swift */; };
+		67C312881CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */; };
 		67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67C582B01C8B452E005D0C47 /* LoginView.xib */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
@@ -116,6 +117,7 @@
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
 		67C312821CC82F1000F665C2 /* ZulipPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = ZulipPlayground.playground; path = ZulipReader/ZulipPlayground.playground; sourceTree = "<group>"; };
 		67C312831CC8381C00F665C2 /* EmojiDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmojiDictionary.swift; path = ZulipReader/EmojiDictionary.swift; sourceTree = "<group>"; };
+		67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReverseEmojiDictionary.swift; sourceTree = "<group>"; };
 		67C582B01C8B452E005D0C47 /* LoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			children = (
 				67C312821CC82F1000F665C2 /* ZulipPlayground.playground */,
 				67C312831CC8381C00F665C2 /* EmojiDictionary.swift */,
+				67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */,
 				67D1F1B61BFA6AEA006F9468 /* ZulipReader */,
 				67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */,
 				67D1F1B51BFA6AEA006F9468 /* Products */,
@@ -500,6 +503,7 @@
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				675883361CA1D9FF006EC2D0 /* MessageArrayToTableCellArray.swift in Sources */,
 				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
+				67C312881CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift in Sources */,
 				67C312841CC8381C00F665C2 /* EmojiDictionary.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
 				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,

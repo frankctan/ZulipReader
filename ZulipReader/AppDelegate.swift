@@ -11,6 +11,7 @@ import RealmSwift
 import AMScrollingNavbar
 
 @UIApplicationMain
+
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
