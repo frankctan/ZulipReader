@@ -207,7 +207,8 @@ class MessageArrayToTableCellArray: NSOperation {
     for message in messages {
       var cell = TableCell(message)
       let messageContent = message.content
-      let attributedContent = processMarkdown(messageContent)
+      let emojiMessageContent = processEmoji(messageContent)
+      let attributedContent = processMarkdown(emojiMessageContent)
       cell.attributedContent = attributedContent
       
       if previous.isEmpty {
@@ -267,6 +268,45 @@ class MessageArrayToTableCellArray: NSOperation {
       htmlString = nil
     }
     return htmlString
+  }
+  
+  private func processEmoji(text: String) -> String {
+    
+    guard text.rangeOfString("static/third/gemoji/images/emoji") != nil else {return text}
+    
+    var emojiRegex: NSRegularExpression {
+      do {
+        return try NSRegularExpression(pattern: "<img alt=\":([^:]+):\" class=\"emoji\" src=\"static/third/gemoji/images/emoji/[^.]+.png+\" title=\":[^:]+:\">", options: NSRegularExpressionOptions.CaseInsensitive)
+      }
+      catch let error as NSError {
+        print("\n\n regex error: \(error) \n\n")
+        return NSRegularExpression()
+      }
+    }
+
+    let matches = emojiRegex.matchesInString(text, options: NSMatchingOptions.init(rawValue: 0), range: NSMakeRange(0, text.characters.count))
+    
+    let textCopy = NSMutableString(string: text)
+    
+    var offset = 0
+    for match in matches {
+      var range = match.range
+      range.location += offset
+      
+      let emojiString = ":" + emojiRegex.replacementStringForResult(match, inString: textCopy as String, offset: offset, template: "$1") + ":"
+      
+      let utfEmoji: String
+      if let emoji = EMOJI_HASH[emojiString] {
+        utfEmoji = emoji
+      } else {
+        utfEmoji = emojiString
+      }
+      
+      //NSMutableString(utfEmoji).count = 2; String(emoji).character.count = 1
+      textCopy.replaceCharactersInRange(range, withString: utfEmoji)
+      offset += NSMutableString(string: utfEmoji).length - range.length
+    }
+    return textCopy as String
   }
   
 }

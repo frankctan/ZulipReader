@@ -1,6 +1,8 @@
 
 import Foundation
+import Swi
 
+let jsonObject = {"wine_glass": "\ud83c\udf77"}
 let ab = [[String]()]
 
 ab[0].count

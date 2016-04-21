@@ -30,11 +30,20 @@ class NotificationNavViewController: SLKTextViewController {
     let screenBounds = UIScreen.mainScreen().bounds
     self.notification = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil)[0] as! NotificationView
     self.notification.delegate = self
-    self.notification.frame.size.width = screenBounds.width
-    self.notification.frame.origin = CGPoint(x: 0, y: -notification.frame.height - 20)
     
-    self.tableView.addSubview(self.notification)
+    let origin = CGPoint(x: 0.0, y: -30)
+    let size = CGSize(width: screenBounds.width, height: 30)
+    self.notification.frame = CGRect(origin: origin, size: size)
+
+    print("self.notification size - \(self.notification.frame)")
+    self.notification.backgroundColor = UIColor.yellowColor()
+    
+    self.tableView.superview!.addSubview(self.notification)
+    self.tableView.superview!.bringSubviewToFront(self.notification)
+    //TODO: make this true
     self.notification.hidden = true
+    
+    print("self.notification size - \(self.notification.frame)")
     
     //configure view
     self.navigationControllerSettings()
@@ -64,12 +73,20 @@ class NotificationNavViewController: SLKTextViewController {
   func toggleNotification() {
     let originY: CGFloat
     let tableViewInset: CGFloat
+
+    //TODO: why do I need to redefine the notification frame size?
+    let screenBounds = UIScreen.mainScreen().bounds
+    let size = CGSize(width: screenBounds.width, height: 30)
+    self.notification.frame.size = size
+    print("self.notification size - \(self.notification.frame)")
+    
+    
     let notificationHeight = self.notification.frame.height
     
     if self.notificationDisplayed {
       //retract notification
       self.notificationDisplayed = false
-      originY = -notificationHeight - 20
+      originY = -notificationHeight
       tableViewInset = 0
     }
     else {
@@ -77,7 +94,6 @@ class NotificationNavViewController: SLKTextViewController {
       self.notification.hidden = false
       self.tableView.bringSubviewToFront(self.notification)
       self.tableView.setNeedsDisplay()
-      self.tableView.setNeedsLayout()
       
       self.notificationDisplayed = true
       originY = 0
@@ -87,16 +103,11 @@ class NotificationNavViewController: SLKTextViewController {
     print("NotificationViewController: animating")
     
     UIView.animateWithDuration(0.2, delay: 0.0, options: [.AllowUserInteraction, .CurveEaseIn], animations: {
-      self.tableView.bringSubviewToFront(self.notification)
-      self.tableView.setNeedsDisplay()
-      self.tableView.setNeedsLayout()
       self.notification.frame.origin.y = originY
       self.tableView.contentInset.top = tableViewInset
       }, completion: {_ in
-//        self.notification.hidden = !self.notificationDisplayed
-        self.tableView.setNeedsDisplay()
-        self.tableView.setNeedsLayout()
-    })
+        self.view.setNeedsDisplay()
+      })
   }
   
   func showNotification(flag: Bool) {
@@ -132,7 +143,8 @@ class NotificationNavViewController: SLKTextViewController {
   }
   
   func tableViewSettings() {
-    
+    tableView.alwaysBounceVertical = true
+    tableView.bounces = true
     tableView.scrollsToTop = true
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     
@@ -171,15 +183,15 @@ extension NotificationNavViewController: NotificationViewDelegate {
 extension NotificationNavViewController {
   override func scrollViewDidScroll(scrollView: UIScrollView) {
     //keep notification bar in place during scroll
-    let originY: CGFloat
-    if self.notificationDisplayed {
-      originY = tableView.contentOffset.y
-    } else {
-      originY = tableView.contentOffset.y - notification.frame.height - 20
-    }
-    
-    notification.frame.origin.y = originY
-    tableView.bringSubviewToFront(notification)
-    tableView.setNeedsDisplay()
+//    let originY: CGFloat
+//    if self.notificationDisplayed {
+//      originY = tableView.contentOffset.y
+//    } else {
+//      originY = tableView.contentOffset.y - notification.frame.height - 20
+//    }
+//    
+//    notification.frame.origin.y = originY
+//    tableView.bringSubviewToFront(notification)
+//    tableView.setNeedsDisplay()
   }
 }

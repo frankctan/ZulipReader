@@ -113,7 +113,7 @@ class StreamTableViewController: NotificationNavViewController {
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     //large number ensures we are always able to scroll to the bottom
-    return 1000
+    return 300
   }
   
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

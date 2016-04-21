@@ -49,6 +49,7 @@
 		67B91B971CA33F0800C87409 /* RegistrationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B91B961CA33F0800C87409 /* RegistrationController.swift */; };
 		67B91B991CA3595900C87409 /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B91B981CA3595900C87409 /* NetworkOperation.swift */; };
 		67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67BE80141C890CC00004D544 /* SideMenuCell.xib */; };
+		67C312841CC8381C00F665C2 /* EmojiDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C312831CC8381C00F665C2 /* EmojiDictionary.swift */; };
 		67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67C582B01C8B452E005D0C47 /* LoginView.xib */; };
 		67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */; };
 		67D1F1BA1BFA6AEA006F9468 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */; };
@@ -83,7 +84,6 @@
 		676C98441BFD69360042CB26 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		677F6AEE1C752D04005EB84E /* Futures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Futures.swift; sourceTree = "<group>"; };
 		6785E7A31C6D05CD008ED151 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		6785E7A51C6D0909008ED151 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtension.swift; sourceTree = "<group>"; };
 		678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamHeaderNavCell.swift; sourceTree = "<group>"; };
 		678A6BB61C10EBA200AE091B /* TableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableCell.swift; sourceTree = "<group>"; };
@@ -114,6 +114,8 @@
 		67B91B961CA33F0800C87409 /* RegistrationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
 		67B91B981CA3595900C87409 /* NetworkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
+		67C312821CC82F1000F665C2 /* ZulipPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = ZulipPlayground.playground; path = ZulipReader/ZulipPlayground.playground; sourceTree = "<group>"; };
+		67C312831CC8381C00F665C2 /* EmojiDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmojiDictionary.swift; path = ZulipReader/EmojiDictionary.swift; sourceTree = "<group>"; };
 		67C582B01C8B452E005D0C47 /* LoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -252,6 +254,8 @@
 		67D1F1AB1BFA6AEA006F9468 = {
 			isa = PBXGroup;
 			children = (
+				67C312821CC82F1000F665C2 /* ZulipPlayground.playground */,
+				67C312831CC8381C00F665C2 /* EmojiDictionary.swift */,
 				67D1F1B61BFA6AEA006F9468 /* ZulipReader */,
 				67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */,
 				67D1F1B51BFA6AEA006F9468 /* Products */,
@@ -284,7 +288,6 @@
 				67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */,
 				67B91B981CA3595900C87409 /* NetworkOperation.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
-				6785E7A51C6D0909008ED151 /* MyPlayground.playground */,
 				67C582B61C8B5B3A005D0C47 /* Public */,
 				67C582B51C8B5AD8005D0C47 /* Realm */,
 				67A9DA8E1C1F546600AEEF1B /* Login */,
@@ -497,6 +500,7 @@
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				675883361CA1D9FF006EC2D0 /* MessageArrayToTableCellArray.swift in Sources */,
 				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
+				67C312841CC8381C00F665C2 /* EmojiDictionary.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
 				67A9DA9A1C20D81900AEEF1B /* SideMenuCell.swift in Sources */,
 				67B91B991CA3595900C87409 /* NetworkOperation.swift in Sources */,
@@ -635,7 +639,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZulipReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.ZulipReader;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whdragon.ZulipReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/ZulipReader-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -651,7 +655,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZulipReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.ZulipReader;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whdragon.ZulipReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/ZulipReader-Bridging-Header.h";
 			};
