@@ -47,15 +47,16 @@ class URLToMessageArray: NetworkOperation {
             return
           }
         }
-        self.delegate?.urlToMessageArrayDidFinish(self.messages, userAction: self.action.userAction)
-        print("URLToMessageArray: Completed")
-        self.complete()
+        
         
       case .Error(let box):
         let error = box.unbox
         print("error: \(error)")
-        self.complete()
       }
+      
+      self.delegate?.urlToMessageArrayDidFinish(self.messages, userAction: self.action.userAction)
+      print("URLToMessageArray: Completed")
+      self.complete()
     }
   }
   

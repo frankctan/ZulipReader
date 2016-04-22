@@ -8,10 +8,9 @@ import SwiftyJSON
 
 //preferably swipe left to PM / star? How to star? - this is just setting a flag...
 //profile page
-//test for network failure!
+//test for network failure! - won't narrow with <30 messages if there's no network. Which is okay... just flash error on the title thing
+
 //rows test always fails
-
-
 //make notifications sexy - notification needs to go away by itself if user is already scrolled to the bottom / buttons are too small for pudgy fingers - they need to go away narrowed
 //app icons
 //refresh and load new messages at same time creates a problem. I think this is because realm updates db automatically so the new message is added unexpectedly

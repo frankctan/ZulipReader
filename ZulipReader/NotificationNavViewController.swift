@@ -142,4 +142,29 @@ class NotificationNavViewController: SLKTextViewController {
     self.typingIndicatorView.canResignByTouch = true
     self.rightButton.setTitle("Send", forState: UIControlState.Normal)
   }
+  
+  override func scrollViewDidScroll(scrollView: UIScrollView) {
+    guard self.navBarTitle.titleButton.imageView != nil else {return}
+    
+    //TODO: contentHeight and position reset themselves after new messages are loaded - not sure how to reliably dismiss the down arrow
+    
+//    self.tableView.layoutIfNeeded()
+//    let position = self.tableView.contentOffset.y
+//    let contentHeight = self.tableView.contentSize.height
+//    let tableHeight = self.tableView.frame.height
+//    
+//    print("scroll position: \(position)")
+//    print("contentHeight: \(contentHeight)")
+//    print("tableHeight: \(tableHeight)")
+//    
+//    if position + tableHeight > contentHeight + 250 {
+//      let fadeTextAnimation = CATransition()
+//      fadeTextAnimation.duration = 0.2
+//      fadeTextAnimation.type = kCATransitionFromTop
+//      navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
+//      
+//      self.navBarTitle.configure(false, title: navBarTitle.titleButton.currentTitle!)
+//    }
+    
+  }
 }

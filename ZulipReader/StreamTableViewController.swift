@@ -225,7 +225,6 @@ extension StreamTableViewController: StreamControllerDelegate {
       navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
       
       self.navBarTitle.configure(true, title: self.navBarTitle.titleButton.currentTitle!)
-
     }
   }
   
@@ -237,6 +236,7 @@ extension StreamTableViewController: StreamControllerDelegate {
       }
     }
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    self.transitionToBlur(false)
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction) {
