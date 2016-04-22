@@ -24,7 +24,6 @@ protocol SubscriptionDelegate: class {
   func didFetchSubscriptions(subscriptions: [String: String])
 }
 
-//TODO: rethink these queues.
 class Queue {
   lazy var refreshNetworkQueue: NSOperationQueue = {
     var queue = NSOperationQueue()
@@ -51,6 +50,10 @@ class Queue {
     refreshNetworkQueue.cancelAllOperations()
     userNetworkQueue.cancelAllOperations()
     prepQueue.cancelAllOperations()
+  }
+  
+  func cancelRefreshQueue() {
+    refreshNetworkQueue.cancelAllOperations()
   }
 }
 
@@ -114,6 +117,7 @@ class StreamController {
   }
   
   func clearDefaults() {
+    queue.cancelAll()
     timer.invalidate()
     for key in NSUserDefaults.standardUserDefaults().dictionaryRepresentation().keys {
       NSUserDefaults.standardUserDefaults().removeObjectForKey(key)
@@ -222,6 +226,7 @@ extension StreamController: URLToMessageArrayDelegate {
     default:
       guard !messages.isEmpty else {
         dispatch_async(dispatch_get_main_queue()){
+          print("you can stop spinning now!")
           self.delegate?.didFetchMessages()
         }
         self.loading = false
@@ -302,6 +307,9 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
     //oldTableCells is only reassigned if new messages are loaded
     self.oldTableCells = tableCells
     print("TableCell Delegate: TC's to TableView")
+    
+    //to mitigate race condition errors
+    self.queue.cancelRefreshQueue()
     
     dispatch_async(dispatch_get_main_queue()) {
       self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, userAction: userAction)

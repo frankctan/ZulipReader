@@ -175,11 +175,7 @@ class StreamTableViewController: NotificationNavViewController {
     fadeTextAnimation.type = kCATransitionFromTop
     navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
     
-    let label = NSBundle.mainBundle().loadNibNamed("NavBarTitle", owner: nil, options: nil)[0] as! NavBarTitle
-    label.titleButton.addTarget(<#T##target: AnyObject?##AnyObject?#>, action: <#T##Selector#>, forControlEvents: <#T##UIControlEvents#>)
-    self.navigationItem.titleView = label
-    
-    label.configure(true, title: navTitle)
+    self.navBarTitle.configure(false, title: navTitle)
   }
   
   //MARK: SLKTextViewController
@@ -223,8 +219,13 @@ extension StreamTableViewController: StreamControllerDelegate {
       self.showNavBarBadge(show)
       
     default:
-      self.notification.configure(notification)
-      self.showNotification(show)
+      let fadeTextAnimation = CATransition()
+      fadeTextAnimation.duration = 0.2
+      fadeTextAnimation.type = kCATransitionFromTop
+      navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
+      
+      self.navBarTitle.configure(true, title: self.navBarTitle.titleButton.currentTitle!)
+
     }
   }
   

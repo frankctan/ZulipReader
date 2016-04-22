@@ -8,10 +8,11 @@ import SwiftyJSON
 
 //preferably swipe left to PM / star? How to star? - this is just setting a flag...
 //profile page
-//make notifications sexy - notification needs to go away by itself if user is already scrolled to the bottom / buttons are too small for pudgy fingers - they need to go away narrowed
 //test for network failure!
+//rows test always fails
 
 
+//make notifications sexy - notification needs to go away by itself if user is already scrolled to the bottom / buttons are too small for pudgy fingers - they need to go away narrowed
 //app icons
 //refresh and load new messages at same time creates a problem. I think this is because realm updates db automatically so the new message is added unexpectedly
 //Fix loading: StreamController -> StreamTableViewController
@@ -105,11 +106,11 @@ let r = textCopy1 as String
 r
 
 
-let indexPaths = [NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0), NSIndexPath(forRow: 0, inSection: 1)]
+let indexPaths = [NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0), NSIndexPath(forRow: 0, inSection: 1), NSIndexPath(forRow: 0, inSection: 2)]
 
 let count = indexPaths.reduce(0, combine: {if $1.section == 0 {return $0 + 1}; return $0})
 
-let count2 = indexPaths.filter {$0.section == 0}.count
+let count2 = indexPaths.filter {$0.row == 0}.count
 
 count2
 
