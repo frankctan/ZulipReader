@@ -116,28 +116,6 @@ class MessageArrayToTableCellArray: NSOperation {
     self.tableCells = realmTableCells
     (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
     
-    
-    //we're checking
-    let calculatedSections = oldTableCells.count - self.deletedSections.length + self.insertedSections.length
-    if calculatedSections != realmTableCells.count {
-      print("sections error! - recalculating")
-      (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
-    }
-    
-    //TODO: These checks don't do as much as I thought they would...
-//    else {
-//      for sectionIndex in 0 ..< realmTableCells.count {
-//        if sectionIndex < oldTableCells.count {
-//          let rowCountInSection = insertedRows.filter {$0.section == sectionIndex}.count
-//          if oldTableCells[sectionIndex].count + rowCountInSection != realmTableCells[sectionIndex].count {
-//            print("rows error! - recalculating")
-//            (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
-//            break
-//          }
-//        }
-//      }
-//    }
-    
     if self.cancelled {
       return
     }
