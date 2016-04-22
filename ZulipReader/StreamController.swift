@@ -86,7 +86,6 @@ class StreamController {
       Router.basicAuth = authHead
       
       self.timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
-      
       return true
     }
     return false

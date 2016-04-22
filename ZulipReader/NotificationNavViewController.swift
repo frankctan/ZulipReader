@@ -23,10 +23,13 @@ class NotificationNavViewController: SLKTextViewController {
   var navBarBadgeDisplayed = false
   var sideMenuTableViewController: SideMenuTableViewController?
   
+  var blurEffectView = UIView()
+  var inTransition = false
+  
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
-    //notifications
+    //notification settings
     let screenBounds = UIScreen.mainScreen().bounds
     self.notification = NSBundle.mainBundle().loadNibNamed("NotificationView", owner: nil, options: nil)[0] as! NotificationView
     self.notification.delegate = self
@@ -49,6 +52,26 @@ class NotificationNavViewController: SLKTextViewController {
     self.navigationControllerSettings()
     self.tableViewSettings()
     self.textViewControllerSettings()
+    
+    //transition settings
+    let blurEffect = UIBlurEffect(style: .Light)
+    self.blurEffectView = UIVisualEffectView(effect: blurEffect)
+    self.blurEffectView.frame = self.view.bounds
+    self.blurEffectView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+  }
+  
+  func transitionToBlur(flag: Bool) {
+    guard flag != self.inTransition else {return}
+    self.inTransition = flag
+    if flag {
+      UIView.transitionWithView(self.view, duration: 0.2, options: .TransitionCrossDissolve, animations: {
+        self.view.addSubview(self.blurEffectView)
+        }, completion: {_ in self.blurEffectView.showLoading()})
+    } else {
+      UIView.transitionWithView(self.view, duration: 0.2, options: .TransitionCrossDissolve, animations: {
+        self.blurEffectView.removeFromSuperview()
+        }, completion: {_ in self.blurEffectView.hideLoading()})
+    }
   }
   
   func showNavBarBadge(flag: Bool) {
@@ -125,7 +148,13 @@ class NotificationNavViewController: SLKTextViewController {
   
   //MARK: Settings
   func navigationControllerSettings() {
-    self.navigationController?.navigationBar.topItem?.title = "Stream"
+    let fadeTextAnimation = CATransition()
+    fadeTextAnimation.duration = 0.5
+    fadeTextAnimation.type = kCATransitionFromTop
+    
+    navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
+    
+    self.navigationItem.title = "Stream"
     
     //navBar right bar button items
     self.navigationController?.navigationBar.translucent = false

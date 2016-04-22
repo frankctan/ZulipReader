@@ -59,6 +59,8 @@
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
 		67DE8D301CADA48B00178DFD /* MessageMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DE8D2F1CADA48B00178DFD /* MessageMarker.swift */; };
 		67F9565A1C6D3B3100A2EB85 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F956591C6D3B3100A2EB85 /* Subscription.swift */; };
+		67FFF1C31CC9DA4100447E6C /* NavBarTitle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */; };
+		67FFF1C51CC9E21400447E6C /* NavBarTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +132,8 @@
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67DE8D2F1CADA48B00178DFD /* MessageMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageMarker.swift; sourceTree = "<group>"; };
 		67F956591C6D3B3100A2EB85 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NavBarTitle.xib; sourceTree = "<group>"; };
+		67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavBarTitle.swift; sourceTree = "<group>"; };
 		6C7DDAE37609C11A5FE4C078 /* Pods-ZulipReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.debug.xcconfig"; sourceTree = "<group>"; };
 		C6AB93339AFD280F7DC56DBE /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF3C41EC74CE44A8965B6E6F /* Pods-ZulipReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZulipReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-ZulipReader/Pods-ZulipReader.release.xcconfig"; sourceTree = "<group>"; };
@@ -285,6 +289,8 @@
 				673251741C0A5D85009A546C /* DataController.swift */,
 				673251761C0A7154009A546C /* StreamController.swift */,
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
+				67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */,
+				67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */,
 				67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */,
 				67466D381CC01D8B005883CC /* NotificationView.xib */,
 				67166ED51CC02969002D0E12 /* NotificationView.swift */,
@@ -415,6 +421,7 @@
 				67466D391CC01D8B005883CC /* NotificationView.xib in Resources */,
 				67A9DA861C1E14E400AEEF1B /* StreamHeaderNavCell.xib in Resources */,
 				678A6BE91C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf in Resources */,
+				67FFF1C31CC9DA4100447E6C /* NavBarTitle.xib in Resources */,
 				67A9DA881C1E1C5100AEEF1B /* StreamExtendedCell.xib in Resources */,
 				67A9DA841C1E0F5800AEEF1B /* StreamCell.xib in Resources */,
 				67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */,
@@ -503,6 +510,7 @@
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				675883361CA1D9FF006EC2D0 /* MessageArrayToTableCellArray.swift in Sources */,
 				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
+				67FFF1C51CC9E21400447E6C /* NavBarTitle.swift in Sources */,
 				67C312881CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift in Sources */,
 				67C312841CC8381C00F665C2 /* EmojiDictionary.swift in Sources */,
 				678A6BB51C0FA1E100AE091B /* StreamHeaderNavCell.swift in Sources */,
@@ -643,7 +651,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZulipReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.whdragon.ZulipReader;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.ZulipReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/ZulipReader-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -659,7 +667,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ZulipReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.whdragon.ZulipReader;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.ZulipReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/ZulipReader-Bridging-Header.h";
 			};

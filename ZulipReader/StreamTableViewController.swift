@@ -159,6 +159,29 @@ class StreamTableViewController: NotificationNavViewController {
     self.viewDidAppear(true)
   }
   
+  func focusAction(narrow: Narrow) {
+    self.action = Action(narrow: narrow, action: .Focus)
+    guard let data = data else {fatalError()}
+    data.loadStreamMessages(self.action)
+    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+  }
+  
+  func prepareNarrow(narrow: Narrow, navTitle: String) {
+    self.transitionToBlur(true)
+    self.focusAction(narrow)
+    
+    let fadeTextAnimation = CATransition()
+    fadeTextAnimation.duration = 0.2
+    fadeTextAnimation.type = kCATransitionFromTop
+    navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
+    
+    let label = NSBundle.mainBundle().loadNibNamed("NavBarTitle", owner: nil, options: nil)[0] as! NavBarTitle
+    label.titleButton.addTarget(<#T##target: AnyObject?##AnyObject?#>, action: <#T##Selector#>, forControlEvents: <#T##UIControlEvents#>)
+    self.navigationItem.titleView = label
+    
+    label.configure(true, title: navTitle)
+  }
+  
   //MARK: SLKTextViewController
   //Right button only appears in .Subject
   override func didPressRightButton(sender: AnyObject!) {
@@ -180,22 +203,15 @@ class StreamTableViewController: NotificationNavViewController {
     data.postMessage(messagePost, action: self.action)
     super.didPressRightButton(sender)
   }
-
-  func focusAction(narrow: Narrow) {
-    self.action = Action(narrow: narrow, action: .Focus)
-    guard let data = data else {fatalError()}
-    data.loadStreamMessages(self.action)
-    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-  }
 }
+
 
 //MARK: NavBar Target
 extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
     let narrow = Narrow()
-    self.focusAction(narrow)
-    self.navigationController?.navigationBar.topItem?.title = "Stream"
+    self.prepareNarrow(narrow, navTitle: "Stream")
   }
 }
 
@@ -254,6 +270,8 @@ extension StreamTableViewController: StreamControllerDelegate {
       self.setTextInputbarHidden(true, animated: true)
     }
     
+    self.transitionToBlur(false)
+    
     //TODO: only if the action is NOT refresh
     if userAction != .Refresh {
       if let lastIndexPath = insertedRows.last {
@@ -274,9 +292,8 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     
     let narrowString = "[[\"stream\", \"\(stream)\"]]"
     let narrow = Narrow(narrowString: narrowString, stream: stream)
-    self.navigationController?.navigationBar.topItem?.title = stream
     
-    self.focusAction(narrow)
+    self.prepareNarrow(narrow, navTitle: stream)
   }
   
   func narrowSubject(stream: String, subject: String) {
@@ -285,10 +302,7 @@ extension StreamTableViewController: StreamHeaderNavCellDelegate {
     let narrowString = "[[\"stream\", \"\(stream)\"],[\"topic\",\"\(subject)\"]]"
     let narrow = Narrow(narrowString: narrowString, stream: stream, subject: subject)
     
-    //TODO: CALayer animate navigation bar title
-    self.navigationController?.navigationBar.topItem?.title = subject
-    
-    self.focusAction(narrow)
+    self.prepareNarrow(narrow, navTitle: subject)
   }
 }
 
@@ -302,10 +316,7 @@ extension StreamTableViewController: StreamHeaderPrivateCellDelegate {
     let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(emailString)\"]]"
     let narrow = Narrow(narrowString: narrowString, pmWith: pmWith)
     
-    //TODO: CALayer animate navigation bar title
-    self.navigationController?.navigationBar.topItem?.title = "Private Messages"
-    
-    self.focusAction(narrow)
+    self.prepareNarrow(narrow, navTitle: "PM")
   }
 }
 
@@ -329,9 +340,6 @@ extension StreamTableViewController: SideMenuDelegate {
       narrow = Narrow(narrowString: narrowString, stream: selection)
     }
     
-    //TODO: CALayer animate navigation bar title
-    self.navigationController?.navigationBar.topItem?.title = selection
-    
-    self.focusAction(narrow)
+    self.prepareNarrow(narrow, navTitle: selection)
   }
 }

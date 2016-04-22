@@ -92,6 +92,8 @@ class MessageArrayToTableCellArray: NSOperation {
       return
     }
     
+    
+    
     print("TCOp: computing realm messages")
     let allReversedMessages = Array(allFilteredMessages.reverse())
     var _tableCellMessages = [Message]()
@@ -113,6 +115,27 @@ class MessageArrayToTableCellArray: NSOperation {
 
     self.tableCells = realmTableCells
     (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
+    
+    
+    //we're checking
+    let calculatedSections = oldTableCells.count - self.deletedSections.length + self.insertedSections.length
+    if calculatedSections != realmTableCells.count {
+      print("sections error! - recalculating")
+      (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
+    }
+      
+    else {
+      for sectionIndex in 0 ..< realmTableCells.count {
+        if sectionIndex < oldTableCells.count {
+          let rowCountInSection = insertedRows.filter {$0.section == sectionIndex}.count
+          if oldTableCells[sectionIndex].count + rowCountInSection != realmTableCells[sectionIndex].count {
+            print("rows error! - recalculating")
+            (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
+            break
+          }
+        }
+      }
+    }
     
     if self.cancelled {
       return
@@ -190,6 +213,8 @@ class MessageArrayToTableCellArray: NSOperation {
         }
       }
     }
+    
+    //TODO: Add a check to verify that deleted/inserted Sections and insertedRows matches the number of messages that should appear. If not, action = .Focus to force a complete recalculation
     
     print("TCOp: action: \(action)")
     print("TCOp: deletedSections: \(deletedSections)")

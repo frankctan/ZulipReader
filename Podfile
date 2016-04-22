@@ -8,7 +8,6 @@ target 'ZulipReader' do
   pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git', :branch => 'swift2'
   pod 'Kingfisher', '~> 1.8'
-  pod 'AMScrollingNavbar', '~> 2.0.1'
   pod 'SlackTextViewController'
   pod 'RealmSwift'
   pod 'Locksmith'
