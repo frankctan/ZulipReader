@@ -9,20 +9,29 @@
 import Foundation
 import RealmSwift
 
+protocol MessageArrayToTableCellArrayDelegate: class {
+  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction)
+  
+  func realmNeedsMoreMessages()
+}
+
 class MessageArrayToTableCellArray: NSOperation {
   
+  weak var delegate: MessageArrayToTableCellArrayDelegate?
   private let action: Action
-  private let oldTableCells: [[TableCell]]
+  private var oldTableCells = [[TableCell]]()
+  private let isLast: Bool
   
-  //output
-  private var tableCells = [[TableCell]()]
+  //NSOperation Output
+  private var tableCells = [[TableCell]]()
   private var deletedSections = NSRange()
   private var insertedSections = NSRange()
   private var insertedRows = [NSIndexPath]()
   
-  init(action: Action, oldTableCells: [[TableCell]]) {
+  init(action: Action, oldTableCells: [[TableCell]], isLast: Bool) {
     self.action = action
     self.oldTableCells = oldTableCells
+    self.isLast = isLast
   }
   
   override func main() {
@@ -31,21 +40,115 @@ class MessageArrayToTableCellArray: NSOperation {
       realm = try Realm()
     } catch {fatalError()}
     
-    let realmMessages = NSArray(array: realm.objects(Message).sorted("id", ascending: true).map {$0})
-    let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(action.narrow.predicate()) as! [Message]
+    let narrowPredicate = action.narrow.predicate()
+    let userAction = action.userAction
+    //returns predicate based on current table max and narrow min
+    let idPredicate = minMaxPredicate()
     
-    let realmTableCells = self.messageToTableCell(allFilteredMessages)
+    //realm messages returns all the messages
+    let realmMessages = NSArray(array: realm.objects(Message)
+      .filter(idPredicate)
+      .sorted("id", ascending: true)
+      .map {$0})
+    
+    
+    //This second layer of filtering is necessary because Realm can't recognize "ALL"
+    //This approach is inefficient because we're not taking advantage of realm's lazy initiation...
+    let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(narrowPredicate) as! [Message]
+    
+    let flatOldTableCells = oldTableCells.flatten()
+    //messageThreshold triggers a network call if thres isn't met
+    //Focus case included for clarity
+    var messageThreshold = 30
+    switch userAction {
+    case .Focus:
+      messageThreshold = 30
+    case .ScrollUp:
+      messageThreshold += flatOldTableCells.count
+    case .Refresh:
+      let lastOldTableCellId = flatOldTableCells.last!.id
+      messageThreshold = flatOldTableCells.count +
+        allFilteredMessages.reduce(0, combine: {total, msg in
+        if msg.id > lastOldTableCellId {
+          return total + 1
+        }
+        return total
+      })
+    }
+    
+    if self.cancelled {
+      return
+    }
+    
+    if userAction == .Refresh && messageThreshold == flatOldTableCells.count {
+      print("TCOp: Refresh - no new msgs in current narrow")
+      //TODO: call delegate to add badge to home button
+      return
+    }
+    
+    if isLast == false && allFilteredMessages.count < messageThreshold {
+      self.delegate?.realmNeedsMoreMessages()
+      print("TCOp: MessageArrayToTableCellArray: less than \(messageThreshold) msgs")
+      return
+    }
+    
+    
+    
+    print("TCOp: computing realm messages")
+    let allReversedMessages = Array(allFilteredMessages.reverse())
+    var _tableCellMessages = [Message]()
+    for counter in 0 ..< min(messageThreshold, allFilteredMessages.count) {
+      _tableCellMessages.append(allReversedMessages[counter])
+    }
+    
+    let tableCellMessages = Array(_tableCellMessages.reverse())
+    
+    if self.cancelled {
+      return
+    }
+    
+    let realmTableCells = self.messageToTableCell(tableCellMessages)
+    
+    if self.cancelled {
+      return
+    }
+
     self.tableCells = realmTableCells
-    (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: action.userAction)
+    (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
     
+    if self.cancelled {
+      return
+    }
+    
+    self.delegate?.messageToTableCellArrayDidFinish(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, userAction: self.action.userAction)
   }
   
-  func getTableCells() -> ([[TableCell]], NSRange, NSRange, [NSIndexPath]) {
-    return (self.tableCells, self.deletedSections, self.insertedSections, self.insertedRows)
+  func minMaxPredicate() -> NSPredicate {
+    //min & max message indices are stored in NSUserDefaults
+    let defaults = NSUserDefaults.standardUserDefaults()
+    
+    //network delegate called if id's are 0
+    let homeMinId = defaults.integerForKey("homeMin")
+    let homeMaxId = defaults.integerForKey("homeMax")
+    
+    var minId = homeMinId
+    let maxId = homeMaxId
+    
+    if let narrowString = self.action.narrow.narrowString {
+      minId = defaults.integerForKey(narrowString)
+    }
+    
+    //make predicates
+    let minIdPredicate = NSPredicate(format: "id >= %d", minId)
+    let maxIdPredicate = NSPredicate(format: "id <= %d", maxId)
+    let andPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [minIdPredicate, maxIdPredicate])
+    print("TCOp: MessageArrayToTableCell Array idPredicate: \(andPredicate)")
+    return andPredicate
   }
   
   private func findTableUpdates(realmTableCells: [[TableCell]], action: UserAction) -> (deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath]) {
     
+    //find the differences between oldTableCells and the new messages to be loaded
     var deletedSections = NSRange()
     var insertedSections = NSRange()
     var insertedRows = [NSIndexPath]()
@@ -90,10 +193,12 @@ class MessageArrayToTableCellArray: NSOperation {
       }
     }
     
-    print("action: \(action)")
-    print("deletedSections: \(deletedSections)")
-    print("insertedSections: \(insertedSections)")
-    print("insertedRows: \(insertedRows.count)")
+    //TODO: Add a check to verify that deleted/inserted Sections and insertedRows matches the number of messages that should appear. If not, action = .Focus to force a complete recalculation
+    
+    print("TCOp: action: \(action)")
+    print("TCOp: deletedSections: \(deletedSections)")
+    print("TCOp: insertedSections: \(insertedSections)")
+    print("TCOp: insertedRows: \(insertedRows.count)")
     return (deletedSections, insertedSections, insertedRows)
   }
   
@@ -106,6 +211,7 @@ class MessageArrayToTableCellArray: NSOperation {
     for message in messages {
       var cell = TableCell(message)
       let messageContent = message.content
+//      let emojiMessageContent = processEmoji(messageContent)
       let attributedContent = processMarkdown(messageContent)
       cell.attributedContent = attributedContent
       
@@ -157,7 +263,7 @@ class MessageArrayToTableCellArray: NSOperation {
       "</style>"].reduce("",combine: +)
     text += style
     let htmlString: NSAttributedString?
-    //8 bit enoding caused text to be interpreted incorrectly
+    //8bit enoding caused text to be interpreted incorrectly, using 16bit
     let htmlData = text.dataUsingEncoding(NSUTF16StringEncoding, allowLossyConversion: false)
     
     do {
@@ -167,5 +273,4 @@ class MessageArrayToTableCellArray: NSOperation {
     }
     return htmlString
   }
-  
 }

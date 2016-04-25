@@ -13,45 +13,62 @@ import Locksmith
 import RealmSwift
 
 protocol StreamControllerDelegate: class {
-  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath])
+  func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction)
+  
   func didFetchMessages()
+  
+  func setNotification(notification: Notification, show: Bool)
 }
 
 protocol SubscriptionDelegate: class {
   func didFetchSubscriptions(subscriptions: [String: String])
 }
 
-//TODO: rethink these queues.
 class Queue {
-  lazy var realmToMessageArray: NSOperationQueue = {
+  lazy var refreshNetworkQueue: NSOperationQueue = {
     var queue = NSOperationQueue()
-    queue.name = "Realm To Message Array"
+    queue.name = "refreshNetworkQueue"
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
   
-  lazy var messageToTableCell: NSOperationQueue = {
+  lazy var userNetworkQueue: NSOperationQueue = {
     var queue = NSOperationQueue()
-    queue.name = "Message To Table Cell"
+    queue.name = "userNetworkQueue"
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
+  
+  lazy var prepQueue: NSOperationQueue = {
+    var queue = NSOperationQueue()
+    queue.name = "prepQueue"
+    queue.maxConcurrentOperationCount = 1
+    return queue
+  }()
+  
+  func cancelAll() {
+    refreshNetworkQueue.cancelAllOperations()
+    userNetworkQueue.cancelAllOperations()
+    prepQueue.cancelAllOperations()
+  }
+  
+  func cancelRefreshQueue() {
+    refreshNetworkQueue.cancelAllOperations()
+  }
 }
 
-class StreamController: URLToMessageArrayDelegate {
-  
+class StreamController {
   weak var delegate: StreamControllerDelegate?
   weak var subscriptionDelegate: SubscriptionDelegate?
   
   private let realm: Realm
   private var subscription: [String:String] = [:]
   private var oldTableCells = [[TableCell]]()
-  
   private var timer = NSTimer()
+  private let queue = Queue()
   
-  private var maxId = Int.min
-  private var homeMinId = Int.max
   private var streamMinId = [String: Int]()
+  private var refreshedMessageIds = Set<Int>()
   
   //we make this an instance variable beacause refresh needs to be aware of narrow
   private var action = Action()
@@ -62,46 +79,62 @@ class StreamController: URLToMessageArrayDelegate {
     } catch let error as NSError {
       fatalError(String(error))
     }
-  }
-  
-  //TODO: why do I need @objc?
-  //TODO: put autorefresh networking onto a different queue, use a generic local variable. Always load messages from Realm from the Action instance variable
-  @objc private func autoRefresh(timer: NSTimer) {
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
-      if !self.oldTableCells.isEmpty {
-        print("shots fired!")
-        self.action.userAction = .Refresh
-        self.loadStreamMessages(self.action)
-      }
-    }
+    //FOR DEBUGGING PURPOSES
+//    clearDefaults()
   }
   
   func isLoggedIn() -> Bool {
     if let basicAuth = Locksmith.loadDataForUserAccount("default"),
       let authHead = basicAuth["Authorization"] as? String {
       Router.basicAuth = authHead
-      self.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(self.autoRefresh(_:)), userInfo: nil, repeats: true)
-        return true
+      
+      self.timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
+      return true
     }
     return false
   }
   
+  private func resetTimer() {
+    self.timer.invalidate()
+    self.timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
+  }
+  
+  //TODO: why do I need @objc?
+  //new messages are loaded on refreshQueue, called by timer
+  @objc private func refreshData() {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+      //we don't refresh until there's something to refresh
+      if !self.oldTableCells.isEmpty {
+        print("\n===refreshData===")
+        //a generic action is used so we don't miss any new messages
+        self.action.userAction = .Refresh
+        var localAction = Action()
+        localAction.userAction = .Refresh
+        let messagesFromNetworkOperation = self.messagesFromNetwork(localAction)
+        self.queue.refreshNetworkQueue.addOperation(messagesFromNetworkOperation)
+      }
+    }
+  }
+  
   func clearDefaults() {
+    queue.cancelAll()
     timer.invalidate()
+    for key in NSUserDefaults.standardUserDefaults().dictionaryRepresentation().keys {
+      NSUserDefaults.standardUserDefaults().removeObjectForKey(key)
+    }
     do {
       try realm.write {
-        print("deleting realm")
+        print("clearDefaults: deleting realm")
         realm.deleteAll()
       }
     }
     catch{print("could not clear realm")}
-    print("deleting keychain")
+    print("clearDefaults: deleting keychain")
     do {
       try Locksmith.deleteDataForUserAccount("default")
     }
     catch {print("unable to clear locksmith")}
     Router.basicAuth = nil
-    NSUserDefaults.standardUserDefaults().removeObjectForKey("email")
   }
   
   func register() {
@@ -110,13 +143,12 @@ class StreamController: URLToMessageArrayDelegate {
       dispatch_async(dispatch_get_main_queue()) {
         let registrationResults = registration.getSubscriptionAndMaxID()
         self.subscription = registrationResults.0
-        self.maxId = max(self.maxId, registrationResults.1)
-        print("finished registration: \(self.maxId)")
+        NSUserDefaults.standardUserDefaults().setInteger(registrationResults.1, forKey: "homeMax")
         self.subscriptionDelegate?.didFetchSubscriptions(self.subscription)
         self.loadStreamMessages(Action())
       }
     }
-    queue.messageToTableCell.addOperation(registration)
+    queue.userNetworkQueue.addOperation(registration)
   }
   
   //MARK: Post Messages
@@ -137,102 +169,156 @@ class StreamController: URLToMessageArrayDelegate {
       .andThen(AlamofireRequest)
       .start {result in
         switch result {
+          
         case .Success(_):
-          self.loadStreamMessages(action)
+          //generic refresh action
+          self.refreshData()
+          
         case .Error(let boxedError):
           let error = boxedError.unbox
-          print(error)
+          print("PostMessage: \(error)")
         }
     }
   }
   
   private func messagesFromNetwork(action: Action) -> NSOperation {
-    let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription, maxId: self.maxId, homeMinId: self.homeMinId, streamMinId: self.streamMinId)
+    let urlToMessagesArray = URLToMessageArray(action: action, subscription: self.subscription)
     urlToMessagesArray.delegate = self
     return urlToMessagesArray
   }
   
-  //MARK: URLToMessagesArrayDelegate
-  internal func urlToMessageArrayDidFinish(action: Action, messages: [Message]) {
-    print("in URLToMessagesArrayDelegate!")
-    if messages.isEmpty {
-      dispatch_async(dispatch_get_main_queue()){
-        self.delegate?.didFetchMessages()
-      }
-    } else {
-      self.saveMinMaxId(action, newMessages: messages)
-    }
-  }
-  
-  private func tableCellsFromRealm(action: Action) -> NSOperation {
-    //setActionMinMaxId(_:) modifies narrow.min/max ID
-    let action = setActionMinMaxId(action)
-    let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells)
-    messageArrayToTableCellArray.completionBlock = {
-      let (tableCells, deletedSections, insertedSections, insertedRows) = messageArrayToTableCellArray.getTableCells()
-      self.oldTableCells = tableCells
-      dispatch_async(dispatch_get_main_queue()) {
-        if insertedRows.isEmpty {
-          self.delegate?.didFetchMessages()
-          return
-        }
-        print("table Cells From Realm - Sending to controller!")
-        self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows)
-      }
-    }
+  private func tableCellsFromRealm(action: Action, isLast: Bool) -> NSOperation {
+    let messageArrayToTableCellArray = MessageArrayToTableCellArray(action: action, oldTableCells: self.oldTableCells, isLast: isLast)
+    messageArrayToTableCellArray.delegate = self
     return messageArrayToTableCellArray
   }
   
-  let queue = Queue()
+  var loading = false
+  
   //MARK: Get Stream Messages
   func loadStreamMessages(action: Action) {
+    print("\n==== NEW MSG LOAD ====")
+    if self.loading {
+      return
+    }
+    self.loading = true
     self.action = action
-    let messagesFromNetworkOperation = self.messagesFromNetwork(action)
     
-    messagesFromNetworkOperation.completionBlock = {
-      let tableCellsFromRealmOperation = self.tableCellsFromRealm(action)
-      self.queue.messageToTableCell.addOperation(tableCellsFromRealmOperation)
-    }
-    
-    queue.messageToTableCell.addOperation(messagesFromNetworkOperation)
-  }
-  
-  private func setActionMinMaxId(action: Action) -> Action {
-    var returnAction = action
-    let minId: Int
-    
-    if let narrowString = action.narrow.narrowString {
-      if let streamMinId = self.streamMinId[narrowString] { minId = streamMinId }
-      else { minId = self.homeMinId }
-    }
-    else { minId = self.homeMinId }
-    
-    returnAction.narrow.setMinMaxID(minId, maxID: self.maxId)
-    
-    return returnAction
-  }
-
-  private func saveMinMaxId(action: Action, newMessages: [Message]) {
-    let minMessageId = newMessages[0].id
-    let maxMessageId = newMessages.last!.id
-    
-    if maxMessageId > self.maxId {
-      print("self.maxId has increased!")
-    }
-    
-    self.maxId = max(self.maxId, maxMessageId)
-
-    if let narrowString = action.narrow.narrowString {
-      if let minId = self.streamMinId[narrowString] {
-        self.streamMinId[narrowString] = min(minId, minMessageId)
-      }
-        else {
-          self.streamMinId[narrowString] = minMessageId
-        }
-    }
-    else {
-      self.homeMinId = min(homeMinId, minMessageId)
-    }
-    print("saved minMaxId!")
+    //cancel previous operations when user makes a new request
+    self.queue.cancelAll()
+    self.resetTimer()
+    let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, isLast: false)
+    self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
   }
 }
+
+//MARK: URLToMessagesArrayDelegate
+extension StreamController: URLToMessageArrayDelegate {
+  internal func urlToMessageArrayDidFinish(messages: [Message], userAction: UserAction) {
+    switch userAction {
+    case .Refresh:
+      guard !messages.isEmpty else {return}
+      
+      self.shouldAddBadge(messages)
+      
+      guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 else {return}
+  
+    default:
+      guard !messages.isEmpty else {
+        dispatch_async(dispatch_get_main_queue()){
+          print("you can stop spinning now!")
+          self.delegate?.didFetchMessages()
+        }
+        self.loading = false
+        return
+      }
+    }
+    
+    print("adding tableCellsFromRealmOperation")
+    let tableCellsFromRealmOperation = self.tableCellsFromRealm(self.action, isLast: true)
+    self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
+  }
+  
+  //perform add badge operation in networking code - UI notifications should always be dependent on messages loaded from db
+  func shouldAddBadge(messages: [Message]) {
+    let allMessagesId = Set(messages.map {$0.id})
+    
+    //all refresh message id's are added into refreshMessageIds and removed when they are loaded into the tableview controller
+    for id in allMessagesId {
+      self.refreshedMessageIds.insert(id)
+    }
+    
+    //we cheat a little by looking into the future to see whether or not these refreshed messages will be loaded into the current view
+    let filteredMessages = NSArray(array: messages).filteredArrayUsingPredicate(self.action.narrow.predicate()) as! [Message]
+    let filteredMessagesId = filteredMessages.map {$0.id}
+    
+    let unloadedMessageIds = allMessagesId.subtract(filteredMessagesId)
+    
+    guard !unloadedMessageIds.isEmpty else {return}
+    
+    self.delegate?.setNotification(.Badge, show: true)
+  }
+}
+
+//MARK: MessagesArrayToTableCellArrayDelegate
+extension StreamController: MessageArrayToTableCellArrayDelegate {
+  //remove badge here and show new message notifications here
+  func badgeControl(tableCells: [[TableCell]]) {
+    let tableCellIds = tableCells.flatten().map {$0.id}
+    let messageIdIntersect = self.refreshedMessageIds.intersect(tableCellIds)
+    
+    for messageID in messageIdIntersect {
+      self.refreshedMessageIds.remove(messageID)
+    }
+    
+    print("MessagesArrayToTableCellArrayDelegate: # of refreshed messages: \(self.refreshedMessageIds.count)")
+    
+    if self.refreshedMessageIds.isEmpty {
+      dispatch_async(dispatch_get_main_queue()){
+        print("MessagesArrayToTableCellArrayDelegate: badge - false")
+        self.delegate?.setNotification(.Badge, show: false)
+      }
+    }
+    
+    if !messageIdIntersect.isEmpty {
+      dispatch_async(dispatch_get_main_queue()){
+        self.delegate?.setNotification(Notification.NewMessage(messageCount: messageIdIntersect.count), show: true)
+      }
+    }
+  }
+  
+  func messageToTableCellArrayDidFinish(tableCells: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction) {
+    
+    //TODO: fix loading instance var - put this on the UI side
+    self.loading = false
+    
+    //show/hide badge
+    self.badgeControl(tableCells)
+    
+    if insertedRows.isEmpty {
+      //The following statements run iff isLast = true
+      dispatch_async(dispatch_get_main_queue()) {
+        self.delegate?.didFetchMessages()
+      }
+      print("TableCell Delegate: insertedRows is empty")
+      return
+    }
+    
+    //oldTableCells is only reassigned if new messages are loaded
+    self.oldTableCells = tableCells
+    print("TableCell Delegate: TC's to TableView")
+    
+    //to mitigate race condition errors
+    self.queue.cancelRefreshQueue()
+    
+    dispatch_async(dispatch_get_main_queue()) {
+      self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, userAction: userAction)
+    }
+  }
+  
+  func realmNeedsMoreMessages() {
+    let messagesFromNetworkOperation = self.messagesFromNetwork(self.action)
+    self.queue.userNetworkQueue.addOperation(messagesFromNetworkOperation)
+  }
+}
+

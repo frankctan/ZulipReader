@@ -12,47 +12,51 @@ import RealmSwift
 import SwiftyJSON
 
 protocol URLToMessageArrayDelegate: class {
-  func urlToMessageArrayDidFinish(action: Action, messages: [Message])
+  func urlToMessageArrayDidFinish(messages: [Message], userAction: UserAction)
 }
 
 class URLToMessageArray: NetworkOperation {
   
   let action: Action
   let subscription: [String: String]
-  let maxId: Int
-  let homeMinId: Int
-  let streamMinId: [String: Int]
-  
   var messages = [Message]()
   
   weak var delegate: URLToMessageArrayDelegate?
   
-  init(action: Action, subscription: [String: String], maxId: Int, homeMinId: Int, streamMinId: [String: Int]) {
+  init(action: Action, subscription: [String: String]) {
     self.action = action
     self.subscription = subscription
-    self.maxId = maxId
-    self.homeMinId = homeMinId
-    self.streamMinId = streamMinId
   }
   
   override func main() {
     self.messagePipeline(self.action).start {result in
       if self.cancelled {
+        self.complete()
         return
       }
       
       switch result {
       case .Success(let box):
         self.messages = box.unbox
-        self.messagesToRealm(self.messages)
-        self.delegate?.urlToMessageArrayDidFinish(self.action, messages: self.messages)
-        self.complete()
+        if !self.messages.isEmpty {
+          self.messagesToRealm(self.messages)
+          self.saveMinMaxId(self.messages)
+          
+          if self.cancelled {
+            self.complete()
+            return
+          }
+        }
+        
         
       case .Error(let box):
         let error = box.unbox
         print("error: \(error)")
-        self.complete()
       }
+      
+      self.delegate?.urlToMessageArrayDidFinish(self.messages, userAction: self.action.userAction)
+      print("URLToMessageArray: Completed")
+      self.complete()
     }
   }
   
@@ -74,30 +78,41 @@ class URLToMessageArray: NetworkOperation {
   
   private func createRequestParameters(action: Action) -> Future<MessageRequestParameters, ZulipErrorDomain> {
     var params = MessageRequestParameters()
-    let minAnchor = getMinAnchor()
+    let (minAnchor, maxAnchor) = getAnchor()
     
+    //after #'s are comically large to make sure we don't miss any messages. They also don't seem to have any noticeable performance impact.
+    //in v2 - we should add checks to load more messages if new messages exceeds after. For now, 20k should do...
     switch action.userAction {
     case .Focus:
-      params = MessageRequestParameters(anchor: self.maxId, before: 20, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 50, after: 20000, narrow: action.narrow.narrowString)
     case .Refresh:
-      params = MessageRequestParameters(anchor: self.maxId, before: 0, after: 50, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor+1, before: 0, after: 20000, narrow: action.narrow.narrowString)
     case .ScrollUp:
-      params = MessageRequestParameters(anchor: minAnchor, before: 20, after: 0, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: minAnchor, before: 50, after: 0, narrow: action.narrow.narrowString)
     }
     return Future<MessageRequestParameters, ZulipErrorDomain>(value: params)
   }
   
   //returns the minimum of a narrowString or the home minimum ID
-  private func getMinAnchor() -> Int {
-    let minId: Int
-    
-    if let narrow = action.narrow.narrowString,
-      let narrowMinId = self.streamMinId[narrow] {
-      minId = narrowMinId
+  private func getAnchor() -> (Int, Int) {
+    let defaults = NSUserDefaults.standardUserDefaults()
+    let homeMaxId = defaults.integerForKey("homeMax")
+    let homeMinId: Int
+    if let minId = defaults.objectForKey("homeMin") {
+      homeMinId = minId as! Int
     } else {
-      minId = self.homeMinId
+      homeMinId = Int.max
     }
-    return minId
+    
+    var minId = homeMinId
+    if let narrowString = self.action.narrow.narrowString {
+      let streamMinId = defaults.objectForKey(narrowString)
+      if streamMinId != nil {
+        minId = streamMinId as! Int
+      }
+    }
+    
+    return (minId, homeMaxId)
   }
   
   private func processResponse(response: JSON) -> Future<[Message], ZulipErrorDomain> {
@@ -120,7 +135,6 @@ class URLToMessageArray: NetworkOperation {
   
   private func createMessageObject(messages: [JSON]) -> Future<[Message], ZulipErrorDomain> {
     return Future<[Message], ZulipErrorDomain>(operation: {completion in
-      print("creating message object")
       let result: Result<[Message], ZulipErrorDomain>
       var results = [Message]()
       guard let ownEmail = NSUserDefaults.standardUserDefaults().stringForKey("email") else {fatalError()}
@@ -137,6 +151,8 @@ class URLToMessageArray: NetworkOperation {
           msg.flags = flags as! [String]
           msg.mentioned = msg.flags.contains("mentioned") || msg.flags.contains("wildcard_mentioned")
         }
+        
+        msg.content = self.processEmoji(msg.content)
         
         //assigns streamColor
         if msg.type == "private",
@@ -160,7 +176,12 @@ class URLToMessageArray: NetworkOperation {
         
         if msg.type == "stream",let streamRecipient = message["display_recipient"].string {
           msg.display_recipient = [streamRecipient]
-          msg.streamColor = self.subscription[streamRecipient]!
+          
+          if let streamColor = self.subscription[streamRecipient] {
+            msg.streamColor = streamColor
+          } else {
+            msg.streamColor = "#000000"
+          }
         }
         results.append(msg)
       }
@@ -169,25 +190,94 @@ class URLToMessageArray: NetworkOperation {
     })
   }
   
+  private func processEmoji(text: String) -> String {
+    //translated most of this from the original Zulip ios project
+    guard text.rangeOfString("static/third/gemoji/images/emoji") != nil else {return text}
+    
+    var emojiRegex: NSRegularExpression {
+      do {
+        return try NSRegularExpression(pattern: "<img alt=\":([^:]+):\" class=\"emoji\" src=\"static/third/gemoji/images/emoji/[^.]+.png+\" title=\":[^:]+:\">", options: NSRegularExpressionOptions.CaseInsensitive)
+      }
+      catch let error as NSError {
+        print("\n\n regex error: \(error) \n\n")
+        return NSRegularExpression()
+      }
+    }
+    
+    let matches = emojiRegex.matchesInString(text, options: NSMatchingOptions.init(rawValue: 0), range: NSMakeRange(0, text.characters.count))
+    
+    let textCopy = NSMutableString(string: text)
+    
+    var offset = 0
+    for match in matches {
+      var range = match.range
+      range.location += offset
+      
+      let emojiString = ":" + emojiRegex.replacementStringForResult(match, inString: textCopy as String, offset: offset, template: "$1") + ":"
+      
+      let utfEmoji: String
+      if let emoji = EMOJI_HASH[emojiString] {
+        utfEmoji = emoji
+      } else {
+        utfEmoji = emojiString
+      }
+      
+      //NSMutableString(utfEmoji).count = 2; String(emoji).character.count = 1
+      textCopy.replaceCharactersInRange(range, withString: utfEmoji)
+      offset += NSMutableString(string: utfEmoji).length - range.length
+    }
+    return textCopy as String
+  }
+  
   private func messagesToRealm(messages: [Message]) {
     let realm: Realm
     do {
       realm = try Realm()
-    } catch let error as NSError {
+    } catch let error as NSError { 
       fatalError(String(error))
     }
     
     let realmMessages = realm.objects(Message).sorted("id", ascending: true).map {$0}
     let currentMessageID = realmMessages.map {$0.id}
     
+    var messageCounter = 0
     realm.beginWrite()
     for message in messages {
       if !currentMessageID.contains(message.id) {
         realm.create(Message.self, value: message)
+        messageCounter += 1
       }
     }
     do { try realm.commitWrite()} catch {fatalError()}
     print("save path: \(realm.path)")
+    print("URLToMessage: saved \(messageCounter) message(s)")
+  }
+  
+  private func saveMinMaxId(messages: [Message]) {
+    let defaults = NSUserDefaults.standardUserDefaults()
+    let currentMinId = messages[0].id
+    let currentMaxId = messages.last!.id
+    
+    if let narrowString = action.narrow.narrowString {
+      let defaultNarrowMinId = defaults.objectForKey(narrowString)
+      if defaultNarrowMinId == nil || currentMinId < (defaultNarrowMinId as! Int) {
+        defaults.setInteger(currentMinId, forKey: narrowString)
+        print("URLToMessage: new minId - \(narrowString): \(currentMinId)")
+      }
+    }
+    else {
+      let defaultHomeMinId = defaults.objectForKey("homeMin")
+      if defaultHomeMinId == nil || currentMinId < (defaultHomeMinId as! Int) {
+        defaults.setInteger(currentMinId, forKey: "homeMin")
+        print("URLToMessage: new homeMin - \(currentMinId)")
+      }
+    }
+    
+    let defaultMaxId = defaults.objectForKey("homeMax")
+      if defaultMaxId == nil || currentMaxId > (defaultMaxId as! Int) {
+      defaults.setInteger(currentMaxId, forKey: "homeMax")
+        print("URLToMessage: new homeMax -  \(currentMaxId)")
+    }
   }
 }
 

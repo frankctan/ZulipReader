@@ -90,7 +90,7 @@ class RegistrationOperation: NetworkOperation {
   
   //writes subscription dictionary, realm persistence, sends subscription colors to sideMenuDelegate
   private func recordRegistration(registration: Registration) {
-    print("registration saved")
+    print("Reg: registration saved")
     for sub in registration.subscriptionJSON {
       self.subscription[sub["name"].stringValue] = sub["color"].stringValue
     }
