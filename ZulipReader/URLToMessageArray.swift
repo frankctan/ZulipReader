@@ -233,7 +233,7 @@ class URLToMessageArray: NetworkOperation {
     let realm: Realm
     do {
       realm = try Realm()
-    } catch let error as NSError {
+    } catch let error as NSError { 
       fatalError(String(error))
     }
     

@@ -46,11 +46,11 @@ class NotificationNavViewController: SLKTextViewController {
     guard flag != self.inTransition else {return}
     self.inTransition = flag
     if flag {
-      UIView.transitionWithView(self.view, duration: 0.2, options: .TransitionCrossDissolve, animations: {
+      UIView.transitionWithView(self.view, duration: 0.3, options: .TransitionCrossDissolve, animations: {
         self.view.addSubview(self.blurEffectView)
         }, completion: {_ in self.blurEffectView.showLoading()})
     } else {
-      UIView.transitionWithView(self.view, duration: 0.2, options: .TransitionCrossDissolve, animations: {
+      UIView.transitionWithView(self.view, duration: 0.3, options: .TransitionCrossDissolve, animations: {
         self.blurEffectView.removeFromSuperview()
         }, completion: {_ in self.blurEffectView.hideLoading()})
     }
@@ -82,8 +82,9 @@ class NotificationNavViewController: SLKTextViewController {
     tableView.scrollRectToVisible(scrollToRect, animated: true)
     
     let titleAnimation = CATransition()
-    titleAnimation.duration = 0.2
-    titleAnimation.type = kCATransitionFromTop
+    titleAnimation.duration = 0.5
+    titleAnimation.type = kCATransitionPush
+    
     navigationController?.navigationBar.layer.addAnimation(titleAnimation, forKey: "fadeText")
     self.navBarTitle.configure(false, title: self.navBarTitle.titleButton.currentTitle!)
   }

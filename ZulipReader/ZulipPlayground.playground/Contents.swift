@@ -122,5 +122,12 @@ for indexPath in indexPaths {
 }
 
 
+let aStr: String? = "hello"
+
+let bStr: String = "hello"
+
+aStr == bStr
+
+
 
 

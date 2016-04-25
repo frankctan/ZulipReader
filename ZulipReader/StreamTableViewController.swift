@@ -170,12 +170,20 @@ class StreamTableViewController: NotificationNavViewController {
     self.transitionToBlur(true)
     self.focusAction(narrow)
     
+    guard navTitle != self.navBarTitle.titleButton.currentTitle! else {return}
+
     let fadeTextAnimation = CATransition()
-    fadeTextAnimation.duration = 0.2
-    fadeTextAnimation.type = kCATransitionFromTop
-    navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
+    fadeTextAnimation.duration = 0.5
+    fadeTextAnimation.type = kCATransitionPush
+    fadeTextAnimation.subtype = kCATransitionFromTop
+    fadeTextAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+    self.navigationItem.titleView?.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
     
-    self.navBarTitle.configure(false, title: navTitle)
+//    self.navBarTitle.configure(false, title: navTitle)
+        print("navtitle: \(navTitle)")
+    print("titleButton: \(self.navBarTitle.titleButton.currentTitle!)")
+    
+    self.navBarTitle.titleButton.setTitle(navTitle, forState: .Normal)
   }
   
   //MARK: SLKTextViewController
