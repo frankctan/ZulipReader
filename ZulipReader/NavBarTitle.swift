@@ -12,8 +12,13 @@ import Spring
 class NavBarTitle: UIView {
 
   @IBOutlet weak var titleButton: SpringButton!
+  var scrollButtonHidden: Bool = false
+  var title: String = ""
   
   func configure(scrollDown: Bool, title: String) {
+    self.scrollButtonHidden = scrollDown
+    self.title = title
+    
     if scrollDown {
       titleButton.setImage(UIImage(named: "Circled Down-96-2"), forState: .Normal)
     } else {
@@ -21,9 +26,5 @@ class NavBarTitle: UIView {
     }
     
     titleButton.setTitle(title, forState: .Normal)
-  }
-  
-  @IBAction func titleButtonDidPress(sender: AnyObject) {
-    print("hehe!")
   }
 }

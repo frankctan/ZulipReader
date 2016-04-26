@@ -75,29 +75,33 @@ class NotificationNavViewController: SLKTextViewController {
     navigationItem.rightBarButtonItem?.image = image
   }
   
+  func setNavBarTitle(scrollDownFlag: Bool, title: String) {
+    //scrollDownButton or title needs to be different
+    guard scrollDownFlag != self.navBarTitle.scrollButtonHidden ||
+      title != self.navBarTitle.title else {return}
+    
+    let animation = CATransition()
+    animation.duration = 0.5
+    animation.type = kCATransitionPush
+    animation.subtype = kCATransitionFromTop
+    animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+    self.navigationItem.titleView?.layer.addAnimation(animation, forKey: "titleAnimation")
+    
+    self.navBarTitle.configure(scrollDownFlag, title: title)
+  }
+  
   func scrollToBottom() {
     tableView.setNeedsLayout()
     let scrollToHeight = tableView.contentSize.height - tableView.frame.height
     let scrollToRect = CGRect(x: 0.0, y: scrollToHeight, width: tableView.frame.width, height: tableView.frame.height)
     tableView.scrollRectToVisible(scrollToRect, animated: true)
     
-    let titleAnimation = CATransition()
-    titleAnimation.duration = 0.5
-    titleAnimation.type = kCATransitionPush
-    
-    navigationController?.navigationBar.layer.addAnimation(titleAnimation, forKey: "fadeText")
-    self.navBarTitle.configure(false, title: self.navBarTitle.titleButton.currentTitle!)
+    self.setNavBarTitle(false, title: self.navBarTitle.title)
   }
   
   //MARK: Settings
   func navigationControllerSettings() {
     //pretty navbar title view
-    //TOOD: I have to set up the animation  every time I use it. why?
-    let titleAnimation = CATransition()
-    titleAnimation.duration = 0.2
-    titleAnimation.type = kCATransitionFromTop
-    navigationController?.navigationBar.layer.addAnimation(titleAnimation, forKey: "fadeText")
-    
     self.navBarTitle = NSBundle.mainBundle().loadNibNamed("NavBarTitle", owner: nil, options: nil)[0] as! NavBarTitle
     self.navBarTitle.titleButton.addTarget(self, action: #selector(scrollToBottom), forControlEvents: UIControlEvents.TouchDown)
     

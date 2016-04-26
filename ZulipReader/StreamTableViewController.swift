@@ -172,18 +172,7 @@ class StreamTableViewController: NotificationNavViewController {
     
     guard navTitle != self.navBarTitle.titleButton.currentTitle! else {return}
 
-    let fadeTextAnimation = CATransition()
-    fadeTextAnimation.duration = 0.5
-    fadeTextAnimation.type = kCATransitionPush
-    fadeTextAnimation.subtype = kCATransitionFromTop
-    fadeTextAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    self.navigationItem.titleView?.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
-    
-//    self.navBarTitle.configure(false, title: navTitle)
-        print("navtitle: \(navTitle)")
-    print("titleButton: \(self.navBarTitle.titleButton.currentTitle!)")
-    
-    self.navBarTitle.titleButton.setTitle(navTitle, forState: .Normal)
+    self.setNavBarTitle(false, title: navTitle)
   }
   
   //MARK: SLKTextViewController
@@ -227,12 +216,7 @@ extension StreamTableViewController: StreamControllerDelegate {
       self.showNavBarBadge(show)
       
     default:
-      let fadeTextAnimation = CATransition()
-      fadeTextAnimation.duration = 0.2
-      fadeTextAnimation.type = kCATransitionFromTop
-      navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
-      
-      self.navBarTitle.configure(true, title: self.navBarTitle.titleButton.currentTitle!)
+      self.setNavBarTitle(true, title: self.navBarTitle.title)
     }
   }
   
@@ -290,9 +274,6 @@ extension StreamTableViewController: StreamControllerDelegate {
     }
   }
 }
-
-//TODO: set a loading variable which prohibits user from entering additional actions. 
-//TODO: while loading is true, blur tableview to let user know 
 
 //MARK: StreamHeaderNavCellDelegate
 extension StreamTableViewController: StreamHeaderNavCellDelegate {

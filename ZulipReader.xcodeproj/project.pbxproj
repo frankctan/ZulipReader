@@ -58,6 +58,8 @@
 		67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */; };
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
 		67DE8D301CADA48B00178DFD /* MessageMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DE8D2F1CADA48B00178DFD /* MessageMarker.swift */; };
+		67E132EA1CCF1A4000CBD17C /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E132E81CCF1A4000CBD17C /* ProfileViewController.swift */; };
+		67E132EB1CCF1A4000CBD17C /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67E132E91CCF1A4000CBD17C /* ProfileViewController.xib */; };
 		67F9565A1C6D3B3100A2EB85 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F956591C6D3B3100A2EB85 /* Subscription.swift */; };
 		67FFF1C31CC9DA4100447E6C /* NavBarTitle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */; };
 		67FFF1C51CC9E21400447E6C /* NavBarTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */; };
@@ -131,6 +133,8 @@
 		67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZulipReaderTests.swift; sourceTree = "<group>"; };
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		67DE8D2F1CADA48B00178DFD /* MessageMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageMarker.swift; sourceTree = "<group>"; };
+		67E132E81CCF1A4000CBD17C /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		67E132E91CCF1A4000CBD17C /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
 		67F956591C6D3B3100A2EB85 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NavBarTitle.xib; sourceTree = "<group>"; };
 		67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavBarTitle.swift; sourceTree = "<group>"; };
@@ -283,6 +287,8 @@
 		67D1F1B61BFA6AEA006F9468 /* ZulipReader */ = {
 			isa = PBXGroup;
 			children = (
+				67E132E81CCF1A4000CBD17C /* ProfileViewController.swift */,
+				67E132E91CCF1A4000CBD17C /* ProfileViewController.xib */,
 				67B91B961CA33F0800C87409 /* RegistrationController.swift */,
 				675883351CA1D9FF006EC2D0 /* MessageArrayToTableCellArray.swift */,
 				67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */,
@@ -424,6 +430,7 @@
 				67FFF1C31CC9DA4100447E6C /* NavBarTitle.xib in Resources */,
 				67A9DA881C1E1C5100AEEF1B /* StreamExtendedCell.xib in Resources */,
 				67A9DA841C1E0F5800AEEF1B /* StreamCell.xib in Resources */,
+				67E132EB1CCF1A4000CBD17C /* ProfileViewController.xib in Resources */,
 				67C582B11C8B452E005D0C47 /* LoginView.xib in Resources */,
 				67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */,
 				678A6BE41C12279700AE091B /* SourceSansPro-It-webfont.ttf in Resources */,
@@ -509,6 +516,7 @@
 				67166ED61CC02969002D0E12 /* NotificationView.swift in Sources */,
 				676C98451BFD69360042CB26 /* LoginController.swift in Sources */,
 				675883361CA1D9FF006EC2D0 /* MessageArrayToTableCellArray.swift in Sources */,
+				67E132EA1CCF1A4000CBD17C /* ProfileViewController.swift in Sources */,
 				67A9DA8A1C1E934400AEEF1B /* StreamHeaderPrivateCell.swift in Sources */,
 				67FFF1C51CC9E21400447E6C /* NavBarTitle.swift in Sources */,
 				67C312881CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift in Sources */,
