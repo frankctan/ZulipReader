@@ -10,7 +10,7 @@ import SwiftyJSON
 //star messages?
 //clean up side menu ugliness
 //redo the pods
-
+//scroll logic of scrollDownIndicator
 
 
 

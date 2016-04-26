@@ -18,8 +18,6 @@ enum Notification {
 
 class NotificationNavViewController: SLKTextViewController {
   
-  var notification = NotificationView()
-  var notificationDisplayed = false
   var navBarBadgeDisplayed = false
   var sideMenuTableViewController: SideMenuTableViewController?
   
@@ -91,10 +89,11 @@ class NotificationNavViewController: SLKTextViewController {
   }
   
   func scrollToBottom() {
-    tableView.setNeedsLayout()
-    let scrollToHeight = tableView.contentSize.height - tableView.frame.height
-    let scrollToRect = CGRect(x: 0.0, y: scrollToHeight, width: tableView.frame.width, height: tableView.frame.height)
-    tableView.scrollRectToVisible(scrollToRect, animated: true)
+    let section = self.tableView.numberOfSections - 1
+    let row = self.tableView.numberOfRowsInSection(section) - 1
+    let indexPath = NSIndexPath(forRow: row, inSection: section)
+    self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .Bottom)
+    self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     
     self.setNavBarTitle(false, title: self.navBarTitle.title)
   }
@@ -149,27 +148,19 @@ class NotificationNavViewController: SLKTextViewController {
   }
   
   override func scrollViewDidScroll(scrollView: UIScrollView) {
-    guard self.navBarTitle.titleButton.imageView != nil else {return}
+    guard self.navBarTitle.titleButton.imageView?.hidden == false else {return}
+
+    let position = self.tableView.contentOffset.y
+    let tableHeight = self.tableView.frame.height
     
-    //TODO: contentHeight and position reset themselves after new messages are loaded - not sure how to reliably dismiss the down arrow
+    let section = self.tableView.numberOfSections - 1
+    let row = self.tableView.numberOfRowsInSection(section) - 1
+    let indexPath = NSIndexPath(forRow: row, inSection: section)
+    let rectForLastIndexPath = self.tableView.rectForRowAtIndexPath(indexPath)
     
-//    self.tableView.layoutIfNeeded()
-//    let position = self.tableView.contentOffset.y
-//    let contentHeight = self.tableView.contentSize.height
-//    let tableHeight = self.tableView.frame.height
-//    
-//    print("scroll position: \(position)")
-//    print("contentHeight: \(contentHeight)")
-//    print("tableHeight: \(tableHeight)")
-//    
-//    if position + tableHeight > contentHeight + 250 {
-//      let fadeTextAnimation = CATransition()
-//      fadeTextAnimation.duration = 0.2
-//      fadeTextAnimation.type = kCATransitionFromTop
-//      navigationController?.navigationBar.layer.addAnimation(fadeTextAnimation, forKey: "fadeText")
-//      
-//      self.navBarTitle.configure(false, title: navBarTitle.titleButton.currentTitle!)
-//    }
-    
+    if position + tableHeight > rectForLastIndexPath.origin.y + rectForLastIndexPath.height {
+      print("position: \(position) + tableHeight: \(tableHeight) > originy: \(rectForLastIndexPath.origin.y) + rectForLastIndexPath: \(rectForLastIndexPath.height)")
+      self.setNavBarTitle(false, title: self.navBarTitle.title)
+    }
   }
 }

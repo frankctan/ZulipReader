@@ -252,6 +252,12 @@ extension StreamTableViewController: StreamControllerDelegate {
       }
     }
     
+//    print("tableViewContentSize before recalc: \(self.tableView.contentSize.height)")
+//    //sizeThatFits drastically overestimates content height at first
+//    self.tableView.contentSize = self.tableView.sizeThatFits(CGSize(width: self.tableView.frame.width, height: tableView.contentSize.height * 10))
+//  
+//    print("after recalc: \(self.tableView.contentSize.height)")
+    
     //turn off network activity indicator
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     
@@ -270,8 +276,11 @@ extension StreamTableViewController: StreamControllerDelegate {
       if let lastIndexPath = insertedRows.last {
         self.tableView.selectRowAtIndexPath(lastIndexPath, animated: true, scrollPosition: .Bottom)
         self.tableView.deselectRowAtIndexPath(lastIndexPath, animated: true)
+        self.setNavBarTitle(false, title: self.navBarTitle.title)
       }
     }
+    
+    
   }
 }
 
