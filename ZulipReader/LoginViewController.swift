@@ -41,8 +41,6 @@ class LoginViewController: UIViewController {
   var loading = false
   @IBAction func loginButtonDidTouch(sender: UIButton) {
     if !loading {
-      usernameTextField.text = "frankctan@gmail.com"
-      passwordTextField.text = "recursion1"
       login()
       loading = true
     }
