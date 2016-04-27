@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AMScrollingNavbar
 import SlackTextViewController
 
 class StreamTableViewController: NotificationNavViewController {
@@ -48,7 +47,8 @@ class StreamTableViewController: NotificationNavViewController {
   }
   
   func loadData() {
-    guard let data = data else {fatalError()}
+    guard let data = data, let tableView = tableView else {fatalError()}
+
     if !data.isLoggedIn() {
       let controller = LoginViewController()
       presentViewController(controller, animated: true, completion: nil)
@@ -99,6 +99,8 @@ class StreamTableViewController: NotificationNavViewController {
   }
   
   func configureHeaderView(cell: ZulipTableViewCell) -> UIView {
+    guard let tableView = tableView else {fatalError()}
+
     let originalFrame = cell.frame
     cell.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: tableView.frame.width, height: originalFrame.height))
     let headerView = UIView(frame: cell.frame)
@@ -146,7 +148,7 @@ class StreamTableViewController: NotificationNavViewController {
 
   
   func logout() {
-    guard let data = data else {fatalError()}
+    guard let data = data, let tableView = tableView else {fatalError()}
     data.clearDefaults()
     self.data = nil
     self.sideMenuTableViewController = nil
@@ -232,7 +234,9 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction) {
-    self.tableView.hideLoading()
+    guard let tableView = tableView else {fatalError()}
+
+    tableView.hideLoading()
     print("UITVC: old sections: \(self.messages.count)")
     self.messages = messages
     
@@ -240,11 +244,11 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("UITVC: inserted sections: \(insertedSections)")
     print("UITVC: deleted sections: \(deletedSections)")
     
-    self.tableView.beginUpdates()
-    self.tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
-    self.tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
-    self.tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
-    self.tableView.endUpdates()
+    tableView.beginUpdates()
+    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
+    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
+    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
+    tableView.endUpdates()
     
     if let refresh = self.refreshControl  {
       if refresh.refreshing {
@@ -268,8 +272,8 @@ extension StreamTableViewController: StreamControllerDelegate {
     //TODO: only if the action is NOT refresh
     if userAction != .Refresh {
       if let lastIndexPath = insertedRows.last {
-        self.tableView.selectRowAtIndexPath(lastIndexPath, animated: true, scrollPosition: .Bottom)
-        self.tableView.deselectRowAtIndexPath(lastIndexPath, animated: true)
+        tableView.selectRowAtIndexPath(lastIndexPath, animated: true, scrollPosition: .Bottom)
+        tableView.deselectRowAtIndexPath(lastIndexPath, animated: true)
         self.setNavBarTitle(false, title: self.navBarTitle.title)
       }
     }

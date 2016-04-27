@@ -76,7 +76,7 @@ public class Object: RLMObjectBase {
 
     - see: Realm().add(_:)
     */
-    public required override init() {
+    public override required init() {
         super.init()
     }
 
@@ -129,6 +129,15 @@ public class Object: RLMObjectBase {
     public final var className: String { return "" }
     #endif
 
+    /**
+    WARNING: This is an internal helper method not intended for public use.
+    :nodoc:
+    */
+    public override class func objectUtilClass(isSwift: Bool) -> AnyClass {
+        return ObjectUtil.self
+    }
+
+
     // MARK: Object Customization
 
     /**
@@ -151,7 +160,7 @@ public class Object: RLMObjectBase {
 
     /**
     Return an array of property names for properties which should be indexed. Only supported
-    for string and int properties.
+    for strings, integers, booleans and NSDate properties.
 
     - returns: `Array` of property names to index.
     */
@@ -241,7 +250,7 @@ public class Object: RLMObjectBase {
     WARNING: This is an internal initializer not intended for public use.
     :nodoc:
     */
-    public override init(realm: RLMRealm, schema: RLMObjectSchema) {
+    public override required init(realm: RLMRealm, schema: RLMObjectSchema) {
         super.init(realm: realm, schema: schema)
     }
 
@@ -249,7 +258,7 @@ public class Object: RLMObjectBase {
     WARNING: This is an internal initializer not intended for public use.
     :nodoc:
     */
-    public override init(value: AnyObject, schema: RLMSchema) {
+    public override required init(value: AnyObject, schema: RLMSchema) {
         super.init(value: value, schema: schema)
     }
 
@@ -353,10 +362,11 @@ public class ObjectUtil: NSObject {
     // swiftlint:disable:next cyclomatic_complexity
     @objc private class func getOptionalProperties(object: AnyObject) -> NSDictionary {
         let children = Mirror(reflecting: object).children
-        return children.reduce([String: AnyObject]()) { (var properties: [String:AnyObject], prop: Mirror.Child) in
+        return children.reduce([String: AnyObject]()) { ( properties: [String:AnyObject], prop: Mirror.Child) in
             guard let name = prop.label else { return properties }
             let mirror = Mirror(reflecting: prop.value)
             let type = mirror.subjectType
+            var properties = properties
             if type is Optional<String>.Type || type is Optional<NSString>.Type {
                 properties[name] = Int(PropertyType.String.rawValue)
             } else if type is Optional<NSDate>.Type {

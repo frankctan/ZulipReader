@@ -1,21 +1,19 @@
 PODS:
-  - Alamofire (3.1.3)
-  - AMScrollingNavbar (2.0.9)
-  - Kingfisher (1.8.2)
-  - Locksmith (2.0.6)
-  - Realm (0.98.1):
-    - Realm/Headers (= 0.98.1)
-  - Realm/Headers (0.98.1)
-  - RealmSwift (0.98.1):
-    - Realm (= 0.98.1)
-  - SlackTextViewController (1.7.2)
+  - Alamofire (3.3.1)
+  - Kingfisher (2.3.1)
+  - Locksmith (2.0.8)
+  - Realm (0.99.1):
+    - Realm/Headers (= 0.99.1)
+  - Realm/Headers (0.99.1)
+  - RealmSwift (0.99.1):
+    - Realm (= 0.99.1)
+  - SlackTextViewController (1.9.2)
   - Spring (1.0.3)
-  - SwiftyJSON (2.3.1)
+  - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
-  - Alamofire (~> 3.0)
-  - AMScrollingNavbar (~> 2.0.1)
-  - Kingfisher (~> 1.8)
+  - Alamofire
+  - Kingfisher
   - Locksmith
   - RealmSwift
   - SlackTextViewController
@@ -34,18 +32,17 @@ CHECKOUT OPTIONS:
     :commit: 18d5c7b74489de8044e34767f856d1e574f0820e
     :git: https://github.com/MengTo/Spring.git
   SwiftyJSON:
-    :commit: a4cce2ec0bf31bfec2cf4cc7f1030a59a7bc95d2
+    :commit: 2a5b70f06001316d4fb54501edc70b4084705da0
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 SPEC CHECKSUMS:
-  Alamofire: 9f93b56389e48def9220dd57d1f44b1927229a5a
-  AMScrollingNavbar: 6ee57388f84b8f33f31a7944abf51b9afa16bafd
-  Kingfisher: b39315e9dbed7e8ffe73a9ca1be2ee006d1d57e4
-  Locksmith: 42ec3d535448e3c218f4342782b07a222b1acfd1
-  Realm: ca4a4122e939e228e10694fc49011386cb2ecb07
-  RealmSwift: 7d3c7033427816a2c3417ba0d004d694987e503a
-  SlackTextViewController: 1f4e8f68c156ef93de73fd422db2b8d5d5b0f4e7
+  Alamofire: 369bc67b6f5ac33ded3648d7bd21c5bfb91c2ecc
+  Kingfisher: 6d3fbada4829cbc7b89e883e8218c28afeb64e42
+  Locksmith: a8ed41ac4c06506ea8cb199d8ec8a8d3d108eb2a
+  Realm: 522a0cc8e1f8755ee56d7dc16ca0fc380d045766
+  RealmSwift: 1d9c4299ef5dbf575c5da09fc706ed726327cfa0
+  SlackTextViewController: bac3350ccc639bc446bb14cbd09da238f5e01f32
   Spring: 3f02b5dc3308572ef177b3cad0fa7bbc4b0706f7
-  SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
+  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
 COCOAPODS: 0.39.0

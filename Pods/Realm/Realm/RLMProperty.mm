@@ -57,9 +57,17 @@ BOOL RLMPropertyTypeIsNumeric(RLMPropertyType propertyType) {
         _optional = optional;
         [self setObjcCodeFromType];
         [self updateAccessors];
+        [self logWarningIfMixed];
     }
 
     return self;
+}
+
+- (void)logWarningIfMixed {
+    if (_type == RLMPropertyTypeAny) {
+        NSLog(@"WARNING: Property '%@' is declared as type 'id', which is a deprecated type. "
+              "Support for 'id' properties will be removed in a future release.", _name);
+    }
 }
 
 -(void)updateAccessors {
@@ -109,7 +117,7 @@ BOOL RLMPropertyTypeIsNumeric(RLMPropertyType propertyType) {
 }
 
 // determine RLMPropertyType from objc code - returns true if valid type was found/set
--(BOOL)setTypeFromRawType {
+- (BOOL)setTypeFromRawType {
     const char *code = _objcRawType.UTF8String;
     _objcType = *code;    // first char of type attr
 
@@ -162,8 +170,10 @@ BOOL RLMPropertyTypeIsNumeric(RLMPropertyType propertyType) {
                                                           encoding:NSUTF8StringEncoding];
 
                 Class cls = [RLMSchema classForString:_objectClassName];
-                if (!RLMIsObjectSubclass(cls)) {
-                    @throw RLMException(@"'%@' is not supported as an RLMArray object type. RLMArrays can only contain instances of RLMObject subclasses. See https://realm.io/docs/objc/latest/#to-many for more information.", self.objectClassName);
+                if (!cls) {
+                    @throw RLMException(@"Property '%@' is of type 'RLMArray<%@>' which is not a supported RLMArray object type. "
+                                        @"RLMArrays can only contain instances of RLMObject subclasses. "
+                                        @"See https://realm.io/docs/objc/latest/#to-many for more information.", _name, _objectClassName);
                 }
             }
             else if (strncmp(code, numberPrefix, numberPrefixLen) == 0) {
@@ -185,16 +195,16 @@ BOOL RLMPropertyTypeIsNumeric(RLMPropertyType propertyType) {
                     _type = RLMPropertyTypeBool;
                 }
                 else {
-                    @throw RLMException(@"'%@' is not supported as an NSNumber object type. "
+                    @throw RLMException(@"Property '%@' is of type 'NSNumber<%@>' which is not a supported NSNumber object type. "
                                         @"NSNumbers can only be RLMInt, RLMFloat, RLMDouble, and RLMBool at the moment. "
-                                        @"See https://realm.io/docs/objc/latest for more information.", numberType);
+                                        @"See https://realm.io/docs/objc/latest for more information.", _name, numberType);
                 }
             }
             else if (strcmp(code, "@\"NSNumber\"") == 0) {
-                @throw RLMException(@"NSNumber properties require a protocol defining the contained type - example: NSNumber<RLMInt>.");
+                @throw RLMException(@"Property '%@' requires a protocol defining the contained type - example: NSNumber<RLMInt>.", _name);
             }
             else if (strcmp(code, "@\"RLMArray\"") == 0) {
-                @throw RLMException(@"RLMArray properties require a protocol defining the contained type - example: RLMArray<Person>.");
+                @throw RLMException(@"Property '%@' requires a protocol defining the contained type - example: RLMArray<Person>.", _name);
             }
             else {
                 // for objects strip the quotes and @
@@ -202,8 +212,10 @@ BOOL RLMPropertyTypeIsNumeric(RLMPropertyType propertyType) {
 
                 // verify type
                 Class cls = [RLMSchema classForString:className];
-                if (!RLMIsObjectSubclass(cls)) {
-                    @throw RLMException(@"'%@' is not supported as an RLMObject property. All properties must be primitives, NSString, NSDate, NSData, RLMArray, or subclasses of RLMObject. See https://realm.io/docs/objc/latest/api/Classes/RLMObject.html for more information.", className);
+                if (!cls) {
+                    @throw RLMException(@"Property '%@' is declared as '%@', which is not a supported RLMObject property type. "
+                                        @"All properties must be primitives, NSString, NSDate, NSData, NSNumber, RLMArray, or subclasses of RLMObject. "
+                                        @"See https://realm.io/docs/objc/latest/api/Classes/RLMObject.html for more information.", _name, className);
                 }
 
                 _type = RLMPropertyTypeObject;
@@ -313,6 +325,8 @@ BOOL RLMPropertyTypeIsNumeric(RLMPropertyType propertyType) {
             // Don't throw if the property is a List/RealmOptional property because those types only
             // get reported to ObjC with Swift 1.2 and not 2+.
             throwForPropertyName(self.name);
+        } else {
+            [self logWarningIfMixed];
         }
     } else if (_objcType == 'c') {
         // Check if it's a BOOL or Int8 by trying to set it to 2 and seeing if
@@ -348,6 +362,7 @@ BOOL RLMPropertyTypeIsNumeric(RLMPropertyType propertyType) {
         @throw RLMException(@"Can't persist property '%@' with incompatible type. "
                              "Add to ignoredPropertyNames: method to ignore.", self.name);
     }
+    [self logWarningIfMixed];
 
     // update getter/setter names
     [self updateAccessors];

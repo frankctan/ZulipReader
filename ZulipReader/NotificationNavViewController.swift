@@ -8,7 +8,6 @@
 
 import Foundation
 import SlackTextViewController
-import AMScrollingNavbar
 
 enum Notification {
   case Error(errorMessage: String)
@@ -24,6 +23,7 @@ class NotificationNavViewController: SLKTextViewController {
   var blurEffectView = UIView()
   var inTransition = false
   var navBarTitle = NavBarTitle()
+  
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
@@ -75,7 +75,7 @@ class NotificationNavViewController: SLKTextViewController {
   
   func setNavBarTitle(scrollDownFlag: Bool, title: String) {
     //scrollDownButton or title needs to be different
-    guard scrollDownFlag != self.navBarTitle.scrollButtonHidden ||
+    guard scrollDownFlag != self.navBarTitle.showScrollButton ||
       title != self.navBarTitle.title else {return}
     
     let animation = CATransition()
@@ -90,11 +90,13 @@ class NotificationNavViewController: SLKTextViewController {
   
   func scrollToBottom() {
     //always scroll to bottom by calculating the indexpath of the last row
-    let section = self.tableView.numberOfSections - 1
-    let row = self.tableView.numberOfRowsInSection(section) - 1
+    guard let tableView = tableView else {fatalError()}
+
+    let section = tableView.numberOfSections - 1
+    let row = tableView.numberOfRowsInSection(section) - 1
     let indexPath = NSIndexPath(forRow: row, inSection: section)
-    self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .Bottom)
-    self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .Bottom)
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
     
     self.setNavBarTitle(false, title: self.navBarTitle.title)
   }
@@ -123,7 +125,15 @@ class NotificationNavViewController: SLKTextViewController {
     self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
   }
   
+  override func viewDidLayoutSubviews() {
+    guard let tableView = tableView, let navController = navigationController else {fatalError()}
+    let navHeight = navController.navigationBar.frame.height
+    let statusBarHeight = UIApplication.sharedApplication().statusBarFrame.height
+    tableView.contentInset = UIEdgeInsetsMake(navHeight + statusBarHeight, 0, 0, 0)
+  }
+  
   func tableViewSettings() {
+    guard let tableView = tableView else {fatalError()}
     tableView.alwaysBounceVertical = true
     tableView.bounces = true
     tableView.scrollsToTop = true
@@ -137,6 +147,7 @@ class NotificationNavViewController: SLKTextViewController {
   
   func textViewControllerSettings() {
     self.setTextInputbarHidden(true, animated: false)
+    self.registerPrefixesForAutoCompletion(["@", "#"])
     self.bounces = true
     self.shakeToClearEnabled = true
     self.keyboardPanningEnabled = true
@@ -144,21 +155,25 @@ class NotificationNavViewController: SLKTextViewController {
     self.textView.placeholder = "Compose your message here!"
     self.textView.placeholderColor = UIColor.lightGrayColor()
     self.textInputbar.autoHideRightButton = true
-    self.typingIndicatorView.canResignByTouch = true
+    
+    guard let typingIndicatorView = typingIndicatorView else {fatalError()}
+    typingIndicatorView.canResignByTouch = true
+    
     self.rightButton.setTitle("Send", forState: UIControlState.Normal)
   }
   
   override func scrollViewDidScroll(scrollView: UIScrollView) {
     //auto dismissal of navTitle notification icon
-    guard self.navBarTitle.titleButton.imageView?.hidden == false else {return}
+    guard self.navBarTitle.showScrollButton == true else {return}
+    guard let tableView = tableView else {fatalError()}
 
-    let position = self.tableView.contentOffset.y
-    let tableHeight = self.tableView.frame.height
+    let position = tableView.contentOffset.y
+    let tableHeight = tableView.frame.height
     
-    let section = self.tableView.numberOfSections - 1
-    let row = self.tableView.numberOfRowsInSection(section) - 1
+    let section = tableView.numberOfSections - 1
+    let row = tableView.numberOfRowsInSection(section) - 1
     let indexPath = NSIndexPath(forRow: row, inSection: section)
-    let rectForLastIndexPath = self.tableView.rectForRowAtIndexPath(indexPath)
+    let rectForLastIndexPath = tableView.rectForRowAtIndexPath(indexPath)
     
     if position + tableHeight > rectForLastIndexPath.origin.y + rectForLastIndexPath.height {
       print("position: \(position) + tableHeight: \(tableHeight) > originy: \(rectForLastIndexPath.origin.y) + rectForLastIndexPath: \(rectForLastIndexPath.height)")

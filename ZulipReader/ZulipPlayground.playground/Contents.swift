@@ -6,10 +6,10 @@ import SwiftyJSON
 
 //TODO:
 
-//clean up side menu ugliness
+
 //redo the pods
 //flash new messages once? - add all message id's to array if refresh/scroll up; if one of the messages shows up, flash visible new messages, clear out all messages from array
-
+//clean up side menu ugliness
 //make & hookup profile page - compromise with press user image for PM
 //display starred messages - not doing this
 //scroll logic of scrollDownIndicator

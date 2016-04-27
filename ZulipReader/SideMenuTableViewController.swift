@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AMScrollingNavbar
 
 protocol SideMenuDelegate: class {
   func sideMenuDidTouch(selection: String)

@@ -4,13 +4,14 @@ platform :ios, '8.0'
 use_frameworks!
 
 target 'ZulipReader' do
-  pod 'Alamofire', '~> 3.0'
+  pod 'Alamofire'
   pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git', :branch => 'swift2'
-  pod 'Kingfisher', '~> 1.8'
+  pod 'Kingfisher'
   pod 'SlackTextViewController'
   pod 'RealmSwift'
   pod 'Locksmith'
+
 end
 
 target 'ZulipReaderTests' do

@@ -210,7 +210,7 @@ class URLToMessageArray: NetworkOperation {
       }
     }
     do { try realm.commitWrite()} catch {fatalError()}
-    print("save path: \(realm.path)")
+    print("save path: \(realm.configuration.fileURL!)")
     print("URLToMessage: saved \(messageCounter) message(s)")
   }
   

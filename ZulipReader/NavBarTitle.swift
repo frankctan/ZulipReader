@@ -12,11 +12,11 @@ import Spring
 class NavBarTitle: UIView {
 
   @IBOutlet weak var titleButton: SpringButton!
-  var scrollButtonHidden: Bool = false
+  var showScrollButton: Bool = false
   var title: String = ""
   
   func configure(scrollDown: Bool, title: String) {
-    self.scrollButtonHidden = scrollDown
+    self.showScrollButton = scrollDown
     self.title = title
     
     if scrollDown {

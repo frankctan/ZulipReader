@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import AMScrollingNavbar
 
 @UIApplicationMain
 
@@ -29,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //Delete persisted files everytime app is launched
     //For v2, we can do a better job persisting messages instead of reloading every session
     do {
-      try NSFileManager.defaultManager().removeItemAtPath(Realm.Configuration.defaultConfiguration.path!)
+      try NSFileManager.defaultManager().removeItemAtURL(Realm.Configuration.defaultConfiguration.fileURL!)
     }
     catch {print("could not delete")}
     print("AppDelegate: deleted realm files")
