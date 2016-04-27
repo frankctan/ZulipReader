@@ -18,18 +18,21 @@ class SideMenuTableViewController: UITableViewController {
   weak var delegate: SideMenuDelegate?
   
   var titleCells = ["Private", "Mentioned", "Logout"]
-  var sectionTitles = ["GENERAL","STREAMS"]
+  var sectionTitles = ["General","Streams"]
   var subscriptions: [(String, String)]?
   
   override func viewDidLoad() {
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     tableView.registerNib(UINib(nibName: "SideMenuCell", bundle: nil), forCellReuseIdentifier: "sideCell")
     self.navigationController?.navigationBar.translucent = false
+    NSBundle.mainBundle().loadNibNamed("SideMenuTitle", owner: nil, options: nil)[0] as! SideMenuTitle
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     guard let navigationController = self.navigationController else {return}
+    
+    //a jenky way to ensure that text doesn't scroll all over the statusbar
     let navBarFrame = navigationController.navigationBar.frame
     let statusBarFrame = UIApplication.sharedApplication().statusBarFrame
     self.navigationController?.navigationBar.frame.origin.y = -navBarFrame.height + statusBarFrame.height
@@ -80,8 +83,18 @@ class SideMenuTableViewController: UITableViewController {
     delegate?.sideMenuDidTouch(selection)
   }
   
-  override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    return sectionTitles[section]
+//  override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//    return sectionTitles[section]
+//  }
+  
+  override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    let header = NSBundle.mainBundle().loadNibNamed("SideMenuTitle", owner: nil, options: nil)[0] as! SideMenuTitle
+    header.configure(sectionTitles[section])
+    return header
+  }
+  
+  override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return 30
   }
 }
 

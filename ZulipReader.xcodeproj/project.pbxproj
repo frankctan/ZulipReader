@@ -11,6 +11,8 @@
 		404A0D84BF29236BFE878D35 /* Pods_ZulipReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */; };
 		670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670295011C1B65E500314A04 /* StreamExtendedCell.swift */; };
 		67108EB31CD07B8A0004486A /* TextMunger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67108EB21CD07B8A0004486A /* TextMunger.swift */; };
+		67108EB51CD088910004486A /* SideMenuTitle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67108EB41CD088910004486A /* SideMenuTitle.xib */; };
+		67108EB71CD0889C0004486A /* SideMenuTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67108EB61CD0889C0004486A /* SideMenuTitle.swift */; };
 		67166ED81CC2D0EF002D0E12 /* NotificationNavViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */; };
 		67195EA61CA073C80079C4D5 /* URLToMessageArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */; };
 		673251751C0A5D85009A546C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673251741C0A5D85009A546C /* DataController.swift */; };
@@ -76,6 +78,8 @@
 		41DFA87206A5969EA51EB741 /* Pods_ZulipReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZulipReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		670295011C1B65E500314A04 /* StreamExtendedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamExtendedCell.swift; sourceTree = "<group>"; };
 		67108EB21CD07B8A0004486A /* TextMunger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextMunger.swift; sourceTree = "<group>"; };
+		67108EB41CD088910004486A /* SideMenuTitle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuTitle.xib; sourceTree = "<group>"; };
+		67108EB61CD0889C0004486A /* SideMenuTitle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuTitle.swift; sourceTree = "<group>"; };
 		67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationNavViewController.swift; sourceTree = "<group>"; };
 		67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLToMessageArray.swift; sourceTree = "<group>"; };
 		673251741C0A5D85009A546C /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
@@ -189,7 +193,9 @@
 			isa = PBXGroup;
 			children = (
 				67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */,
+				67108EB41CD088910004486A /* SideMenuTitle.xib */,
 				67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */,
+				67108EB61CD0889C0004486A /* SideMenuTitle.swift */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
 				67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */,
 				67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */,
@@ -421,6 +427,7 @@
 				678A6BE31C12279700AE091B /* SourceSansPro-ExtraLightIt-webfont.ttf in Resources */,
 				678A6BE51C12279700AE091B /* SourceSansPro-Light-webfont.ttf in Resources */,
 				678A6BE21C12279700AE091B /* SourceSansPro-ExtraLight-webfont.ttf in Resources */,
+				67108EB51CD088910004486A /* SideMenuTitle.xib in Resources */,
 				67A9DA8C1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib in Resources */,
 				67BE80151C890CC00004D544 /* SideMenuCell.xib in Resources */,
 				67A9DA861C1E14E400AEEF1B /* StreamHeaderNavCell.xib in Resources */,
@@ -523,6 +530,7 @@
 				67A9DA951C209D2300AEEF1B /* SWRevealViewController.m in Sources */,
 				67166ED81CC2D0EF002D0E12 /* NotificationNavViewController.swift in Sources */,
 				67A1A8B11C03B6BF00CCA40D /* StreamTableViewController.swift in Sources */,
+				67108EB71CD0889C0004486A /* SideMenuTitle.swift in Sources */,
 				67A9DA981C20ACBA00AEEF1B /* SideMenuTableViewController.swift in Sources */,
 				67D1F1B81BFA6AEA006F9468 /* AppDelegate.swift in Sources */,
 				674EDAD91C8746C300FCAE67 /* DataStructures.swift in Sources */,
