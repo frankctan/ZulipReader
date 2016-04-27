@@ -14,7 +14,7 @@ import SwiftyJSON
 public typealias Header = [String:String]
 
 enum Router: URLRequestConvertible {
-  static let baseURL = "https://api.zulip.com/v1"
+  static let baseURL = "https://www.zulip.com/api/v1"
   static var basicAuth: String?
   
   case Login(username: String, password: String)
