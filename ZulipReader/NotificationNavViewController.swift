@@ -89,6 +89,7 @@ class NotificationNavViewController: SLKTextViewController {
   }
   
   func scrollToBottom() {
+    //always scroll to bottom by calculating the indexpath of the last row
     let section = self.tableView.numberOfSections - 1
     let row = self.tableView.numberOfRowsInSection(section) - 1
     let indexPath = NSIndexPath(forRow: row, inSection: section)
@@ -148,6 +149,7 @@ class NotificationNavViewController: SLKTextViewController {
   }
   
   override func scrollViewDidScroll(scrollView: UIScrollView) {
+    //auto dismissal of navTitle notification icon
     guard self.navBarTitle.titleButton.imageView?.hidden == false else {return}
 
     let position = self.tableView.contentOffset.y

@@ -172,7 +172,13 @@ class StreamController {
           
         case .Success(_):
           //generic refresh action
-          self.refreshData()
+          if self.oldTableCells.flatten().isEmpty {
+            self.action.userAction = UserAction.Focus
+            self.loadStreamMessages(self.action)
+          }
+          else {
+            self.refreshData()
+          }
           
         case .Error(let boxedError):
           let error = boxedError.unbox
@@ -223,7 +229,10 @@ extension StreamController: URLToMessageArrayDelegate {
       
       guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 else {return}
   
-    default:
+      
+    case .Focus: break
+      
+    case .ScrollUp:
       guard !messages.isEmpty else {
         dispatch_async(dispatch_get_main_queue()){
           print("you can stop spinning now!")
@@ -295,7 +304,7 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
     //show/hide badge
     self.badgeControl(tableCells)
     
-    if insertedRows.isEmpty {
+    if insertedRows.isEmpty && userAction != UserAction.Focus {
       //The following statements run iff isLast = true
       dispatch_async(dispatch_get_main_queue()) {
         self.delegate?.didFetchMessages()
@@ -308,8 +317,35 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
     self.oldTableCells = tableCells
     print("TableCell Delegate: TC's to TableView")
     
-    //to mitigate race condition errors
+    //to mitigate race condition crashes
     self.queue.cancelRefreshQueue()
+    
+    //TODO: create standard cell to pass to didFetchMessages if messages are empty
+    //BEGIN DEFAULT TABLECELL
+    var defaultCell = TableCell()
+    var insertedSections = insertedSections
+    var insertedRows = insertedRows
+    var tableCells = tableCells
+    if userAction == UserAction.Focus && insertedRows.isEmpty {
+      insertedSections = NSMakeRange(0, 1)
+      insertedRows = [NSIndexPath(forRow: 0, inSection: 0)]
+      
+      defaultCell.cellType = CellTypes.ExtendedCell
+      defaultCell.type = self.action.narrow.type
+      let textString = "No messages found. Start a conversation!"
+      let attributedString = TextMunger.processMarkdown(textString)
+      defaultCell.attributedContent = attributedString
+      
+      if defaultCell.type == .Private {
+        defaultCell.privateFullName = Set(self.action.narrow.pmWith)
+      }
+      else {
+        defaultCell.display_recipient = Set(self.action.narrow.stream)
+        defaultCell.subject = self.action.narrow.subject!
+      }
+      tableCells = [[defaultCell]]
+    }
+    //END DEFAULT TABLECELL
     
     dispatch_async(dispatch_get_main_queue()) {
       self.delegate?.didFetchMessages(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, userAction: userAction)

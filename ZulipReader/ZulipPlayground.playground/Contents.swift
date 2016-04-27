@@ -6,12 +6,14 @@ import SwiftyJSON
 
 //TODO:
 
-//make & hookup profile page
-//star messages?
 //clean up side menu ugliness
 //redo the pods
-//scroll logic of scrollDownIndicator
+//flash new messages once? - add all message id's to array if refresh/scroll up; if one of the messages shows up, flash visible new messages, clear out all messages from array
 
+//make & hookup profile page - compromise with long press
+//display starred messages - not doing this
+//scroll logic of scrollDownIndicator
+//auto dismissal of scrollDownIndicator
 
 
 
@@ -139,6 +141,14 @@ let aStr: String? = "hello"
 let bStr: String = "hello"
 
 aStr == bStr
+
+var stupidArray = [[String]]()
+stupidArray.isEmpty
+
+stupidArray.count
+
+
+stupidArray.flatten().isEmpty
 
 
 

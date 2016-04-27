@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -22,11 +22,11 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rs2-dl-Dcq" id="jQC-lF-sDY">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="59.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="59"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="752" text="100w" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aKS-m6-HeY">
-                        <rect key="frame" x="274" y="4" width="38" height="22.5"/>
+                        <rect key="frame" x="274" y="4" width="38" height="23"/>
                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
@@ -34,11 +34,8 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aqC-mp-N5r" customClass="DesignableImageView" customModule="Spring">
                         <rect key="frame" x="5" y="4" width="40" height="40"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="50" id="Zo1-u0-LVB"/>
-                            <constraint firstAttribute="height" constant="50" id="aHu-kA-4rs"/>
                             <constraint firstAttribute="width" constant="40" id="cgb-A6-7j8"/>
                             <constraint firstAttribute="width" secondItem="aqC-mp-N5r" secondAttribute="height" multiplier="1:1" id="kSr-s3-Vf4"/>
-                            <constraint firstAttribute="width" constant="50" id="mqh-M9-mbl"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
@@ -48,30 +45,15 @@
                                 <real key="value" value="5"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="Zo1-u0-LVB"/>
-                                <exclude reference="aHu-kA-4rs"/>
-                                <exclude reference="mqh-M9-mbl"/>
-                            </mask>
-                        </variation>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Frank Tan (Fall 2015)" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PZw-IZ-CVX">
                         <rect key="frame" x="50" y="4" width="220" height="23"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="50" id="die-B8-JxD"/>
-                        </constraints>
                         <fontDescription key="fontDescription" name="SourceSansPro-Semibold" family="Source Sans Pro" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="die-B8-JxD"/>
-                            </mask>
-                        </variation>
                     </label>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" scrollEnabled="NO" editable="NO" text="Text" translatesAutoresizingMaskIntoConstraints="NO" id="se8-My-XVd" customClass="AutoTextView" customModule="Spring">
-                        <rect key="frame" x="50" y="31" width="262" height="19"/>
+                        <rect key="frame" x="50" y="31" width="262" height="18"/>
                         <accessibility key="accessibilityConfiguration">
                             <accessibilityTraits key="traits" notEnabled="YES"/>
                         </accessibility>
@@ -81,34 +63,18 @@
                     </textView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="se8-My-XVd" firstAttribute="leading" secondItem="jQC-lF-sDY" secondAttribute="leading" constant="8" id="1cE-cO-AaG"/>
                     <constraint firstAttribute="trailingMargin" secondItem="aKS-m6-HeY" secondAttribute="trailing" id="2T9-Fc-8iX"/>
-                    <constraint firstItem="se8-My-XVd" firstAttribute="leading" secondItem="PZw-IZ-CVX" secondAttribute="leading" id="5yr-Q9-GHb"/>
-                    <constraint firstAttribute="bottom" secondItem="aKS-m6-HeY" secondAttribute="bottom" constant="8" id="8fS-LO-UfG"/>
                     <constraint firstItem="se8-My-XVd" firstAttribute="trailing" secondItem="aKS-m6-HeY" secondAttribute="trailing" id="FAg-ZW-sUw"/>
                     <constraint firstItem="PZw-IZ-CVX" firstAttribute="leading" secondItem="aqC-mp-N5r" secondAttribute="trailing" constant="5" id="Gsk-ON-Myk"/>
                     <constraint firstItem="aqC-mp-N5r" firstAttribute="leading" secondItem="jQC-lF-sDY" secondAttribute="leading" constant="5" id="IKu-FD-3jy"/>
                     <constraint firstItem="aqC-mp-N5r" firstAttribute="top" secondItem="jQC-lF-sDY" secondAttribute="top" constant="4" id="NAA-pI-sE8"/>
-                    <constraint firstItem="se8-My-XVd" firstAttribute="top" secondItem="PZw-IZ-CVX" secondAttribute="bottom" constant="0.5" id="Ocd-uV-D3K"/>
                     <constraint firstItem="se8-My-XVd" firstAttribute="leading" secondItem="PZw-IZ-CVX" secondAttribute="leading" id="Pxg-kv-ycX"/>
                     <constraint firstItem="PZw-IZ-CVX" firstAttribute="top" secondItem="aqC-mp-N5r" secondAttribute="top" id="QAr-cl-riN"/>
                     <constraint firstItem="aKS-m6-HeY" firstAttribute="top" secondItem="aqC-mp-N5r" secondAttribute="top" id="Tnc-zE-gXt"/>
                     <constraint firstAttribute="bottom" secondItem="se8-My-XVd" secondAttribute="bottom" priority="900" constant="10" id="aLE-xF-ZVT"/>
                     <constraint firstItem="aKS-m6-HeY" firstAttribute="leading" secondItem="PZw-IZ-CVX" secondAttribute="trailing" constant="4" id="kcp-wl-RRK"/>
-                    <constraint firstItem="se8-My-XVd" firstAttribute="top" secondItem="jQC-lF-sDY" secondAttribute="top" constant="8" id="nRy-Au-0Q1"/>
                     <constraint firstItem="se8-My-XVd" firstAttribute="top" secondItem="PZw-IZ-CVX" secondAttribute="bottom" constant="4" id="qcv-8S-znx"/>
-                    <constraint firstAttribute="bottom" secondItem="se8-My-XVd" secondAttribute="bottom" constant="8" id="rsK-bO-tfq"/>
                 </constraints>
-                <variation key="default">
-                    <mask key="constraints">
-                        <exclude reference="1cE-cO-AaG"/>
-                        <exclude reference="5yr-Q9-GHb"/>
-                        <exclude reference="Ocd-uV-D3K"/>
-                        <exclude reference="nRy-Au-0Q1"/>
-                        <exclude reference="rsK-bO-tfq"/>
-                        <exclude reference="8fS-LO-UfG"/>
-                    </mask>
-                </variation>
             </tableViewCellContentView>
             <connections>
                 <outlet property="badgeImageView" destination="aqC-mp-N5r" id="t64-WB-1aB"/>

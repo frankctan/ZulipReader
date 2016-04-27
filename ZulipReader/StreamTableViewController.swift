@@ -44,7 +44,6 @@ class StreamTableViewController: NotificationNavViewController {
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
     self.loadData()
   }
   
@@ -136,6 +135,8 @@ class StreamTableViewController: NotificationNavViewController {
     switch message.cellType {
     case .StreamCell:
       cell = tableView.dequeueReusableCellWithIdentifier(message.cellType.string) as! StreamCell
+      let streamCell = cell as! StreamCell
+      streamCell.delegate = self
     case .ExtendedCell:
       cell = tableView.dequeueReusableCellWithIdentifier(message.cellType.string) as! StreamExtendedCell
     }
@@ -198,7 +199,6 @@ class StreamTableViewController: NotificationNavViewController {
   }
 }
 
-
 //MARK: NavBar Target
 extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
@@ -252,12 +252,6 @@ extension StreamTableViewController: StreamControllerDelegate {
       }
     }
     
-//    print("tableViewContentSize before recalc: \(self.tableView.contentSize.height)")
-//    //sizeThatFits drastically overestimates content height at first
-//    self.tableView.contentSize = self.tableView.sizeThatFits(CGSize(width: self.tableView.frame.width, height: tableView.contentSize.height * 10))
-//  
-//    print("after recalc: \(self.tableView.contentSize.height)")
-    
     //turn off network activity indicator
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     
@@ -279,8 +273,19 @@ extension StreamTableViewController: StreamControllerDelegate {
         self.setNavBarTitle(false, title: self.navBarTitle.title)
       }
     }
+  }
+}
+
+//MARK: StreamCellDelegate
+extension StreamTableViewController: StreamCellDelegate {
+  func userImageDidTouch(message: TableCell) {
+    print("in table view controller!")
+    state = .Subject
+    let pmWith = [message.sender_email]
+    let narrowString = "[[\"is\", \"private\"],[\"pm-with\",\"\(message.sender_email)\"]]"
+    let narrow = Narrow(narrowString: narrowString, pmWith: pmWith)
     
-    
+    self.prepareNarrow(narrow, navTitle: "PM")
   }
 }
 
