@@ -217,6 +217,7 @@ class StreamController {
     let tableCellsFromRealmOperation = self.tableCellsFromRealm(action, isLast: false)
     self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
   }
+  
 }
 
 //MARK: URLToMessagesArrayDelegate
@@ -225,7 +226,15 @@ extension StreamController: URLToMessageArrayDelegate {
     switch userAction {
     case .Refresh:
       guard !messages.isEmpty else {return}
+      
+      //Add message id's to refreshedMessagesId
+      let messageIds = messages.map {$0.id}
+      for id in messageIds {
+        self.refreshedMessageIds.insert(id)
+      }
+      
       self.shouldAddBadge(messages)
+      
       guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 else {return}
       
     case .Focus: break
@@ -247,22 +256,14 @@ extension StreamController: URLToMessageArrayDelegate {
   
   //add badge after refresh network request
   private func shouldAddBadge(messages: [Message]) {
-    
-    let refreshMessagesId = Set(messages.map {$0.id})
-    
-    //all refresh message id's are added into refreshMessageIds and removed when they are loaded into the tableview controller
-    for id in refreshMessagesId {
-      self.refreshedMessageIds.insert(id)
-    }
-    
-//    //we cheat a little by looking into the future to see whether or not these refreshed messages will be loaded into the current view
-//    let filteredMessages = NSArray(array: messages).filteredArrayUsingPredicate(self.action.narrow.predicate()) as! [Message]
-//    //messages soon to be loaded into the current view
-//    let filteredMessagesId = filteredMessages.map {$0.id}
-//    
-//    let unloadedMessageIds = refreshMessagesId.subtract(filteredMessagesId)
-//    
     guard !self.refreshedMessageIds.isEmpty else {return}
+    
+    //check if any of the newly refreshed messages will be added to the current narrow
+    //this prevents badge blinking when the refreshed messages are within the scope of the current narrow
+    let filteredRefresh = NSArray(array: messages).filteredArrayUsingPredicate(self.action.narrow.predicate())
+    let filteredRefreshIds = (filteredRefresh as! [Message]).map {$0.id}
+    
+    guard !self.refreshedMessageIds.subtract(filteredRefreshIds).isEmpty else {return}
     
     self.delegate?.setNotification(.Badge, show: true)
   }
@@ -274,7 +275,7 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
     
     self.loading = false
     
-    //show/hide badge
+    //show or hide badge as applicable
     self.badgeControl(tableCells)
     
     if insertedRows.isEmpty && userAction != UserAction.Focus {
@@ -330,6 +331,12 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
       dispatch_async(dispatch_get_main_queue()){
         print("MessagesArrayToTableCellArrayDelegate: badge - false")
         self.delegate?.setNotification(.Badge, show: false)
+      }
+    }
+    else {
+      dispatch_async(dispatch_get_main_queue()){
+        print("MessagesArrayToTableCellArrayDelegate: badge - false")
+        self.delegate?.setNotification(.Badge, show: true)
       }
     }
     

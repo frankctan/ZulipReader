@@ -8,6 +8,7 @@
 
 import Foundation
 
+//emojis and their unicode equivalent
 let REVERSE_EMOJI_HASH: [String: String] = [
 "\u{1F44D}"	:	   ":+1:",
 "\u{1F44E}"	:	   ":-1:",

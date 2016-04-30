@@ -42,6 +42,7 @@ class MessageArrayToTableCellArray: NSOperation {
     
     let narrowPredicate = action.narrow.predicate()
     let userAction = action.userAction
+    
     //returns predicate based on current table max and narrow min
     let idPredicate = minMaxPredicate()
     
@@ -52,21 +53,27 @@ class MessageArrayToTableCellArray: NSOperation {
       .map {$0})
     
     
-    //This second layer of filtering is necessary because Realm can't recognize "ALL"
-    //This approach is inefficient because we're not taking advantage of realm's lazy initiation...
+    //This second layer of filtering is necessary because Realm currently recognize "ALL" predicates
+    //This approach is inefficient because we're not taking advantage of realm's lazy initiation
+    
+    //allFilteredMessages = all messages that are predicate filtered
     let allFilteredMessages = realmMessages.filteredArrayUsingPredicate(narrowPredicate) as! [Message]
     
     let flatOldTableCells = oldTableCells.flatten()
+    
+    //we only want to load messageThreshold # of messages at a time
     //messageThreshold triggers a network call if thres isn't met
-    //Focus case included for clarity
-    var messageThreshold = 30
+    var messageThreshold = 50
     switch userAction {
-    case .Focus:
-      messageThreshold = 30
+    case .Focus: break
+      
     case .ScrollUp:
       messageThreshold += flatOldTableCells.count
+      
     case .Refresh:
       let lastOldTableCellId = flatOldTableCells.last!.id
+      
+      //# of old messages + # of new messages
       messageThreshold = flatOldTableCells.count +
         allFilteredMessages.reduce(0, combine: {total, msg in
         if msg.id > lastOldTableCellId {
@@ -76,23 +83,28 @@ class MessageArrayToTableCellArray: NSOperation {
       })
     }
     
+    //these are sprinkled throughout because queue.canceloperations doesn't automatically stop nsoperations
     if self.cancelled {
       return
     }
     
     if userAction == .Refresh && messageThreshold == flatOldTableCells.count {
       print("TCOp: Refresh - no new msgs in current narrow")
-      //TODO: call delegate to add badge to home button
       return
     }
     
+    //this is the first time this NSOperation is called and we don't currently have enough messages saved in realm to meet the messageThreshold
     if isLast == false && allFilteredMessages.count < messageThreshold {
       self.delegate?.realmNeedsMoreMessages()
       print("TCOp: MessageArrayToTableCellArray: less than \(messageThreshold) msgs")
       return
     }
     
+    //following code executes if NSOperation is called a second time(isLast = true) and we still can't meet messageThreshold or we have enough messages stored
+    
     print("TCOp: computing realm messages")
+    
+    //we determine which messages to load into the tableView by adding messages to an array until messageThreshold messages are added
     let allReversedMessages = Array(allFilteredMessages.reverse())
     var _tableCellMessages = [Message]()
     for counter in 0 ..< min(messageThreshold, allFilteredMessages.count) {
@@ -111,6 +123,7 @@ class MessageArrayToTableCellArray: NSOperation {
       return
     }
 
+    //figure out what changed in the tableview
     self.tableCells = realmTableCells
     (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
     
@@ -118,10 +131,13 @@ class MessageArrayToTableCellArray: NSOperation {
       return
     }
     
+    //return to stream controller with updated information
     self.delegate?.messageToTableCellArrayDidFinish(tableCells, deletedSections: deletedSections, insertedSections: insertedSections, insertedRows: insertedRows, userAction: self.action.userAction)
   }
   
   func minMaxPredicate() -> NSPredicate {
+    //creates predicate based on recorded contiguous blocks of messages
+    
     //min & max message indices are stored in NSUserDefaults
     let defaults = NSUserDefaults.standardUserDefaults()
     
@@ -155,11 +171,13 @@ class MessageArrayToTableCellArray: NSOperation {
     
     switch action {
     case .Focus:
+      //delete all old messages, insert all new messages
       deletedSections = NSMakeRange(0, oldTableCells.count)
       insertedSections = NSMakeRange(0, realmTableCells.count)
       insertedRows = flatRealmTableCells.map {NSIndexPath(forRow: $0.row, inSection: $0.section)}
       
     case .ScrollUp:
+      //don't delete any messages, insert all new messages at the beginning
       let oldTableCellsId = self.oldTableCells.flatMap {$0}.map {$0.id}
       insertedSections = NSMakeRange(0, realmTableCells.count - oldTableCells.count)
       for section in 0...insertedSections.length {
@@ -171,6 +189,7 @@ class MessageArrayToTableCellArray: NSOperation {
       }
       
     case .Refresh:
+      //don't delete any messages, insert all new messages at the end
       let flatOldTableCells = self.oldTableCells.flatMap {$0}
       let oldTableCellsId = flatOldTableCells.map {$0.id}
       guard let lastOldTableCell = flatOldTableCells.last else {break}
@@ -191,8 +210,6 @@ class MessageArrayToTableCellArray: NSOperation {
       }
     }
     
-    //TODO: Add a check to verify that deleted/inserted Sections and insertedRows matches the number of messages that should appear. If not, action = .Focus to force a complete recalculation
-    
     print("TCOp: action: \(action)")
     print("TCOp: deletedSections: \(deletedSections)")
     print("TCOp: insertedSections: \(insertedSections)")
@@ -201,6 +218,7 @@ class MessageArrayToTableCellArray: NSOperation {
   }
   
   private func messageToTableCell(messages: [Message]) -> [[TableCell]] {
+    //converts database type Message into tableView type TableCell
     var previous = TableCell()
     var result = [[TableCell]()]
     var sectionCounter = 0

@@ -13,6 +13,7 @@ import SwiftyJSON
 
 public typealias Header = [String:String]
 
+//allows private servers
 var baseURL: String {
 get {
   if let url = NSUserDefaults.standardUserDefaults().valueForKey("domain") {
@@ -26,6 +27,7 @@ enum Router: URLRequestConvertible {
 
   static var basicAuth: String?
   
+  //endpoints below! Adapted from Alamofire github page
   case Login(username: String, password: String)
   case Register
   case GetSubscriptions

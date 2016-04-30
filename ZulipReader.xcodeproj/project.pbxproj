@@ -58,7 +58,6 @@
 		67D1F1BF1BFA6AEA006F9468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */; };
 		67D1F1C21BFA6AEA006F9468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */; };
 		67D1F1CD1BFA6AEA006F9468 /* ZulipReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */; };
-		67DE8D301CADA48B00178DFD /* MessageMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67DE8D2F1CADA48B00178DFD /* MessageMarker.swift */; };
 		67F9565A1C6D3B3100A2EB85 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F956591C6D3B3100A2EB85 /* Subscription.swift */; };
 		67FFF1C31CC9DA4100447E6C /* NavBarTitle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */; };
 		67FFF1C51CC9E21400447E6C /* NavBarTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */; };
@@ -132,7 +131,6 @@
 		67D1F1C81BFA6AEA006F9468 /* ZulipReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZulipReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZulipReaderTests.swift; sourceTree = "<group>"; };
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		67DE8D2F1CADA48B00178DFD /* MessageMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageMarker.swift; sourceTree = "<group>"; };
 		67F956591C6D3B3100A2EB85 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NavBarTitle.xib; sourceTree = "<group>"; };
 		67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavBarTitle.swift; sourceTree = "<group>"; };
@@ -254,7 +252,6 @@
 			isa = PBXGroup;
 			children = (
 				6785E7A31C6D05CD008ED151 /* Message.swift */,
-				67DE8D2F1CADA48B00178DFD /* MessageMarker.swift */,
 				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
 			);
 			name = Realm;
@@ -514,7 +511,6 @@
 				677F6AEF1C752D04005EB84E /* Futures.swift in Sources */,
 				673251751C0A5D85009A546C /* DataController.swift in Sources */,
 				6785E7A41C6D05CD008ED151 /* Message.swift in Sources */,
-				67DE8D301CADA48B00178DFD /* MessageMarker.swift in Sources */,
 				67F9565A1C6D3B3100A2EB85 /* Subscription.swift in Sources */,
 				67B91B971CA33F0800C87409 /* RegistrationController.swift in Sources */,
 				670295021C1B65E500314A04 /* StreamExtendedCell.swift in Sources */,

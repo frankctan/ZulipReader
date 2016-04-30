@@ -43,7 +43,7 @@
                             <action selector="subjectButtonDidTouch:" destination="iue-8K-Afo" eventType="touchUpInside" id="TeH-MC-wVm"/>
                         </connections>
                     </button>
-                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="800" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IFE-ha-cyG" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
+                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="800" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IFE-ha-cyG" userLabel="Stream Button" customClass="DesignableButton" customModule="Spring">
                         <rect key="frame" x="0.0" y="-2" width="64" height="27"/>
                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                         <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="9" maxY="0.0"/>

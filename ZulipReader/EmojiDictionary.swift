@@ -8,9 +8,7 @@
 
 import Foundation
 
-//<p><img alt=":wrench:" class="emoji" src="static/third/gemoji/images/emoji/wrench.png" title=":wrench:"> <br>
-//<img alt=":octopus:" class="emoji" src="static/third/gemoji/images/emoji/octopus.png" title=":octopus:"> </p>
-
+//emojis and their unicode equivalent
 let EMOJI_HASH: [String: String] = [
   ":+1:"                                : "\u{1F44D}",
   ":-1:"                                : "\u{1F44E}",

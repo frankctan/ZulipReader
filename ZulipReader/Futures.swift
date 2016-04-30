@@ -10,6 +10,7 @@ import Alamofire
 import SwiftyJSON
 
 
+//adapted from JaviSoto's SwiftSummit Future's lecture
 public enum ZulipErrorDomain: ErrorType {
   case ZulipRequestFailure(message: String)
   case NetworkRequestFailure

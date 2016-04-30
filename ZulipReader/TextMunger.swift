@@ -9,6 +9,7 @@
 import Foundation
 
 class TextMunger {
+  //loose translation from the original Zulip iOS project in objc
   class func processMarkdown(text: String) -> NSAttributedString! {
     //Swift adds an extra "\n" to paragraph tags so we replace with span.
     var text = text.stringByReplacingOccurrencesOfString("<p>", withString: "<span>")

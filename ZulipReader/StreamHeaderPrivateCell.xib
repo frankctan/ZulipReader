@@ -16,10 +16,10 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="27"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" contentMode="center" tableViewCell="0rv-GH-QlA" id="y90-Ec-sE7">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="26"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="26.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vHo-JJ-LVg" userLabel="privateButton" customClass="DesignableButton" customModule="Spring">
+                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vHo-JJ-LVg" userLabel="privateButton" customClass="DesignableButton" customModule="Spring">
                         <rect key="frame" x="0.0" y="0.0" width="64" height="27"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>

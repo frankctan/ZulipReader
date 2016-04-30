@@ -24,13 +24,16 @@ class StreamTableViewController: NotificationNavViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    self.viewDidLoadSettings()
+  }
+  
+  func viewDidLoadSettings() {
     state = .Home
     
     self.data = StreamController()
     self.sideMenuTableViewController = SideMenuTableViewController()
     
-    //optional so streamController can be deallocated on logout
+    //optional type so streamController can be deallocated on logout
     guard let data = data else {fatalError()}
     
     //Set delegates
@@ -47,6 +50,7 @@ class StreamTableViewController: NotificationNavViewController {
   }
   
   func loadData() {
+    //slack textview controller makes tableView an optional type
     guard let data = data, let tableView = tableView else {fatalError()}
 
     if !data.isLoggedIn() {
@@ -147,6 +151,7 @@ class StreamTableViewController: NotificationNavViewController {
   }
 
   func logout() {
+    //clear all the data
     guard let data = data, let tableView = tableView else {fatalError()}
     data.clearData()
     self.data = nil
@@ -155,10 +160,11 @@ class StreamTableViewController: NotificationNavViewController {
     self.state = .Home
     self.messages = [[TableCell]]()
     self.action = Action()
-    tableView.reloadData()
     
-    self.viewDidLoad()
-    self.viewDidAppear(true)
+    //reload the controller
+    tableView.reloadData()
+    self.viewDidLoadSettings()
+    self.loadData()
   }
   
   func focusAction(narrow: Narrow) {
@@ -205,6 +211,10 @@ extension StreamTableViewController {
   func homeButtonDidTouch(sender: AnyObject) {
     state = .Home
     let narrow = Narrow()
+    
+    //just to be absolutely sure that badge is removed when we're on the main view
+    self.setNotification(.Badge, show: false)
+    
     self.prepareNarrow(narrow, navTitle: "Stream")
   }
 }
@@ -244,9 +254,9 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("UITVC: deleted sections: \(deletedSections)")
     
     tableView.beginUpdates()
-    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .Automatic)
-    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .Automatic)
-    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .Automatic)
+    tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
+    tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
+    tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
     tableView.endUpdates()
     
     if let refresh = self.refreshControl  {
@@ -258,12 +268,11 @@ extension StreamTableViewController: StreamControllerDelegate {
     //turn off network activity indicator
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     
-    //display keyboard if narrowed
     switch self.state {
     case .Subject:
-      self.setTextInputbarHidden(false, animated: false)
+      self.setTextInputbarHidden(false, animated: true)
     default:
-      self.setTextInputbarHidden(true, animated: false)
+      self.setTextInputbarHidden(true, animated: true)
     }
     
     //TODO: only if the action is NOT refresh
@@ -274,7 +283,6 @@ extension StreamTableViewController: StreamControllerDelegate {
         self.setNavBarTitle(false, title: self.navBarTitle.title)
       }
     }
-    
     self.transitionToBlur(false)
   }
 }
