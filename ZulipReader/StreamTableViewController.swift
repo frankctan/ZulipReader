@@ -146,10 +146,9 @@ class StreamTableViewController: NotificationNavViewController {
     return cell
   }
 
-  
   func logout() {
     guard let data = data, let tableView = tableView else {fatalError()}
-    data.clearDefaults()
+    data.clearData()
     self.data = nil
     self.sideMenuTableViewController = nil
     self.refreshControl = nil
@@ -262,21 +261,21 @@ extension StreamTableViewController: StreamControllerDelegate {
     //display keyboard if narrowed
     switch self.state {
     case .Subject:
-      self.setTextInputbarHidden(false, animated: true)
+      self.setTextInputbarHidden(false, animated: false)
     default:
-      self.setTextInputbarHidden(true, animated: true)
+      self.setTextInputbarHidden(true, animated: false)
     }
-    
-    self.transitionToBlur(false)
     
     //TODO: only if the action is NOT refresh
     if userAction != .Refresh {
       if let lastIndexPath = insertedRows.last {
-        tableView.selectRowAtIndexPath(lastIndexPath, animated: true, scrollPosition: .Bottom)
-        tableView.deselectRowAtIndexPath(lastIndexPath, animated: true)
+        tableView.selectRowAtIndexPath(lastIndexPath, animated: false, scrollPosition: .Bottom)
+        tableView.deselectRowAtIndexPath(lastIndexPath, animated: false)
         self.setNavBarTitle(false, title: self.navBarTitle.title)
       }
     }
+    
+    self.transitionToBlur(false)
   }
 }
 

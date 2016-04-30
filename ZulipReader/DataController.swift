@@ -13,8 +13,17 @@ import SwiftyJSON
 
 public typealias Header = [String:String]
 
+var baseURL: String {
+get {
+  if let url = NSUserDefaults.standardUserDefaults().valueForKey("domain") {
+    return url as! String + "/api/v1"
+  }
+  return "https://www.zulip.com"
+}
+}
+
 enum Router: URLRequestConvertible {
-  static let baseURL = "https://www.zulip.com/api/v1"
+
   static var basicAuth: String?
   
   case Login(username: String, password: String)
@@ -71,7 +80,7 @@ enum Router: URLRequestConvertible {
       }
     }()
     
-    let URL = NSURL(string: Router.baseURL)!
+    let URL = NSURL(string: baseURL)!
     let URLRequest = NSMutableURLRequest(URL: URL.URLByAppendingPathComponent(result.path))
     URLRequest.HTTPMethod = method.rawValue
     

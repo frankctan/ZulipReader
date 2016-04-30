@@ -138,7 +138,7 @@ for indexPath in indexPaths {
 
 let aStr: String? = "hello"
 
-let bStr: String = "hello"
+var bStr: String = "hello"
 
 aStr == bStr
 
@@ -149,6 +149,20 @@ stupidArray.count
 
 
 stupidArray.flatten().isEmpty
+
+
+enum Ugh {
+  static var value: String {
+    return bStr
+  }
+}
+
+
+bStr = "sick"
+
+Ugh.value
+
+
 
 
 

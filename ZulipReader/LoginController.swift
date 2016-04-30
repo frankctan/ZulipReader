@@ -19,7 +19,14 @@ class LoginController {
   
   weak var delegate: LoginControllerDelegate?
   
-  func login(username: String, password: String) {
+  func login(username: String, password: String, domain: String?) {
+    //TODO: login to hard coded demo creds here -
+    //TODO: test what happens with empty streams!
+    
+    if let domain = domain {
+      NSUserDefaults.standardUserDefaults().setValue(domain, forKey: "domain")
+    }
+    
     fetchSecretKey(username, password: password).start {[weak self] result in
       guard let controller = self, let delegate = controller.delegate else {fatalError()}
       switch result {
