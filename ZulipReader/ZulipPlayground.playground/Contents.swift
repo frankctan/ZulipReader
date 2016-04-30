@@ -16,10 +16,6 @@ import SwiftyJSON
 //auto dismissal of scrollDownIndicator
 
 
-
-
-
-
 //preferably swipe left to PM / star? How to star? - this is just setting a flag...
 //profile page
 //test for network failure! - won't narrow with <30 messages if there's no network. Which is okay... just flash error on the title thing

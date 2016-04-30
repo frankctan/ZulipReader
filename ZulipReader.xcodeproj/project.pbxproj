@@ -177,6 +177,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6723869C1CD56D600020D741 /* Data Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				673251761C0A7154009A546C /* StreamController.swift */,
+				67B91B961CA33F0800C87409 /* RegistrationController.swift */,
+				673251741C0A5D85009A546C /* DataController.swift */,
+			);
+			name = "Data Controllers";
+			sourceTree = "<group>";
+		};
 		678A6BEA1C1227AD00AE091B /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -262,7 +272,6 @@
 			children = (
 				67C312831CC8381C00F665C2 /* EmojiDictionary.swift */,
 				67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */,
-				673251741C0A5D85009A546C /* DataController.swift */,
 				67108EB21CD07B8A0004486A /* TextMunger.swift */,
 				677F6AEE1C752D04005EB84E /* Futures.swift */,
 				678A6BB61C10EBA200AE091B /* TableCell.swift */,
@@ -311,8 +320,7 @@
 				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
-				673251761C0A7154009A546C /* StreamController.swift */,
-				67B91B961CA33F0800C87409 /* RegistrationController.swift */,
+				6723869C1CD56D600020D741 /* Data Controllers */,
 				67AA647C1CCFC4A500B7726A /* NSOperation */,
 				67C582B61C8B5B3A005D0C47 /* Public */,
 				67C582B51C8B5AD8005D0C47 /* Realm */,
