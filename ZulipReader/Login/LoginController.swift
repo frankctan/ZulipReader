@@ -1,5 +1,5 @@
 //
-//  LoginController
+//  LoginController.swift
 //  ZulipReader
 //
 //  Created by Frank Tan on 11/18/15.

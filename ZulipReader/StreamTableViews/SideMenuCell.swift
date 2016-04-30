@@ -1,5 +1,5 @@
 //
-//  SideMenuCellTableViewCell.swift
+//  SideMenuCell.swift
 //  ZulipReader
 //
 //  Created by Frank Tan on 12/15/15.

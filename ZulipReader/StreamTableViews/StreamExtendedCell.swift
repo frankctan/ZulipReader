@@ -1,5 +1,5 @@
 //
-//  StreamTableViewExtendedCell.swift
+//  StreamExtendedCell.swift
 //  ZulipReader
 //
 //  Created by Frank Tan on 12/11/15.

@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '531FE02CAC43ADFFC0D10699'
+               BlueprintIdentifier = '336E1896159EE2D711E38C2C'
                BlueprintName = 'Pods-ZulipReader'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'Pods_ZulipReader.framework'>

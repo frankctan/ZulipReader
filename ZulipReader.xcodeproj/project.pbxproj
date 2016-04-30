@@ -118,9 +118,8 @@
 		67B91B961CA33F0800C87409 /* RegistrationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
 		67B91B981CA3595900C87409 /* NetworkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
 		67BE80141C890CC00004D544 /* SideMenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideMenuCell.xib; sourceTree = "<group>"; };
-		67C312821CC82F1000F665C2 /* ZulipPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = ZulipPlayground.playground; path = ZulipReader/ZulipPlayground.playground; sourceTree = "<group>"; };
 		67C312831CC8381C00F665C2 /* EmojiDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiDictionary.swift; sourceTree = "<group>"; };
-		67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReverseEmojiDictionary.swift; path = ../ReverseEmojiDictionary.swift; sourceTree = "<group>"; };
+		67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReverseEmojiDictionary.swift; sourceTree = "<group>"; };
 		67C582B01C8B452E005D0C47 /* LoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginView.xib; sourceTree = "<group>"; };
 		67D1F1B41BFA6AEA006F9468 /* ZulipReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZulipReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -180,11 +179,11 @@
 		6723869C1CD56D600020D741 /* Data Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				673251761C0A7154009A546C /* StreamController.swift */,
-				67B91B961CA33F0800C87409 /* RegistrationController.swift */,
 				673251741C0A5D85009A546C /* DataController.swift */,
+				67B91B961CA33F0800C87409 /* RegistrationController.swift */,
+				673251761C0A7154009A546C /* StreamController.swift */,
 			);
-			name = "Data Controllers";
+			path = "Data Controllers";
 			sourceTree = "<group>";
 		};
 		678A6BEA1C1227AD00AE091B /* Fonts */ = {
@@ -203,40 +202,40 @@
 				678A6BDC1C12279700AE091B /* SourceSansPro-Semibold-webfont.ttf */,
 				678A6BDD1C12279700AE091B /* SourceSansPro-SemiboldIt-webfont.ttf */,
 			);
-			name = Fonts;
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		67A9DA8D1C1F544700AEEF1B /* StreamTableViews */ = {
 			isa = PBXGroup;
 			children = (
-				67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */,
-				67108EB61CD0889C0004486A /* SideMenuTitle.swift */,
-				67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */,
-				67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */,
-				678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */,
-				67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */,
-				670295011C1B65E500314A04 /* StreamExtendedCell.swift */,
-				6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */,
-				67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */,
-				67108EB41CD088910004486A /* SideMenuTitle.xib */,
-				67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */,
-				67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */,
-				67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */,
-				67A9DA851C1E14E400AEEF1B /* StreamHeaderNavCell.xib */,
-				67BE80141C890CC00004D544 /* SideMenuCell.xib */,
 				67D1F1C01BFA6AEA006F9468 /* LaunchScreen.storyboard */,
+				67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */,
+				67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */,
+				67A9DA991C20D81900AEEF1B /* SideMenuCell.swift */,
+				67BE80141C890CC00004D544 /* SideMenuCell.xib */,
+				67108EB61CD0889C0004486A /* SideMenuTitle.swift */,
+				67108EB41CD088910004486A /* SideMenuTitle.xib */,
+				67A1A8AE1C03AC2F00CCA40D /* StreamCell.swift */,
+				67A9DA831C1E0F5800AEEF1B /* StreamCell.xib */,
+				670295011C1B65E500314A04 /* StreamExtendedCell.swift */,
+				67A9DA871C1E1C5100AEEF1B /* StreamExtendedCell.xib */,
+				678A6BB41C0FA1E100AE091B /* StreamHeaderNavCell.swift */,
+				67A9DA851C1E14E400AEEF1B /* StreamHeaderNavCell.xib */,
+				67A9DA891C1E934400AEEF1B /* StreamHeaderPrivateCell.swift */,
+				67A9DA8B1C1E93CC00AEEF1B /* StreamHeaderPrivateCell.xib */,
+				6788F2AE1C7BCD5800AC1D71 /* UITableViewCellExtension.swift */,
 			);
-			name = StreamTableViews;
+			path = StreamTableViews;
 			sourceTree = "<group>";
 		};
 		67A9DA8E1C1F546600AEEF1B /* Login */ = {
 			isa = PBXGroup;
 			children = (
 				676C98441BFD69360042CB26 /* LoginController.swift */,
-				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
 				67C582B01C8B452E005D0C47 /* LoginView.xib */,
+				67D1F1B91BFA6AEA006F9468 /* LoginViewController.swift */,
 			);
-			name = Login;
+			path = Login;
 			sourceTree = "<group>";
 		};
 		67A9DA961C209D4600AEEF1B /* SWRevealViewController */ = {
@@ -245,17 +244,17 @@
 				67A9DA931C209D2300AEEF1B /* SWRevealViewController.h */,
 				67A9DA941C209D2300AEEF1B /* SWRevealViewController.m */,
 			);
-			name = SWRevealViewController;
+			path = SWRevealViewController;
 			sourceTree = "<group>";
 		};
 		67AA647C1CCFC4A500B7726A /* NSOperation */ = {
 			isa = PBXGroup;
 			children = (
 				675883351CA1D9FF006EC2D0 /* MessageArrayToTableCellArray.swift */,
-				67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */,
 				67B91B981CA3595900C87409 /* NetworkOperation.swift */,
+				67195EA51CA073C80079C4D5 /* URLToMessageArray.swift */,
 			);
-			name = NSOperation;
+			path = NSOperation;
 			sourceTree = "<group>";
 		};
 		67C582B51C8B5AD8005D0C47 /* Realm */ = {
@@ -264,43 +263,42 @@
 				6785E7A31C6D05CD008ED151 /* Message.swift */,
 				67F956591C6D3B3100A2EB85 /* Subscription.swift */,
 			);
-			name = Realm;
+			path = Realm;
 			sourceTree = "<group>";
 		};
 		67C582B61C8B5B3A005D0C47 /* Public */ = {
 			isa = PBXGroup;
 			children = (
-				67C312831CC8381C00F665C2 /* EmojiDictionary.swift */,
-				67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */,
-				67108EB21CD07B8A0004486A /* TextMunger.swift */,
-				677F6AEE1C752D04005EB84E /* Futures.swift */,
-				678A6BB61C10EBA200AE091B /* TableCell.swift */,
 				674EDAD81C8746C300FCAE67 /* DataStructures.swift */,
+				67C312831CC8381C00F665C2 /* EmojiDictionary.swift */,
+				677F6AEE1C752D04005EB84E /* Futures.swift */,
+				67C312871CC8AF7B00F665C2 /* ReverseEmojiDictionary.swift */,
+				678A6BB61C10EBA200AE091B /* TableCell.swift */,
+				67108EB21CD07B8A0004486A /* TextMunger.swift */,
 			);
-			name = Public;
+			path = Public;
 			sourceTree = "<group>";
 		};
 		67C582B71C8B5B84005D0C47 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				678A6BEA1C1227AD00AE091B /* Fonts */,
+				67A9DA961C209D4600AEEF1B /* SWRevealViewController */,
+				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
 				67D1F1C31BFA6AEA006F9468 /* Info.plist */,
 				67A9DA7E1C1CCED900AEEF1B /* ZulipReader-Bridging-Header.h */,
-				67D1F1BE1BFA6AEA006F9468 /* Assets.xcassets */,
-				67A9DA961C209D4600AEEF1B /* SWRevealViewController */,
-				678A6BEA1C1227AD00AE091B /* Fonts */,
 			);
-			name = Misc;
+			path = Misc;
 			sourceTree = "<group>";
 		};
 		67D1F1AB1BFA6AEA006F9468 = {
 			isa = PBXGroup;
 			children = (
-				67C312821CC82F1000F665C2 /* ZulipPlayground.playground */,
 				67D1F1B61BFA6AEA006F9468 /* ZulipReader */,
-				67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */,
-				67D1F1B51BFA6AEA006F9468 /* Products */,
 				5C8E98633BCDDCEFAEEC1B78 /* Frameworks */,
 				35CF3FA1758E3BD7487D2435 /* Pods */,
+				67D1F1B51BFA6AEA006F9468 /* Products */,
+				67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -317,16 +315,16 @@
 			isa = PBXGroup;
 			children = (
 				67D1F1B71BFA6AEA006F9468 /* AppDelegate.swift */,
-				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				67166ED71CC2D0EF002D0E12 /* NotificationNavViewController.swift */,
 				67A9DA971C20ACBA00AEEF1B /* SideMenuTableViewController.swift */,
+				67A1A8B01C03B6BF00CCA40D /* StreamTableViewController.swift */,
 				6723869C1CD56D600020D741 /* Data Controllers */,
+				67A9DA8E1C1F546600AEEF1B /* Login */,
+				67C582B71C8B5B84005D0C47 /* Misc */,
 				67AA647C1CCFC4A500B7726A /* NSOperation */,
 				67C582B61C8B5B3A005D0C47 /* Public */,
 				67C582B51C8B5AD8005D0C47 /* Realm */,
-				67A9DA8E1C1F546600AEEF1B /* Login */,
 				67A9DA8D1C1F544700AEEF1B /* StreamTableViews */,
-				67C582B71C8B5B84005D0C47 /* Misc */,
 			);
 			path = ZulipReader;
 			sourceTree = "<group>";
@@ -334,8 +332,8 @@
 		67D1F1CB1BFA6AEA006F9468 /* ZulipReaderTests */ = {
 			isa = PBXGroup;
 			children = (
-				67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */,
 				67D1F1CE1BFA6AEA006F9468 /* Info.plist */,
+				67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */,
 			);
 			path = ZulipReaderTests;
 			sourceTree = "<group>";
@@ -570,6 +568,7 @@
 				67D1F1C11BFA6AEA006F9468 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -615,6 +614,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/Misc/Zulip-Reader-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -653,6 +653,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/Misc/Zulip-Reader-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -666,11 +667,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				INFOPLIST_FILE = ZulipReader/Info.plist;
+				INFOPLIST_FILE = ZulipReader/Misc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.ZulipReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/ZulipReader-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/Misc/ZulipReader-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -683,11 +684,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Frank Tan (XPHUJ78MCR)";
-				INFOPLIST_FILE = ZulipReader/Info.plist;
+				INFOPLIST_FILE = ZulipReader/Misc/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.frankctan.ZulipReader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/ZulipReader-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "ZulipReader/Misc/ZulipReader-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

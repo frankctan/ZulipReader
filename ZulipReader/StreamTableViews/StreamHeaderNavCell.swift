@@ -1,5 +1,5 @@
 //
-//  StreamTableViewHeaderNavCell.swift
+//  StreamHeaderNavCell.swift
 //  ZulipReader
 //
 //  Created by Frank Tan on 12/2/15.

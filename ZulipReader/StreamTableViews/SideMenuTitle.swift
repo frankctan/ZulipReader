@@ -1,5 +1,5 @@
 //
-//  NavBarTitle.swift
+//  SideMenuTitle.swift
 //  ZulipReader
 //
 //  Created by Frank Tan on 4/22/16.
