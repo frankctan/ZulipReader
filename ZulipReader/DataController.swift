@@ -18,7 +18,7 @@ get {
   if let url = NSUserDefaults.standardUserDefaults().valueForKey("domain") {
     return url as! String + "/api/v1"
   }
-  return "https://www.zulip.com"
+  return "https://www.zulip.com/api/v1"
 }
 }
 

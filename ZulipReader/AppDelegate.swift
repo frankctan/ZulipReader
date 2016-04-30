@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //delete NSUserDefaults
     for key in NSUserDefaults.standardUserDefaults().dictionaryRepresentation().keys {
       //we need email to process messages. Everything else should be deleted
-      if key != "email" {
+      if key != "email" && key != "domain" {
         NSUserDefaults.standardUserDefaults().removeObjectForKey(key)
       }
     }
