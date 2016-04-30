@@ -41,7 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       }
     }
 
-    
     let frame = UIScreen.mainScreen().bounds
     window = UIWindow(frame: frame)
     self.window?.backgroundColor = UIColor.whiteColor()
@@ -76,22 +75,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
 }
-
-//    let realmMessages = realm.objects(Message).sorted("id", ascending: true)
-//    let realmCount = realmMessages.count
-//    //TODO: CHANGE THIS TO BE LARGER LATER.
-//    let realmThres = 10
-//
-//    if realmCount > realmThres {
-//      print("realm Messages Stored: \(realmCount)")
-//      let maxDelete = realmCount - realmThres
-//      realm.beginWrite()
-//      for index in 0 ..< maxDelete {
-//        realm.delete(realmMessages[index])
-//      }
-//      do { try realm.commitWrite()}
-//      catch let error as NSError {print("AppDelegate Error: could not delete - \(error)")
-//    }
-//      print("after Deletion: \(realmCount)")
-//
-

@@ -16,6 +16,7 @@ enum Notification {
 }
 
 class NotificationNavViewController: SLKTextViewController {
+  //configure notifications, transitions, general settings
   
   var navBarBadgeDisplayed = false
   var sideMenuTableViewController: SideMenuTableViewController?
@@ -23,7 +24,6 @@ class NotificationNavViewController: SLKTextViewController {
   var blurEffectView = UIView()
   var inTransition = false
   var navBarTitle = NavBarTitle()
-  
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
@@ -126,6 +126,7 @@ class NotificationNavViewController: SLKTextViewController {
   }
   
   override func viewDidLayoutSubviews() {
+    //we use this to make sure the tableview doesn't overlap with the navigationbar
     guard let tableView = tableView, let navController = navigationController else {fatalError()}
     let navHeight = navController.navigationBar.frame.height
     let statusBarHeight = UIApplication.sharedApplication().statusBarFrame.height
@@ -139,6 +140,7 @@ class NotificationNavViewController: SLKTextViewController {
     tableView.scrollsToTop = true
     tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     
+    //register tableview cells
     tableView.registerNib(UINib(nibName: "StreamHeaderNavCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderNavCell")
     tableView.registerNib(UINib(nibName: "StreamHeaderPrivateCell", bundle: nil), forCellReuseIdentifier: "StreamHeaderPrivateCell")
     tableView.registerNib(UINib(nibName: "StreamCell", bundle: nil), forCellReuseIdentifier: "StreamCell")
@@ -173,6 +175,8 @@ class NotificationNavViewController: SLKTextViewController {
     let section = tableView.numberOfSections - 1
     let row = tableView.numberOfRowsInSection(section) - 1
     let indexPath = NSIndexPath(forRow: row, inSection: section)
+    
+    //we specifically need to use rectForRowAtIndexPath over other alternatives (like tableView.contentSize) because other methods rely on the rowheight estimates that we've supplied which can be very inaccurate
     let rectForLastIndexPath = tableView.rectForRowAtIndexPath(indexPath)
     
     if position + tableHeight > rectForLastIndexPath.origin.y + rectForLastIndexPath.height {
