@@ -20,19 +20,34 @@ class LoginController {
   weak var delegate: LoginControllerDelegate?
   
   func login(username: String, password: String, domain: String?) {
-    //TODO: login to hard coded demo creds here -
-    //TODO: test what happens with empty streams!
     
-    if let domain = domain {
-      NSUserDefaults.standardUserDefaults().setValue(domain, forKey: "domain")
+    //demo account
+    var sendUsername = username
+    var sendPassword = password
+    var sendDomain = domain
+    
+    if username == "demo" && password == "demo" {
+      sendUsername = "bobent81@gmail.com"
+      sendPassword = "thisisapasswor"
+      sendDomain = "https://zulip.tabbott.net"
     }
     
-    fetchSecretKey(username, password: password).start {[weak self] result in
+    if domain == nil {
+      sendDomain = "https://www.zulip.com"
+    }
+    
+    print("domain: \(sendDomain)")
+    
+    NSUserDefaults.standardUserDefaults().setValue(sendDomain, forKey: "domain")
+    
+    fetchSecretKey(sendUsername, password: sendPassword).start {[weak self] result in
       guard let controller = self, let delegate = controller.delegate else {fatalError()}
       switch result {
       case .Success(let header):
         let authHeader = header.unbox
+        //encrypt Zulip secret key and save in keychain
         controller.saveInKeychain(authHeader)
+        //set header for this session
         controller.setRouterHeader(authHeader)
         delegate.didFinishFetch(true)
         
