@@ -34,7 +34,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MR3-zH-PJB" customClass="DesignableView" customModule="Spring">
-                    <rect key="frame" x="20" y="112.5" width="280" height="343"/>
+                    <rect key="frame" x="20" y="113" width="280" height="343"/>
                     <subviews>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="tzx-8c-ut6" customClass="DesignableTextField" customModule="Spring" propertyAccessControl="none">
                             <rect key="frame" x="15" y="117" width="250" height="44"/>
