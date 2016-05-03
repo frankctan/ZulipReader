@@ -328,14 +328,14 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
     print("MessagesArrayToTableCellArrayDelegate: # of refreshed messages: \(self.refreshedMessageIds.count)")
     
     if self.refreshedMessageIds.isEmpty {
+      print("MessagesArrayToTableCellArrayDelegate: badge - false")
       dispatch_async(dispatch_get_main_queue()){
-        print("MessagesArrayToTableCellArrayDelegate: badge - false")
         self.delegate?.setNotification(.Badge, show: false)
       }
     }
     else {
+      print("MessagesArrayToTableCellArrayDelegate: badge - true")
       dispatch_async(dispatch_get_main_queue()){
-        print("MessagesArrayToTableCellArrayDelegate: badge - false")
         self.delegate?.setNotification(.Badge, show: true)
       }
     }

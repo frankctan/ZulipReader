@@ -130,6 +130,7 @@
 		67D1F1C81BFA6AEA006F9468 /* ZulipReaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZulipReaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D1F1CC1BFA6AEA006F9468 /* ZulipReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZulipReaderTests.swift; sourceTree = "<group>"; };
 		67D1F1CE1BFA6AEA006F9468 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		67F4BFCA1CD92F9E0008C593 /* ZulipReaderPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = ZulipReaderPlayground.playground; path = ZulipReader/ZulipReaderPlayground.playground; sourceTree = "<group>"; };
 		67F956591C6D3B3100A2EB85 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		67FFF1C21CC9DA4100447E6C /* NavBarTitle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NavBarTitle.xib; sourceTree = "<group>"; };
 		67FFF1C41CC9E21400447E6C /* NavBarTitle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavBarTitle.swift; sourceTree = "<group>"; };
@@ -294,6 +295,7 @@
 		67D1F1AB1BFA6AEA006F9468 = {
 			isa = PBXGroup;
 			children = (
+				67F4BFCA1CD92F9E0008C593 /* ZulipReaderPlayground.playground */,
 				67D1F1B61BFA6AEA006F9468 /* ZulipReader */,
 				5C8E98633BCDDCEFAEEC1B78 /* Frameworks */,
 				35CF3FA1758E3BD7487D2435 /* Pods */,
