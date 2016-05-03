@@ -23,6 +23,8 @@ class TextMunger {
       "a {color:0088cc}",
       "code {padding: 2px 4px;color: #d14;background-color: #F5F5F5;border: 1px solid #e1e1e8;}",
       "img {max-height: 200px}",
+      //TODO: Change max-height of emoji to match text size later
+      "img.emoji {max-height: 18px;}",
       "</style>"].reduce("",combine: +)
     text += style
     let htmlString: NSAttributedString?
