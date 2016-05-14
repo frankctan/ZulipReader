@@ -90,7 +90,7 @@ class URLToMessageArray: NetworkOperation {
     //in v2 - we should add checks to load more messages if new messages exceeds after.
     switch action.userAction {
     case .Focus:
-      params = MessageRequestParameters(anchor: maxAnchor, before: 20000, after: 20000, narrow: action.narrow.narrowString)
+      params = MessageRequestParameters(anchor: maxAnchor, before: 100, after: 20000, narrow: action.narrow.narrowString)
     case .Refresh:
       params = MessageRequestParameters(anchor: maxAnchor+1, before: 0, after: 20000, narrow: action.narrow.narrowString)
     case .ScrollUp:

@@ -208,6 +208,7 @@ class StreamController {
     if self.loading {
       return
     }
+    
     self.loading = true
     self.action = action
     
@@ -239,6 +240,7 @@ extension StreamController: URLToMessageArrayDelegate {
       
       self.shouldAddBadge(messages)
       
+      //only proceed to loading new messages if user does not give additional input
       guard self.queue.prepQueue.operationCount == 0 && self.queue.userNetworkQueue.operationCount == 0 else {return}
       
     case .Focus: break
