@@ -335,6 +335,7 @@ extension StreamController: MessageArrayToTableCellArrayDelegate {
     }
     else {
       print("MessagesArrayToTableCellArrayDelegate: badge - true")
+      print("refreshedIds: \(self.refreshedMessageIds)")
       dispatch_async(dispatch_get_main_queue()){
         self.delegate?.setNotification(.Badge, show: true)
       }

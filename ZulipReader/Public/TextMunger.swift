@@ -28,7 +28,7 @@ class TextMunger {
       "</style>"].reduce("",combine: +)
     text += style
     let htmlString: NSAttributedString?
-    //8bit enoding caused text to be interpreted incorrectly, using 16bit
+    //8bit enoding caused text to be interpreted incorrectly, using 16bit seemed to fix the problem
     let htmlData = text.dataUsingEncoding(NSUTF16StringEncoding, allowLossyConversion: false)
     
     do {
@@ -40,7 +40,7 @@ class TextMunger {
   }
   
   class func processEmoji(text: String) -> String {
-    //translated most of this from the original Zulip ios project
+    //translated most of this from the original Zulip iOS project
     guard text.rangeOfString("static/third/gemoji/images/emoji") != nil else {return text}
     
     var emojiRegex: NSRegularExpression {

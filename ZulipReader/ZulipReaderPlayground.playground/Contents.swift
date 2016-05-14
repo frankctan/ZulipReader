@@ -22,3 +22,24 @@ thisIsASet
 
 thisIsASet.isEmpty
 
+var tup: (Int, String)? = (5, "five")
+
+struct AStruct {
+  var prop = 1
+}
+
+let variable = AStruct()
+
+//variable.prop = 4
+//
+class AClass {
+  var classProp = 1
+}
+
+let varClass = AClass()
+varClass.classProp = 4
+
+varClass.classProp
+
+
+
