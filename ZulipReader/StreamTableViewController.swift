@@ -214,6 +214,7 @@ extension StreamTableViewController {
     
     //just to be absolutely sure that badge is removed when we're on the main view
     self.setNotification(.Badge, show: false)
+    data?.clearRefreshedMessageId()
     
     self.prepareNarrow(narrow, navTitle: "Stream")
   }

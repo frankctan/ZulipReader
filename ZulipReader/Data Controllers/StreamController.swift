@@ -218,6 +218,10 @@ class StreamController {
     self.queue.prepQueue.addOperation(tableCellsFromRealmOperation)
   }
   
+  //clear refreshedMessageIds - only called when home button is pressed. A message ID can be stored but never loaded if more than <<default # of messages shown in view>> have been posted since the user last opened the app
+  func clearRefreshedMessageId() {
+    self.refreshedMessageIds.removeAll()
+  }
 }
 
 //MARK: URLToMessagesArrayDelegate
