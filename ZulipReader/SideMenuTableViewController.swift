@@ -82,10 +82,6 @@ class SideMenuTableViewController: UITableViewController {
     delegate?.sideMenuDidTouch(selection)
   }
   
-//  override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//    return sectionTitles[section]
-//  }
-  
   override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     let header = NSBundle.mainBundle().loadNibNamed("SideMenuTitle", owner: nil, options: nil)[0] as! SideMenuTitle
     header.configure(sectionTitles[section])

@@ -63,7 +63,7 @@ class MessageArrayToTableCellArray: NSOperation {
     
     //we only want to load messageThreshold # of messages at a time
     //messageThreshold triggers a network call if thres isn't met
-    var messageThreshold = 50
+    var messageThreshold = 100
     switch userAction {
     case .Focus: break
       
@@ -117,16 +117,22 @@ class MessageArrayToTableCellArray: NSOperation {
       return
     }
     
+    //TODO: message to table cells is another major time suck
+//    let methodStart = NSDate()
     let realmTableCells = self.messageToTableCell(tableCellMessages)
-    
+//    let interval = methodStart.timeIntervalSinceNow
+//    print("method time: \(interval)")
     if self.cancelled {
       return
     }
 
+//    let methodStart1 = NSDate()
     //figure out what changed in the tableview
     self.tableCells = realmTableCells
     (self.deletedSections, self.insertedSections, self.insertedRows) = self.findTableUpdates(realmTableCells, action: userAction)
-    
+//    let interval1 = methodStart1.timeIntervalSinceNow
+//    print("findTableUpdates time: \(interval1)")
+
     if self.cancelled {
       return
     }
@@ -218,6 +224,7 @@ class MessageArrayToTableCellArray: NSOperation {
   }
   
   private func messageToTableCell(messages: [Message]) -> [[TableCell]] {
+    
     //converts database type Message into tableView type TableCell
     var previous = TableCell()
     var result = [[TableCell]()]

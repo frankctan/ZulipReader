@@ -250,6 +250,7 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction) {
+//    let methodStart = NSDate()
     guard let tableView = tableView else {fatalError()}
 
     tableView.hideLoading()
@@ -260,11 +261,14 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("UITVC: inserted sections: \(insertedSections)")
     print("UITVC: deleted sections: \(deletedSections)")
     
+//    let updateStart = NSDate()
     tableView.beginUpdates()
     tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
     tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
     tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
     tableView.endUpdates()
+//    print("update Time: \(updateStart.timeIntervalSinceNow)")
+
     
     if let refresh = self.refreshControl  {
       if refresh.refreshing {
@@ -274,6 +278,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     
     //turn off network activity indicator
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//    let visualStart = NSDate()
     
     switch self.state {
     case .Subject:
@@ -282,6 +287,9 @@ extension StreamTableViewController: StreamControllerDelegate {
       self.setTextInputbarHidden(true, animated: true)
     }
     
+//    print("visual Time 1: \(visualStart.timeIntervalSinceNow)")
+
+    //TODO: scrolling to the last row at indexpath is a major resource drain
     //scroll to last tableview cell if user action is not refresh
     if userAction != .Refresh {
       if let lastIndexPath = insertedRows.last {
@@ -290,7 +298,12 @@ extension StreamTableViewController: StreamControllerDelegate {
         self.setNavBarTitle(false, title: self.navBarTitle.title)
       }
     }
+//    print("visual Time 2: \(visualStart.timeIntervalSinceNow)")
+
     self.transitionToBlur(false)
+//    print("visual Time 3: \(visualStart.timeIntervalSinceNow)")
+
+//    print("didFetchMessages Time: \(methodStart.timeIntervalSinceNow)")
   }
 }
 
