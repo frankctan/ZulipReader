@@ -63,7 +63,7 @@ class MessageArrayToTableCellArray: NSOperation {
     
     //we only want to load messageThreshold # of messages at a time
     //messageThreshold triggers a network call if thres isn't met
-    var messageThreshold = 100
+    var messageThreshold = 50
     switch userAction {
     case .Focus: break
       
