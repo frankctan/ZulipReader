@@ -117,8 +117,14 @@ class StreamTableViewController: NotificationNavViewController {
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    //large number ensures we are always able to scroll to the bottom
-    return 300
+    //estimatedHeight is a (very) rough approximation of row height. Seems to help with scrolling and "jumpiness" caused by new message loading
+    let message = messages[indexPath.section][indexPath.row]
+    let estimatedHeight = message.attributedContent.length/40 * 30 + 50
+    if estimatedHeight < 300 {
+      return 300.0
+    }
+    
+    return CGFloat(estimatedHeight)
   }
   
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -214,6 +220,7 @@ extension StreamTableViewController {
     
     //just to be absolutely sure that badge is removed when we're on the main view
     self.setNotification(.Badge, show: false)
+    data?.clearRefreshedMessageId()
     
     self.prepareNarrow(narrow, navTitle: "Stream")
   }
@@ -243,6 +250,7 @@ extension StreamTableViewController: StreamControllerDelegate {
   }
   
   func didFetchMessages(messages: [[TableCell]], deletedSections: NSRange, insertedSections: NSRange, insertedRows: [NSIndexPath], userAction: UserAction) {
+//    let methodStart = NSDate()
     guard let tableView = tableView else {fatalError()}
 
     tableView.hideLoading()
@@ -253,11 +261,14 @@ extension StreamTableViewController: StreamControllerDelegate {
     print("UITVC: inserted sections: \(insertedSections)")
     print("UITVC: deleted sections: \(deletedSections)")
     
+//    let updateStart = NSDate()
     tableView.beginUpdates()
     tableView.deleteSections(NSIndexSet(indexesInRange: deletedSections), withRowAnimation: .None)
     tableView.insertSections(NSIndexSet(indexesInRange: insertedSections), withRowAnimation: .None)
     tableView.insertRowsAtIndexPaths(insertedRows, withRowAnimation: .None)
     tableView.endUpdates()
+//    print("update Time: \(updateStart.timeIntervalSinceNow)")
+
     
     if let refresh = self.refreshControl  {
       if refresh.refreshing {
@@ -267,6 +278,7 @@ extension StreamTableViewController: StreamControllerDelegate {
     
     //turn off network activity indicator
     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//    let visualStart = NSDate()
     
     switch self.state {
     case .Subject:
@@ -275,7 +287,10 @@ extension StreamTableViewController: StreamControllerDelegate {
       self.setTextInputbarHidden(true, animated: true)
     }
     
-    //TODO: only if the action is NOT refresh
+//    print("visual Time 1: \(visualStart.timeIntervalSinceNow)")
+
+    //TODO: scrolling to the last row at indexpath is a major resource drain
+    //scroll to last tableview cell if user action is not refresh
     if userAction != .Refresh {
       if let lastIndexPath = insertedRows.last {
         tableView.selectRowAtIndexPath(lastIndexPath, animated: false, scrollPosition: .Bottom)
@@ -283,7 +298,12 @@ extension StreamTableViewController: StreamControllerDelegate {
         self.setNavBarTitle(false, title: self.navBarTitle.title)
       }
     }
+//    print("visual Time 2: \(visualStart.timeIntervalSinceNow)")
+
     self.transitionToBlur(false)
+//    print("visual Time 3: \(visualStart.timeIntervalSinceNow)")
+
+//    print("didFetchMessages Time: \(methodStart.timeIntervalSinceNow)")
   }
 }
 

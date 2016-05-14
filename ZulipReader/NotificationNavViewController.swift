@@ -149,6 +149,7 @@ class NotificationNavViewController: SLKTextViewController {
   
   func textViewControllerSettings() {
     self.setTextInputbarHidden(true, animated: false)
+    //Slack text view controller forces us to register prefixes. These are not useful yet.
     self.registerPrefixesForAutoCompletion(["@", "#"])
     self.bounces = true
     self.shakeToClearEnabled = true
