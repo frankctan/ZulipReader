@@ -41,5 +41,12 @@ varClass.classProp = 4
 
 varClass.classProp
 
+let aNum = 40
+
+let bNum = 3
+
+aNum/bNum
+
+
 
 

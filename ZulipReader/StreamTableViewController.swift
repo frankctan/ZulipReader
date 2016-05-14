@@ -117,8 +117,14 @@ class StreamTableViewController: NotificationNavViewController {
   }
   
   override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    //large number ensures we are always able to scroll to the bottom
-    return 300
+    //estimatedHeight is a (very) rough approximation of row height. Seems to help with scrolling and "jumpiness" caused by new message loading
+    let message = messages[indexPath.section][indexPath.row]
+    let estimatedHeight = message.attributedContent.length/40 * 30 + 50
+    if estimatedHeight < 300 {
+      return 300.0
+    }
+    
+    return CGFloat(estimatedHeight)
   }
   
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -276,7 +282,7 @@ extension StreamTableViewController: StreamControllerDelegate {
       self.setTextInputbarHidden(true, animated: true)
     }
     
-    //TODO: only if the action is NOT refresh
+    //scroll to last tableview cell if user action is not refresh
     if userAction != .Refresh {
       if let lastIndexPath = insertedRows.last {
         tableView.selectRowAtIndexPath(lastIndexPath, animated: false, scrollPosition: .Bottom)
