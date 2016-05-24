@@ -4,7 +4,7 @@
 
 Feedback on the code and the app are very appreciated!
 
-![scrolling](http://i.imgur.com/cbue5KZ.gif) ![sidemenu](http://i.imgur.com/DL4amDB.gif) ![loading](http://i.imgur.com/PVqI152.gif)
+![scrolling](http://i.imgur.com/cbue5KZ.gif)![loading](http://i.imgur.com/PVqI152.gif)
 
 ## Overview
 
