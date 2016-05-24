@@ -30,28 +30,28 @@ Below is an image that describes the app flow from a typical user action.
 
 ![flow](https://raw.githubusercontent.com/frankctan/ZulipReader/master/Flow.png)
 
-### Thoughts On Development
-#### Beta
+## Thoughts On Development
+### Beta
 
 ZulipReader was in beta for 2 weeks. Around 10 people from the Recurse Center participated and their feedback was invaluable. I assumed that everybody used Zulip the way I did; this turned out to be a very poor assumption. Useful advice ranged from including a period for the keyboard in the login view to performance profiling suggestions to identify and resolve bottlenecks.
 
-#### Look and Feel
+### Look and Feel
 
 I wanted the native Zulip experience to feel like an iOS app while keeping true to the original desktop app interface. I took Apple's [human interface guidelines](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/) to heart and adapted suggestions and animations from [MengTo's](https://github.com/mengto/spring) [iOS design tutorials](https://designcode.io). Though there is room for improvement, I'm very pleased with the amount and quality of animations I implemented. In particular, I'm happy with how the login view and new message notifications turned out.
 
 ![Login](http://i.imgur.com/hFn7c0y.gif) ![NewMessage](http://i.imgur.com/JYLeU1G.gif)
 
-#### UIKit
+### UIKit
 
 UIKit customizability leaves a lot to be desired. Fine grained controls continue to be a source of frustration. All messages in Zulip are displayed as UITableViewCells. Since messages' content lengths are variable (1 word - 500+ words), UITableView content size determination becomes a non-trivial matter. A fixed rowHeight estimate is not accurate while a more detailed accounting could cause a choppy UI. For example, automated scrolling (tapping the navigation bar) or adding a single new refreshed message to the view could cause the scrollView offset to behave sporadically. Simple profiling using NSTimer shows the UITableViewController takes ~3 seconds to load new messages; half that time is used to calculate the size of the content view and scroll to the bottom.
 
 A reasonable solution would be to collapse UITableViewCells if the messages are greater than a preset length. Perhaps a better solution would be to calculate UITableView content sizes separate from the main thread.
 
-#### Networking
+### Networking
 
 I needed a way to efficiently deal with a string of successive network calls and I was not a fan of nested completion handlers. I found that my code quickly became unwieldy and difficult to change. Futures are a great way to display asynchronous code in a seemingly synchronous manner.
 
-#### HTML String manipulation and display
+### HTML String manipulation and display
 
 String manipulation in iOS is a surprisingly difficult task. The [original Zulip-iOS project](https://github.com/zulip/zulip-ios) contains the relevant CSS to style Zulip messages. I used regex to search and replace emoji tags with their unicode equivalent and used NSAttributedStrings to convert HTML to a formatted message.
 
