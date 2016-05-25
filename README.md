@@ -8,7 +8,7 @@ Feedback on the code and the app are very appreciated!
 
 ## Overview
 
-[Zulip](https://github.com/zulip/zulip) is a [powerful open source group chat platform](https://www.zulip.org). I learned Swift and iOS development at the Recurse Center in late 2015 and decided that I could create a better Zulip experience for iOS. This was my first major iOS programming project. Here are some thoughts about development.
+[Zulip](https://github.com/zulip/zulip) is a [powerful open source group chat platform](https://www.zulip.org). I learned Swift and iOS development at the [Recurse Center](https://www.recurse.com/) in late 2015 and decided that I could create a better Zulip experience for iOS. This was my first major iOS programming project. Here are some thoughts about development.
 
 ### High Level Description
 
