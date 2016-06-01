@@ -47,6 +47,12 @@ UIKit customizability leaves a lot to be desired. Fine grained controls continue
 
 A reasonable solution would be to collapse UITableViewCells if the messages are greater than a preset length. Perhaps a better solution would be to calculate UITableView content sizes separate from the main thread.
 
+### Persistence in Realm
+
+I chose [Realm](https://realm.io/) over Core Data because of the provided developer documentation and examples. I learned a ton about read and write transactions, such as filtering with predicates, batching write transactions, primary ID's and multi-threading. However, I realize now that Realm has a lot of functionality that I didn't take advantage of.
+
+Views and controllers can be registered to be notified when a Realm instance or object changes. Not completely understanding what notifications or KVO meant at the time, I wrote my own logic to notify controllers of new data. Significant portions of the existing code base could be made clearer by taking advantage of Realm's built-in notifications system.
+
 ### Networking
 
 I needed a way to efficiently deal with a string of successive network calls and I was not a fan of nested completion handlers. I found that my code quickly became unwieldy and difficult to change. Futures are a great way to display asynchronous code in a seemingly synchronous manner.
