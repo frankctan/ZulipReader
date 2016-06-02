@@ -2,6 +2,8 @@
 
 [ZulipReader on the iTunes App Store!](https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1106052828&mt=8)
 
+To preview, use username 'demo' and password 'demo' to login.
+
 Feedback on the code and the app are very appreciated!
 
 ![scrolling](http://i.imgur.com/cbue5KZ.gif)![loading](http://i.imgur.com/PVqI152.gif)
